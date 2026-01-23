@@ -33,6 +33,7 @@ import {
   Hotel,
   Article,
   BusinessCenter,
+  Work,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -51,20 +52,20 @@ export default function PublicHeader() {
   const navItems = useMemo(
     () => [
       {
-        label: "Explore",
-        icon: <Explore />,
+        label: "Home",
+        icon: <Home />,
         sectionId: "hero-section",
         color: "#8b7355", // Secondary Brown
       },
       {
-        label: "About Akira",
+        label: "About MK",
         icon: <Groups />,
         route: "/team",
         color: "#c8a97e", // Accent Gold
       },
       {
-        label: "Agent Partnership",
-        icon: <BusinessCenter />,
+        label: "Our Services",
+        icon: <Work />,
         route: "/agent-program",
         color: "#8b7355", // Secondary Brown
       },
@@ -86,7 +87,7 @@ export default function PublicHeader() {
 
   // Listen to hero section visibility events from HeroSection component
   useEffect(() => {
-    if (location.pathname !== "/") {
+    if (location.pathname !== "/" && location.pathname !== "/agent-program") {
       setIsHeroVisible(false);
       setIsAtTop(false);
       return;
@@ -101,14 +102,29 @@ export default function PublicHeader() {
         isVisible,
         scrollY,
         isAtTop: isVisible,
+        pathname: location.pathname,
       });
     };
 
     window.addEventListener("heroVisibilityChange", handleHeroVisibility);
 
-    // Set initial state
-    setIsHeroVisible(false);
-    setIsAtTop(false);
+    // Set initial state - check if we're at the top of the page
+    const initialScrollY = window.scrollY;
+    const isInitiallyAtTop = initialScrollY <= 20;
+    
+    // Check if hero section is visible in viewport
+    const heroElementId = location.pathname === "/" ? "hero-section" : "services-hero-section";
+    const heroElement = document.getElementById(heroElementId);
+    let heroIsVisibleInViewport = false;
+    if (heroElement) {
+      const rect = heroElement.getBoundingClientRect();
+      heroIsVisibleInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    }
+
+    // If at top and hero is visible, set transparent
+    const shouldBeTransparent = isInitiallyAtTop && heroIsVisibleInViewport;
+    setIsHeroVisible(shouldBeTransparent);
+    setIsAtTop(shouldBeTransparent);
 
     return () => {
       window.removeEventListener("heroVisibilityChange", handleHeroVisibility);
@@ -130,36 +146,30 @@ export default function PublicHeader() {
 
       // Update isAtTop based on scroll position
       // On small screens, when scrolling back up, ensure header becomes transparent at top
-      if (location.pathname === "/") {
+      if (location.pathname === "/" || location.pathname === "/agent-program") {
         const isAtVeryTop = scrollY <= 20;
 
-        // Check if hero section is actually visible in viewport
-        const heroElement = document.getElementById("hero-section");
-        let heroIsVisibleInViewport = false;
-        if (heroElement) {
-          const rect = heroElement.getBoundingClientRect();
-          // Hero is visible if it's in the viewport
-          heroIsVisibleInViewport =
-            rect.top < window.innerHeight && rect.bottom > 0;
+        // Check if hero section is actually visible in viewport (only for home page)
+        if (location.pathname === "/") {
+          const heroElement = document.getElementById("hero-section");
+          let heroIsVisibleInViewport = false;
+          if (heroElement) {
+            const rect = heroElement.getBoundingClientRect();
+            // Hero is visible if it's in the viewport
+            heroIsVisibleInViewport =
+              rect.top < window.innerHeight && rect.bottom > 0;
+          }
+
+          // Priority: if at very top, always transparent
+          // Otherwise, check if hero is visible (either from state or viewport check)
+          const newIsAtTop = isAtVeryTop
+            ? true
+            : (isHeroVisible || heroIsVisibleInViewport) && scrollY <= 50;
+          setIsAtTop(newIsAtTop);
+        } else if (location.pathname === "/agent-program") {
+          // For agent-program page, make header transparent when at top
+          setIsAtTop(isAtVeryTop);
         }
-
-        // Priority: if at very top, always transparent
-        // Otherwise, check if hero is visible (either from state or viewport check)
-        const newIsAtTop = isAtVeryTop
-          ? true
-          : (isHeroVisible || heroIsVisibleInViewport) && scrollY <= 50;
-        setIsAtTop(newIsAtTop);
-
-        console.log("🔍 Scroll Debug:", {
-          scrollY,
-          newScrolled,
-          isHeroVisible,
-          heroIsVisibleInViewport,
-          isAtVeryTop,
-          newIsAtTop,
-          hasScrolled,
-          location: location.pathname,
-        });
       }
 
       // Don't update active section if we're currently navigating (clicked a nav item)
@@ -167,10 +177,12 @@ export default function PublicHeader() {
 
       // Detect active section based on scroll position
       if (location.pathname === "/") {
-        // Header disappears as soon as user starts scrolling down on homepage
-        // Show header only when at the very top (with small threshold)
-        const isAtTop = window.scrollY < 50;
-        setIsHeaderVisible(isAtTop);
+        // Hide header immediately when scrolling down from hero section
+        const scrollY = window.scrollY;
+        const isAtVeryTop = scrollY <= 20;
+        
+        // Hide header immediately when user starts scrolling down (any scroll > 20px)
+        setIsHeaderVisible(isAtVeryTop);
 
         // Get all sections in the order they appear on the page (exclude items with routes)
         const sectionIds = navItems
@@ -208,6 +220,20 @@ export default function PublicHeader() {
             break;
           }
         }
+      } else if (location.pathname === "/agent-program") {
+        // Hide header immediately when scrolling down from hero section (same as homepage)
+        const scrollY = window.scrollY;
+        const isAtVeryTop = scrollY <= 20;
+        
+        // Hide header immediately when user starts scrolling down (any scroll > 20px)
+        setIsHeaderVisible(isAtVeryTop);
+      } else if (location.pathname === "/team") {
+        // Hide header immediately when scrolling down (same as homepage and agent-program)
+        const scrollY = window.scrollY;
+        const isAtVeryTop = scrollY <= 20;
+        
+        // Hide header immediately when user starts scrolling down (any scroll > 20px)
+        setIsHeaderVisible(isAtVeryTop);
       } else if (location.pathname === "/destinations") {
         // Set Destinations as active when on destinations page
         setActiveSection("mission-section");
@@ -224,17 +250,14 @@ export default function PublicHeader() {
 
   const isActive = (path) => location.pathname === path;
 
-  // Split nav items for centered layout on home page
+  // Split nav items - on home page, show all on right when not in hero, otherwise all on right
   const isHomePage = location.pathname === "/";
-  const leftNavItems = isHomePage
-    ? navItems.slice(0, Math.floor(navItems.length / 2))
-    : [];
-  const rightNavItems = isHomePage
-    ? navItems.slice(Math.floor(navItems.length / 2))
-    : navItems;
+  const leftNavItems = []; // No left nav items - all go to right
+  const rightNavItems = navItems; // All nav items on the right
 
-  // Check if header is transparent (only on home page when at absolute top)
-  const isHeaderTransparent = isHomePage && isAtTop;
+  // Check if header is transparent (on home page or agent-program page when at absolute top)
+  const isServicesPage = location.pathname === "/agent-program";
+  const isHeaderTransparent = (isHomePage || isServicesPage) && isAtTop;
 
   // Debug logging for font size conditions
   useEffect(() => {
@@ -307,28 +330,28 @@ export default function PublicHeader() {
         elevation={0}
         sx={{
           backgroundColor:
-            location.pathname === "/" && isAtTop
-              ? "transparent" // Transparent only when at absolute top on home page
-              : "rgba(249, 247, 243, 0.95)", // Warm White with transparency otherwise
+            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
+              ? "transparent" // Transparent when at absolute top on home page or services page
+              : "rgba(246, 248, 246, 0.8)", // Light background with transparency otherwise
           backdropFilter:
-            location.pathname === "/" && isAtTop ? "none" : "blur(20px)",
+            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop ? "none" : "blur(12px)",
           boxShadow:
-            location.pathname === "/" && isAtTop
+            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
               ? "none"
               : "0 8px 32px rgba(26, 26, 26, 0.12)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           borderBottom:
-            location.pathname === "/" && isAtTop
+            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
               ? "none"
               : "1px solid rgba(139, 115, 85, 0.2)",
-          // Hide header when scrolling past hero section on home page
+          // Hide header when scrolling past hero section on home page, agent-program page, or team page
           transform:
-            location.pathname === "/" && !isHeaderVisible
+            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible
               ? "translateY(-100%)"
               : "translateY(0)",
-          opacity: location.pathname === "/" && !isHeaderVisible ? 0 : 1,
+          opacity: (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible ? 0 : 1,
           pointerEvents:
-            location.pathname === "/" && !isHeaderVisible ? "none" : "auto",
+            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible ? "none" : "auto",
           // Hide active underline when any nav button is hovered
           "&:has(button:hover) button[data-active='true']::after": {
             opacity: 0,
@@ -341,295 +364,86 @@ export default function PublicHeader() {
               display: "flex",
               alignItems: "center",
               width: "100%",
-              justifyContent: isHomePage ? "space-between" : "flex-start",
+              justifyContent: "space-between",
               position: "relative",
             }}
           >
-            {/* Left Navigation Items (only on home page, large screens) */}
-            {isHomePage && (
-              <Box
-                sx={{
-                  display: { xs: "none", md: "flex" },
-                  gap: 1,
-                  alignItems: "center",
-                  flex: isHeaderTransparent && isHeaderVisible ? "0 0 auto" : 1,
-                  justifyContent: "flex-start",
-                  maxWidth:
-                    isHeaderTransparent && isHeaderVisible ? "auto" : "none",
-                }}
-              >
-                {leftNavItems.map((item, index) => {
-                  const isActiveItem = item.route
-                    ? location.pathname === item.route
-                    : activeSection === item.sectionId &&
-                      location.pathname === "/";
-                  return (
-                    <Slide
-                      direction="down"
-                      in={true}
-                      timeout={800 + index * 200}
-                      key={item.label}
-                    >
-                      <Button
-                        onClick={() => handleNavigateToSection(item)}
-                        startIcon={item.icon}
-                        disableRipple
-                        data-active={isActiveItem}
-                        sx={{
-                          color:
-                            isActiveItem && location.pathname !== "/"
-                              ? item.color
-                              : scrolled || location.pathname !== "/"
-                                ? "text.primary"
-                                : "white",
-                          fontSize: {
-                            md: "0.875rem",
-                            lg: "0.925rem",
-                            xl: "0.975rem",
-                          },
-                          fontWeight:
-                            isActiveItem && location.pathname !== "/"
-                              ? 700
-                              : 600,
-                          px: { md: 2, lg: 1.5, xl: 2 },
-                          py: { md: 1.2, lg: 1, xl: 1.2 },
-                          borderRadius: "25px",
-                          textTransform: "uppercase",
-                          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                          position: "relative",
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          backgroundColor:
-                            isActiveItem && location.pathname !== "/"
-                              ? scrolled || location.pathname !== "/"
-                                ? `${item.color}20`
-                                : `${item.color}30`
-                              : "transparent",
-                          "&:focus": {
-                            outline: "none",
-                            backgroundColor:
-                              isActiveItem && location.pathname !== "/"
-                                ? scrolled || location.pathname !== "/"
-                                  ? `${item.color}20`
-                                  : `${item.color}30`
-                                : "transparent",
-                          },
-                          "&:focus-visible": {
-                            outline: "none",
-                          },
-                          "& .MuiButton-startIcon": {
-                            marginRight: { md: 1, lg: 0.75, xl: 1 },
-                            "& > *:nth-of-type(1)": {
-                              fontSize: {
-                                md: "1.1rem",
-                                lg: "1rem",
-                                xl: "1.1rem",
-                              },
-                              color:
-                                isActiveItem && location.pathname !== "/"
-                                  ? item.color
-                                  : "inherit",
-                            },
-                          },
-                          "&:hover": {
-                            backgroundColor: "transparent",
-                            transform: "none",
-                            boxShadow: "none",
-                            "& .icon": {
-                              color: item.color,
-                            },
-                          },
-                          "&:hover::after": {
-                            content: '""',
-                            position: "absolute",
-                            bottom: 0,
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            width: "60%",
-                            height: "3px",
-                            backgroundColor:
-                              location.pathname === "/" ? "white" : item.color,
-                            borderRadius: "2px 2px 0 0",
-                            transition: "all 0.3s ease-out",
-                            zIndex: 1,
-                          },
-                          "&::after":
-                            isActiveItem && location.pathname === "/"
-                              ? {
-                                  content: '""',
-                                  position: "absolute",
-                                  bottom: 0,
-                                  left: "50%",
-                                  transform: "translateX(-50%)",
-                                  width: "60%",
-                                  height: "3px",
-                                  backgroundColor: "white",
-                                  borderRadius: "2px 2px 0 0",
-                                  transition: "opacity 0.3s ease-out",
-                                  opacity: 1,
-                                }
-                              : isActiveItem && location.pathname !== "/"
-                                ? {
-                                    content: '""',
-                                    position: "absolute",
-                                    bottom: 0,
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
-                                    width: "60%",
-                                    height: "3px",
-                                    backgroundColor: item.color,
-                                    borderRadius: "2px 2px 0 0",
-                                  }
-                                : {},
-                          "& .icon": {
-                            transition: "all 0.4s ease",
-                            color:
-                              isActiveItem && location.pathname !== "/"
-                                ? item.color
-                                : scrolled || location.pathname !== "/"
-                                  ? item.color
-                                  : "white",
-                          },
-                        }}
-                      >
-                        {item.label}
-                      </Button>
-                    </Slide>
-                  );
-                })}
-              </Box>
-            )}
-
-            {/* Enhanced Logo Section - Centered on home page, left-aligned on other pages */}
-            <Fade in={true} timeout={1000}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                  "&:hover": {
-                    transform:
-                      isHeaderTransparent && isHeaderVisible
-                        ? "translateX(-50%) translateY(40px) scale(1.05)"
-                        : "scale(1.05) translateY(-2px)",
-                  },
-                  position: isHomePage ? "absolute" : "relative",
-                  left: isHomePage ? "50%" : "auto",
-                  transform: isHomePage
-                    ? isHeaderTransparent && isHeaderVisible
-                      ? "translateX(-50%) translateY(40px)"
-                      : "translateX(-50%)"
-                    : "none",
-                  zIndex: isHeaderTransparent && isHeaderVisible ? 1000 : 2, // Higher z-index to float over hero
-                  mb:
-                    isHeaderTransparent && isHeaderVisible
-                      ? { xs: -2, md: -4 }
-                      : 0, // Extend into hero section
-                  animation:
-                    isHeaderTransparent && isHeaderVisible
-                      ? "floatHeader 3s ease-in-out infinite"
-                      : "none",
-                }}
-                onClick={() => navigate("/")}
-              >
-                {!isHomePage && (
-                  <img
-                    src="/images/WhatsApp_Image_2025-12-14_at_10.56.47_AM-removebg-preview%20(1).png"
-                    alt="Akira Safaris Logo"
-                    style={{
-                      height:
-                        scrolled || location.pathname !== "/" ? "64px" : "72px",
-                      maxHeight: "72px",
-                      width: "auto",
-                      transition: "all 0.4s ease",
-                      filter:
-                        scrolled || location.pathname !== "/"
-                          ? "none"
-                          : "drop-shadow(0 4px 8px rgba(0,0,0,0.3))",
-                    }}
-                  />
-                )}
+            {/* Left Section - Logo */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flex: 1,
+                justifyContent: "flex-start",
+              }}
+            >
+              {/* Logo Section - Left-aligned on all pages */}
+              <Fade in={true} timeout={1000}>
                 <Box
                   sx={{
-                    ml: isHomePage ? 0 : { xs: 1.5, sm: 2 },
-                    display: { xs: "block", sm: "block" },
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    "&:hover": {
+                      transform: "scale(1.05) translateY(-2px)",
+                    },
                   }}
+                  onClick={() => navigate("/")}
                 >
-                  <Typography
+                  <Box
                     sx={{
-                      fontWeight:
-                        isHeaderTransparent && isHeaderVisible ? 900 : 700,
-                      fontSize:
-                        isHeaderTransparent && isHeaderVisible
-                          ? {
-                              xs: "1.2rem", // Reduced for small screens to fit in one row
-                              sm: "2rem",
-                              md: "3rem",
-                              lg: "3.6rem",
-                              xl: "4.2rem",
-                            }
-                          : { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
-                      // Black when header has background, gradient when transparent/floating
-                      color:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "transparent" // Will use gradient
-                          : "#000000", // Black when inside header
-                      lineHeight: 1.1,
-                      // Exclude fontSize from transition to prevent visible resize - fontSize changes instantly
-                      transition:
-                        "color 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s cubic-bezier(0.4, 0, 0.2, 1), textShadow 0.5s cubic-bezier(0.4, 0, 0.2, 1), letterSpacing 0.5s cubic-bezier(0.4, 0, 0.2, 1), fontWeight 0.3s ease",
-                      textShadow:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "4px 4px 20px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.4), 0 0 60px rgba(224, 216, 192, 0.3)"
-                          : "none",
-                      // Only use gradient when transparent/floating, otherwise solid black
-                      background:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "linear-gradient(135deg, #c8a97e 0%, #f9f7f3 20%, #ffffff 40%, #f9f7f3 60%, #8b7355 80%, #1a1a1a 100%)"
-                          : "none",
-                      backgroundClip:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "text"
-                          : "unset",
-                      WebkitBackgroundClip:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "text"
-                          : "unset",
-                      WebkitTextFillColor:
-                        isHeaderTransparent && isHeaderVisible
-                          ? "transparent"
-                          : "#000000",
-                      letterSpacing:
-                        isHeaderTransparent && isHeaderVisible
-                          ? {
-                              xs: "0.02em",
-                              sm: "0.05em",
-                              md: "0.08em",
-                              lg: "0.1em",
-                            }
-                          : "0.02em",
-                      textTransform: "uppercase",
-                      whiteSpace: "nowrap", // Prevent text wrapping
+                      display: { xs: "block", sm: "block" },
                     }}
                   >
-                    AKIRA SAFARIS
-                  </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "inherit",
+                        fontWeight: 700,
+                        fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                        // White color in hero section, green elsewhere
+                        color:
+                          isHeaderTransparent && isHeaderVisible
+                            ? "#ffffff" // White when in hero section
+                            : "#228b22", // Green when inside header
+                        lineHeight: 1.1,
+                        transition:
+                          "color 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                        textShadow:
+                          isHeaderTransparent && isHeaderVisible
+                            ? "2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 0, 0, 0.4)"
+                            : "none",
+                        background: "none",
+                        backgroundClip: "unset",
+                        WebkitBackgroundClip: "unset",
+                        WebkitTextFillColor:
+                          isHeaderTransparent && isHeaderVisible
+                            ? "#ffffff"
+                            : "#228b22",
+                        letterSpacing: "0.02em",
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap", // Prevent text wrapping
+                      }}
+                    >
+                      MK AGRIBUSINESS CONSULTANTS
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Fade>
+              </Fade>
 
-            {/* Right Navigation Items */}
+            </Box>
+
+            {/* Center Navigation Items */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
                 gap: 1,
                 alignItems: "center",
-                flex: isHeaderTransparent && isHeaderVisible ? "0 0 auto" : 1,
-                justifyContent: isHomePage ? "flex-end" : "flex-end",
-                marginLeft: isHomePage ? 0 : "auto",
-                maxWidth:
-                  isHeaderTransparent && isHeaderVisible ? "auto" : "none",
+                justifyContent: "center",
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
               }}
             >
               {rightNavItems.map((item, index) => {
@@ -637,10 +451,7 @@ export default function PublicHeader() {
                   ? location.pathname === item.route
                   : activeSection === item.sectionId &&
                     location.pathname === "/";
-                // Adjust timeout to account for left nav items on home page
-                const adjustedIndex = isHomePage
-                  ? leftNavItems.length + index
-                  : index;
+                const adjustedIndex = index;
                 return (
                   <Slide
                     direction="down"
@@ -653,13 +464,13 @@ export default function PublicHeader() {
                       startIcon={item.icon}
                       disableRipple
                       data-active={isActiveItem}
-                      sx={{
-                        color:
-                          isActiveItem && location.pathname !== "/"
-                            ? item.color
-                            : scrolled || location.pathname !== "/"
-                              ? "text.primary"
-                              : "white",
+                        sx={{
+                          color:
+                            isActiveItem && location.pathname !== "/"
+                              ? item.color
+                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/" || location.pathname === "/agent-program"))
+                                ? "white"
+                                : "text.primary",
                         fontSize: {
                           md: "0.875rem",
                           lg: "0.925rem",
@@ -724,13 +535,13 @@ export default function PublicHeader() {
                           width: "60%",
                           height: "3px",
                           backgroundColor:
-                            location.pathname === "/" ? "white" : item.color,
+                            (location.pathname === "/" || (location.pathname === "/agent-program" && isHeaderTransparent)) ? "white" : item.color,
                           borderRadius: "2px 2px 0 0",
                           transition: "all 0.3s ease-out",
                           zIndex: 1,
                         },
                         "&::after":
-                          isActiveItem && location.pathname === "/"
+                          isActiveItem && (location.pathname === "/" || (location.pathname === "/agent-program" && isHeaderTransparent))
                             ? {
                                 content: '""',
                                 position: "absolute",
@@ -762,9 +573,9 @@ export default function PublicHeader() {
                           color:
                             isActiveItem && location.pathname !== "/"
                               ? item.color
-                              : scrolled || location.pathname !== "/"
-                                ? item.color
-                                : "white",
+                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && location.pathname === "/")
+                                ? "white"
+                                : item.color,
                         },
                       }}
                     >
@@ -773,6 +584,47 @@ export default function PublicHeader() {
                   </Slide>
                 );
               })}
+            </Box>
+
+            {/* Book a Consultation Button - Far Right */}
+            <Box
+              sx={{
+                display: { xs: "none", lg: "flex" },
+                alignItems: "center",
+                flex: 1,
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                variant="contained"
+                sx={{
+                  px: 3,
+                  py: 1.5,
+                  fontSize: "0.875rem",
+                  fontWeight: 700,
+                  borderRadius: 2,
+                  backgroundColor: "#13ec13",
+                  color: "#0d1b0d",
+                  textTransform: "none",
+                  boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+                  transition: "all 0.3s ease",
+                  "&:focus": {
+                    outline: "none",
+                    boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+                  },
+                  "&:focus-visible": {
+                    outline: "none",
+                    boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#11d411",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 6px 16px rgba(19, 236, 19, 0.4)",
+                  },
+                }}
+              >
+                Book a Consultation
+              </Button>
             </Box>
 
             {/* Enhanced Mobile Menu Button */}
@@ -784,9 +636,9 @@ export default function PublicHeader() {
                   marginLeft: "auto",
                   color: mobileMenuOpen
                     ? "#8b7355" // Secondary Brown
-                    : scrolled || location.pathname !== "/"
-                      ? "#1a1a1a"
-                      : "white",
+                    : (isHeaderTransparent && isHeaderVisible) || (!scrolled && location.pathname === "/")
+                      ? "white"
+                      : "#1a1a1a",
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   borderRadius: "12px",
                   backgroundColor: mobileMenuOpen
@@ -982,18 +834,6 @@ export default function PublicHeader() {
         }}
       />
 
-      <style>
-        {`
-          @keyframes floatHeader {
-            0%, 100% {
-              transform: translateX(-50%) translateY(40px);
-            }
-            50% {
-              transform: translateX(-50%) translateY(30px);
-            }
-          }
-        `}
-      </style>
     </>
   );
 }
