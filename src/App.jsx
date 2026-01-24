@@ -33,6 +33,7 @@ const Tour = lazy(() => import("./pages/Tour"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
 const AgentProgram = lazy(() => import("./pages/AgentProgram"));
+const Projects = lazy(() => import("./pages/Projects"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -336,6 +337,15 @@ function App() {
               element={
                 <>
                   <AgentProgram />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <>
+                  <Projects />
                   <Footer />
                 </>
               }

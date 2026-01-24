@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   Button,
-  Grid,
   Card,
   Chip,
   Link,
@@ -252,208 +251,239 @@ export default function AgentProgram() {
       </Box>
 
       {/* Services Grid */}
-      <Box sx={{ px: { xs: 1.5, md: 5 }, pb: 5 }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={3}>
+      <Box sx={{ pt: 2, pb: 5, px: 0 }}>
+        <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
+          <Box
+            sx={{
+              display: "grid",
+              columnGap: 1.5,
+              rowGap: 8,
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(5, 1fr)",
+              },
+              px: 1.5,
+            }}
+          >
             {services.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Grid item xs={12} sm={6} lg={3} xl={3} key={index}>
-                  <Card
+                <Card
+                  key={index}
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    p: 2.5,
+                    borderRadius: 3,
+                    border: "1px solid rgba(15, 189, 15, 0.1)",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    bgcolor: "white",
+                    "&:hover": {
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 12px 30px rgba(15, 189, 15, 0.15)",
+                      borderColor: "rgba(15, 189, 15, 0.3)",
+                    },
+                  }}
+                >
+                  {service.badge && (
+                    <Chip
+                      label={service.badge.label}
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 12,
+                        right: 12,
+                        fontSize: "0.625rem",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        height: 20,
+                        bgcolor: service.badge.color === "info" ? "#1976d2" : "#0fbd0f",
+                        color: "white",
+                      }}
+                    />
+                  )}
+                  <Box
                     sx={{
-                      height: "100%",
+                      width: 42,
+                      height: 42,
+                      bgcolor: "rgba(15, 189, 15, 0.1)",
+                      borderRadius: 2,
                       display: "flex",
-                      flexDirection: "column",
-                      p: 3,
-                      borderRadius: 3,
-                      border: "1px solid rgba(0, 0, 0, 0.1)",
-                      boxShadow: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#0fbd0f",
+                      mb: 1.5,
                       transition: "all 0.3s ease",
-                      position: "relative",
                       "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: 4,
+                        bgcolor: "#0fbd0f",
+                        color: "white",
                       },
                     }}
                   >
-                    {service.badge && (
-                      <Chip
-                        label={service.badge.label}
-                        size="small"
-                        sx={{
-                          position: "absolute",
-                          top: 16,
-                          right: 16,
-                          fontSize: "0.625rem",
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.1em",
-                          height: 20,
-                          bgcolor: service.badge.color === "info" ? "#1976d2" : "#0fbd0f",
-                          color: "white",
-                        }}
-                      />
-                    )}
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        bgcolor: "rgba(15, 189, 15, 0.1)",
-                        borderRadius: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#0fbd0f",
-                        mb: 2,
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          bgcolor: "#0fbd0f",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      <IconComponent sx={{ fontSize: 30 }} />
-                    </Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                        mb: 1.5,
-                        color: "#0d1b0d",
-                        fontSize: { xs: "1rem", md: "1.125rem" },
-                      }}
-                    >
-                      {service.title}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "rgba(0, 0, 0, 0.6)",
-                        fontSize: "0.875rem",
-                        lineHeight: 1.6,
-                        mb: 2,
-                        flex: 1,
-                      }}
-                    >
-                      {service.description}
-                    </Typography>
-                    <Link
-                      href="#"
-                      sx={{
-                        color: "#0fbd0f",
-                        fontSize: "0.875rem",
-                        fontWeight: 700,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        textDecoration: "none",
-                        "&:hover": {
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
-                      Learn More <ArrowForward sx={{ fontSize: 16 }} />
-                    </Link>
-                  </Card>
-                </Grid>
+                    <IconComponent sx={{ fontSize: 26 }} />
+                  </Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 1,
+                      color: "#0d1b0d",
+                      fontSize: { xs: "1rem", md: "1.125rem" },
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {service.title}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "rgba(0, 0, 0, 0.6)",
+                      fontSize: "1.125rem",
+                      lineHeight: 1.5,
+                      mb: 1.5,
+                      flex: 1,
+                    }}
+                  >
+                    {service.description}
+                  </Typography>
+                  <Link
+                    href="#"
+                    sx={{
+                      color: "#0fbd0f",
+                      fontSize: "0.875rem",
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5,
+                      textDecoration: "none",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    Learn More <ArrowForward sx={{ fontSize: 16 }} />
+                  </Link>
+                </Card>
               );
             })}
-          </Grid>
+          </Box>
         </Container>
       </Box>
-
       {/* Call to Action Section */}
       <Box
         sx={{
-          px: { xs: 1.5, md: 5 },
-          py: 4,
+          pt: 1,
+          pb: 0.3,
+          px: 0,
           bgcolor: "white",
         }}
       >
-        <Container maxWidth="lg">
-          <Paper
-            sx={{
-              bgcolor: "rgba(15, 189, 15, 0.05)",
-              p: { xs: 4, md: 6 },
-              borderRadius: 4,
-              border: "1px solid rgba(15, 189, 15, 0.2)",
-              textAlign: "center",
-            }}
-          >
-            <Typography
-              variant="h2"
+        <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
+          <Box sx={{ px: 1.5 }}>
+            <Paper
               sx={{
-                fontSize: { xs: "1.75rem", md: "2.5rem" },
-                fontWeight: 900,
-                color: "#0d1b0d",
-                mb: 3,
+                bgcolor: "rgba(15, 189, 15, 0.05)",
+                p: { xs: 4, md: 5 },
+                borderRadius: 4,
+                border: "1px solid rgba(15, 189, 15, 0.2)",
+                textAlign: "center",
+                boxShadow: "0 4px 20px rgba(15, 189, 15, 0.05)",
+                mb: 0.3,
               }}
             >
-              Ready to transform your agribusiness?
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: "1rem", md: "1.125rem" },
-                color: "rgba(0, 0, 0, 0.6)",
-                maxWidth: "700px",
-                mx: "auto",
-                mb: 4,
-              }}
-            >
-              Partner with MK Agribusiness Consultants to drive innovation, efficiency, and sustainability in your operations. Our team is ready to scale your impact.
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="contained"
+              <Typography
+                variant="h2"
                 sx={{
-                  bgcolor: "#0fbd0f",
-                  color: "white",
-                  fontSize: "1.125rem",
-                  fontWeight: 700,
-                  px: 5,
-                  py: 1.5,
-                  borderRadius: 2,
-                  boxShadow: 4,
-                  width: { xs: "100%", sm: "auto" },
-                  "&:hover": {
-                    bgcolor: "#0da50d",
-                    boxShadow: 6,
-                  },
+                  fontSize: { xs: "2rem", md: "2.5rem" },
+                  fontWeight: 900,
+                  color: "#0d1b0d",
+                  mb: 2,
                 }}
               >
-                Get Started
-              </Button>
-              <Button
-                variant="outlined"
+                Ready to transform your agribusiness?
+              </Typography>
+              <Typography
                 sx={{
-                  borderColor: "#0fbd0f",
-                  borderWidth: 2,
-                  color: "#0fbd0f",
-                  fontSize: "1.125rem",
-                  fontWeight: 700,
-                  px: 5,
-                  py: 1.5,
-                  borderRadius: 2,
-                  width: { xs: "100%", sm: "auto" },
-                  "&:hover": {
-                    borderColor: "#0fbd0f",
-                    borderWidth: 2,
+                  fontSize: { xs: "1.125rem", md: "1.2rem" },
+                  color: "rgba(0, 0, 0, 0.7)",
+                  maxWidth: "800px",
+                  mx: "auto",
+                  mb: 4,
+                  lineHeight: 1.6,
+                }}
+              >
+                Partner with MK Agribusiness Consultants to drive innovation, efficiency, and sustainability in your operations. Our team is ready to scale your impact.
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  sx={{
                     bgcolor: "#0fbd0f",
                     color: "white",
-                  },
-                }}
-              >
-                Contact Sales
-              </Button>
-            </Box>
-          </Paper>
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    boxShadow: 4,
+                    width: { xs: "100%", sm: "auto" },
+                    "&:hover": {
+                      bgcolor: "#0da50d",
+                      boxShadow: 6,
+                    },
+                    "&:focus": {
+                      outline: "none",
+                    },
+                    "&:focus-visible": {
+                      outline: "none",
+                    },
+                  }}
+                >
+                  Get Started
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: "#0fbd0f",
+                    borderWidth: 2,
+                    color: "#0fbd0f",
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 2,
+                    width: { xs: "100%", sm: "auto" },
+                    "&:hover": {
+                      borderColor: "#0fbd0f",
+                      borderWidth: 2,
+                      bgcolor: "#0fbd0f",
+                      color: "white",
+                    },
+                    "&:focus": {
+                      outline: "none",
+                    },
+                    "&:focus-visible": {
+                      outline: "none",
+                    },
+                  }}
+                >
+                  Contact Sales
+                </Button>
+              </Box>
+            </Paper>
+          </Box>
         </Container>
       </Box>
 
