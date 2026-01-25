@@ -55,6 +55,139 @@ const XIcon = ({ sx, ...props }) => (
   </Box>
 );
 
+// Helper function to create slug from title
+const createSlugFromTitle = (title) => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+};
+
+// Sample blog posts matching Blog.jsx
+const samplePosts = [
+  {
+    id: 1,
+    slug: "bankable-agribusiness-proposal",
+    title: "Bankable Agribusiness Proposal",
+    category: "Agri-Finance",
+    description: "Learn how to structure your proposal to secure funding and scale operations. We dive deep into financial forecasting, risk management, and investor expectations for the 2024 agricultural market.",
+    excerpt: "Learn how to structure your proposal to secure funding and scale operations.",
+    content: "Learn how to structure your proposal to secure funding and scale operations. We dive deep into financial forecasting, risk management, and investor expectations for the 2024 agricultural market.\n\nThis comprehensive guide covers everything from creating compelling business plans to understanding what investors look for in agricultural ventures.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAWUsuEtMkZ-ZMvGF-t-ggHKRfLWy3AqkQd1mPhzJFoc0T6OBSraC9VwswWPS1o8ZKjoS-nEhZo45vLTOM_GPBsewS0jNA69livO_o9R1lYl4Uqqj3bYnnZGlV2OJ16EjMZw_QeEr3PEvDuEW2jS0h1Dyis7VDPep6gkA4OoClz9DaQGi70nYa7GDkuz_Ax-PruPZnf7-bNjnUj1RZZJWclk1HxL2Ao7K8dxui669MDUyR5qMOQY7lF5dW119Mpfu82jNt9jdegpreK",
+    readTime: "10",
+    author: "MK Agribusiness Team",
+    tags: ["Finance", "Business", "Investment"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 2,
+    slug: "bsf-farming-guide",
+    title: "BSF Farming Guide",
+    category: "Sustainable Tech",
+    description: "A comprehensive guide to Black Soldier Fly farming for sustainable feed production. Discover why BSF is the future of protein for poultry and fish farming across the continent.",
+    excerpt: "A comprehensive guide to Black Soldier Fly farming for sustainable feed production.",
+    content: "A comprehensive guide to Black Soldier Fly farming for sustainable feed production. Discover why BSF is the future of protein for poultry and fish farming across the continent.\n\nLearn about the lifecycle, setup requirements, and economic benefits of BSF farming.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuATVi__6O-OiV7QFnJvil843alCQeGmxl7pySjoi69VtE0LlfrOWLRPDHW-z4ht9HerIp05z1y1hYp-4yq2XLE26rTopiGsPNqFE6Sh4NZuWXY1JjB1k5S7iLuvTrMUXraZAkoH19N_2VswvHLE7F5nSDbd5BPDqgHgMBU_xmlApgL0oZ4BaYIyWNv6wenFSl5OuEdUzIFJPGTZOtmKS7c3iLGP_ji1AwAyNdGTkDCjEIrkRwmso1SVPLG-ETWMMleN0UwDGePiC6ol",
+    readTime: "12",
+    author: "MK Agribusiness Team",
+    tags: ["Sustainability", "Technology", "Livestock"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 3,
+    slug: "hydroponics-for-urban-farmers",
+    title: "Hydroponics for Urban Farmers",
+    category: "Climate-Smart",
+    description: "Maximizing yield in limited spaces using nutrient-rich water solutions and smart monitoring systems.",
+    excerpt: "Maximizing yield in limited spaces using nutrient-rich water solutions.",
+    content: "Maximizing yield in limited spaces using nutrient-rich water solutions and smart monitoring systems.\n\nDiscover how urban farmers are revolutionizing food production in cities across Africa.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAP4yxfxRucjPIl4t8GNMj83gXdgzmj-koQ9KFcpcdEwq37LpmOXO8BIF11VNjGewaZL5qyjRvME_3scZEh75eo58SEM67slHMVoDnzBu-9iHSSgRwVZdOu4DTV8b2g_2pAZVSpdakGS-o2uBi6c6ScqHLPgCdAMG2mtI93-z9-E8sEGrWRsNuqejBnhkUF3Z1j9ZPHyH91UmjErCVLmrrvAZBJsYur298qrz9TPUpwGvkYeL7XZuWe6v985YOCLdoZ_6ZaZCAcz4IS",
+    readTime: "5",
+    author: "MK Agribusiness Team",
+    tags: ["Urban Farming", "Technology", "Sustainability"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 4,
+    slug: "iot-in-modern-irrigation",
+    title: "IoT in Modern Irrigation",
+    category: "Agri-Tech",
+    description: "How sensors and automation are saving up to 40% of water costs while improving crop health.",
+    excerpt: "How sensors and automation are saving up to 40% of water costs.",
+    content: "How sensors and automation are saving up to 40% of water costs while improving crop health.\n\nExplore the latest IoT solutions transforming irrigation systems in modern agriculture.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCom-j2yR5pG05CTzLyQF5SNH7KrpiMgvS0OE9GlgtQBlDAZhh4Xvu0W1TYCo_P9UEElb2vP5Y7Hbvgt2XNLj8fO7DTXIKhE6GQ_7dFA92izFKlAlc9Xu-oOiQ8ffXLWh9jEooWCy4TX4yuIk2YUBxs_yo8wOJoW-UbtdwA_MbGPKzgdwRXMVy55M1v61ys0OvTLqxXjeQv1s_NjlcRij1Dj-yuqAI0s9qDNuvZXZ21rezLH8igaCK3ZXVUUiqVOG-XlcY-66mC3wzM",
+    readTime: "8",
+    author: "MK Agribusiness Team",
+    tags: ["Technology", "Irrigation", "Efficiency"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 5,
+    slug: "soil-health-the-farmers-bank",
+    title: "Soil Health: The Farmer's Bank",
+    category: "Regenerative",
+    description: "Strategies for restoring depleted soils through crop rotation and organic mineralization.",
+    excerpt: "Strategies for restoring depleted soils through crop rotation.",
+    content: "Strategies for restoring depleted soils through crop rotation and organic mineralization.\n\nLearn how healthy soil is the foundation of sustainable and profitable farming.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDJw1vJYo0MzBQoaLFzmm-pFL2CRdnj5da1JJBdNVCj81v4WavcSThYdHK5QWtplJTnvO58OJcV9oV5rpUU5aHpsnP3Yx7qVFeRYcjncvofemrQIXcpzfw8dADYj3UjK6dbZ3XHb4VVf7-Drm23LhdMECzP9HpoKjucd3ILIIfhs0JSdqUrU75snyOqco17sbnxa7UfzXoDQTz9XAKLezb9zh46xJcUkKXoShOMluzpNokPuBeRpP8mGv5B7zupXw1r1h64hpoiuEt-",
+    readTime: "6",
+    author: "MK Agribusiness Team",
+    tags: ["Soil Health", "Sustainability", "Regenerative"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 6,
+    slug: "accessing-green-grants",
+    title: "Accessing Green Grants",
+    category: "Agri-Finance",
+    description: "A directory of 2024 grants available for African agribusinesses focused on climate resilience.",
+    excerpt: "A directory of 2024 grants available for African agribusinesses.",
+    content: "A directory of 2024 grants available for African agribusinesses focused on climate resilience.\n\nNavigate the grant application process and maximize your chances of success.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCukQOnvNp8aGeGUfZqWgM90q7hwbEwyMaVlDc20f4obAKjMExXI0jllQ7542tZZi8gDFW_O91evrlikrDGgxiSwADelK_YfNK563WbtlLDRoA40G3PtPyhDOWiKDkphDhVipPZOQ1AdcMrIkR9wvXmkxyZMB3UwwrygFoPAB620KxQM9hZvlmhhiTZ6Ppd3b1_vYuFid7rwVpqSa1fpv6uB6FQSn-tdq2-atQphF-rS9KwrIEIViJ3_ulTBjyOQM2RKA88Sd3EFjad",
+    readTime: "12",
+    author: "MK Agribusiness Team",
+    tags: ["Finance", "Grants", "Climate"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 7,
+    slug: "biosecurity-in-poultry",
+    title: "Biosecurity in Poultry",
+    category: "Livestock",
+    description: "Protecting your investment through strict hygiene protocols and early disease detection.",
+    excerpt: "Protecting your investment through strict hygiene protocols.",
+    content: "Protecting your investment through strict hygiene protocols and early disease detection.\n\nEssential biosecurity measures every poultry farmer should implement.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLyvGv47bkqmAY7js6wQQIelGmyz9sAtbNz699yZNZGlle1BtN3Zn3DAsLxDw6kle62DXAzJ9It7gpY5ofnAePMt3mR-ya4Yral5SNvUmuSF1EJ7AyPENridz6UZ3wNLLnjDETQKgy9fvD_l7Tdhhv1zlb7HxQAaWpnUm9n580drZZdqym53hqZwrfYPmAlEsa_TOoy9JNInEMeWdAvGLUfoVwTXBYlMOR9UhcW-QFjn4tDGmhXaoGEda0rNsH861MiP9RaawfqQXq",
+    readTime: "4",
+    author: "MK Agribusiness Team",
+    tags: ["Livestock", "Health", "Biosecurity"],
+    likes: 0,
+    views: 0,
+  },
+  {
+    id: 8,
+    slug: "from-farm-to-digital-market",
+    title: "From Farm to Digital Market",
+    category: "Marketing",
+    description: "How to brand and sell your produce directly to consumers using social media and e-logistics.",
+    excerpt: "How to brand and sell your produce directly to consumers.",
+    content: "How to brand and sell your produce directly to consumers using social media and e-logistics.\n\nTransform your farm into a digital brand and reach customers directly.",
+    featuredImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDgAB12qJBrpRjUw1hDIgFfjVcPnFMAymJ_pzP18blghul6E-vbf84FCKCh4lhk7_dcu-GNDI1ilNq5zr03tKKfP9Y_vgj-1_9onqJ1cKXKhVqYq8HuvQ9-gVAvlhYcoVibTWvIsCb1jsoCqgRbbM8q37irlSiF8q-_L_eRCeinxrfUzFxZN9Kvn6nX5a61_K-ZclAgi0fSLosaRQjjsMZRts4STf_Id4gir0_mEAH0oljdqxYj7MsqTFRshFytwoGaNFsCwuis_t8F",
+    readTime: "7",
+    author: "MK Agribusiness Team",
+    tags: ["Marketing", "Digital", "Sales"],
+    likes: 0,
+    views: 0,
+  },
+];
+
 export default function BlogDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -113,9 +246,66 @@ export default function BlogDetail() {
         setPost(null);
         setRelatedPosts([]);
 
+        // Check if it's a sample post by matching slug
+        const samplePost = samplePosts.find(p => p.slug === slug);
+        const isSamplePost = !!samplePost;
+        
+        if (samplePost) {
+          const normalized = {
+            ...samplePost,
+            tags: samplePost.tags || [],
+            author: samplePost.author || "Unknown",
+            authorImage: null,
+            featuredImage: samplePost.featuredImage,
+            readTime: samplePost.readTime ? `${samplePost.readTime} min` : "—",
+            likes: samplePost.likes ?? 0,
+            views: samplePost.views ?? 0,
+            metaTitle: samplePost.title,
+            metaDescription: samplePost.excerpt || samplePost.description || "",
+            ogImagePath: samplePost.featuredImage,
+            content: samplePost.content,
+          };
+          setPost(normalized);
+          
+          // Set related posts (exclude current)
+          const related = samplePosts
+            .filter(p => p.slug !== slug && p.category === samplePost.category)
+            .slice(0, 3)
+            .map(p => ({
+              ...p,
+              tags: p.tags || [],
+              author: p.author || "Unknown",
+              authorImage: null,
+              featuredImage: p.featuredImage,
+              readTime: p.readTime ? `${p.readTime} min` : "—",
+            }));
+          setRelatedPosts(related);
+          setLoading(false);
+          return;
+        }
+
+        // Try to fetch from API
         const res = await fetch(`/api/blogs/public/${slug}`);
-        const data = await res.json();
-        if (!res.ok || !data.success || !data.data) {
+        
+        // Check if response is ok and has content
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        // Check if response has content before parsing JSON
+        const text = await res.text();
+        if (!text || text.trim() === '') {
+          throw new Error("Empty response from server");
+        }
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          throw new Error("Invalid JSON response from server");
+        }
+        
+        if (!data.success || !data.data) {
           throw new Error(data.message || "Blog post not found");
         }
 
@@ -144,9 +334,14 @@ export default function BlogDetail() {
         setPost(normalized);
 
         // fetch related (same category, exclude current)
-        const relRes = await fetch("/api/blogs/public");
-        const relData = await relRes.json();
-        if (relRes.ok && relData.success && Array.isArray(relData.data)) {
+        try {
+          const relRes = await fetch("/api/blogs/public");
+          if (relRes.ok) {
+            const relText = await relRes.text();
+            if (relText && relText.trim() !== '') {
+              try {
+                const relData = JSON.parse(relText);
+                if (relData.success && Array.isArray(relData.data)) {
           const relNormalized = relData.data
             .filter(
               (p) =>
@@ -166,21 +361,44 @@ export default function BlogDetail() {
               featuredImage: buildImageUrl(p.featuredImage),
               readTime: p.readTime ? `${p.readTime} min` : "—",
             }));
-          setRelatedPosts(relNormalized);
+                  setRelatedPosts(relNormalized);
+                }
+              } catch (parseError) {
+                // Silently fail for related posts - not critical
+                console.warn("Failed to parse related posts:", parseError);
+              }
+            }
+          }
+        } catch (relError) {
+          // Silently fail for related posts - not critical
+          console.warn("Failed to fetch related posts:", relError);
         }
 
-        // increment view count (best-effort)
-        try {
-          const viewRes = await fetch(`/api/blogs/public/${slug}/view`, { method: "POST" });
-          const viewData = await viewRes.json();
-          if (viewRes.ok && viewData.success && viewData.data?.views !== undefined) {
-            setPost((prev) => (prev ? { ...prev, views: viewData.data.views } : prev));
-          } else {
-            // fallback increment locally
-            setPost((prev) => (prev ? { ...prev, views: (prev.views ?? 0) + 1 } : prev));
+        // increment view count (best-effort) - only for API posts, not sample posts
+        if (!isSamplePost) {
+          try {
+            const viewRes = await fetch(`/api/blogs/public/${slug}/view`, { method: "POST" });
+            if (viewRes.ok) {
+              const viewText = await viewRes.text();
+              if (viewText && viewText.trim() !== '') {
+                try {
+                  const viewData = JSON.parse(viewText);
+                  if (viewData.success && viewData.data?.views !== undefined) {
+                    setPost((prev) => (prev ? { ...prev, views: viewData.data.views } : prev));
+                  } else {
+                    // fallback increment locally
+                    setPost((prev) => (prev ? { ...prev, views: (prev.views ?? 0) + 1 } : prev));
+                  }
+                } catch (viewParseError) {
+                  // Silently fail view increment
+                  console.warn("Failed to parse view count:", viewParseError);
+                }
+              }
+            }
+          } catch (viewError) {
+            // Silently fail view increment
+            console.warn("Failed to increment view count:", viewError);
           }
-        } catch (_) {
-          setPost((prev) => (prev ? { ...prev, views: (prev.views ?? 0) + 1 } : prev));
         }
       } catch (err) {
         setError(err.message || "Failed to load blog post");
@@ -233,6 +451,16 @@ export default function BlogDetail() {
 
   const handleLike = async () => {
     if (!post) return;
+    // Check if it's a sample post - don't call API for sample posts
+    const isSamplePost = samplePosts.some(p => p.slug === post.slug);
+    if (isSamplePost) {
+      // Just increment locally for sample posts
+      setPost((prev) =>
+        prev ? { ...prev, likes: (prev.likes ?? 0) + 1 } : prev
+      );
+      return;
+    }
+    
     // optimistic like for snappy UX
     setPost((prev) =>
       prev ? { ...prev, likes: (prev.likes ?? 0) + 1 } : prev
@@ -240,21 +468,48 @@ export default function BlogDetail() {
     try {
       setLikeLoading(true);
       const res = await fetch(`/api/blogs/public/${post?.slug}/like`, { method: "POST" });
-      const data = await res.json();
-      if (res.ok && data.success && data.data?.likes !== undefined) {
-        setPost((prev) => (prev ? { ...prev, likes: data.data.likes } : prev));
-      } else {
-        setPost((prev) => (prev ? { ...prev, likes: (prev.likes ?? 0) + 1 } : prev));
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.trim() !== '') {
+          try {
+            const data = JSON.parse(text);
+            if (data.success && data.data?.likes !== undefined) {
+              setPost((prev) => (prev ? { ...prev, likes: data.data.likes } : prev));
+            }
+          } catch (parseError) {
+            // Silently fail - keep optimistic update
+            console.warn("Failed to parse like response:", parseError);
+          }
+        }
       }
     } catch (_) {
-      setPost((prev) => (prev ? { ...prev, likes: (prev.likes ?? 0) + 1 } : prev));
+      // Silently fail - keep optimistic update
     } finally {
       setLikeLoading(false);
     }
   };
 
+  // Strip HTML tags from content
+  const stripHtmlTags = (html) => {
+    if (!html) return '';
+    // Remove all HTML tags
+    let text = html.replace(/<[^>]*>/g, '');
+    // Decode HTML entities
+    text = text.replace(/&nbsp;/g, ' ');
+    text = text.replace(/&amp;/g, '&');
+    text = text.replace(/&lt;/g, '<');
+    text = text.replace(/&gt;/g, '>');
+    text = text.replace(/&quot;/g, '"');
+    text = text.replace(/&#39;/g, "'");
+    // Clean up multiple spaces and newlines
+    text = text.replace(/\s+/g, ' ').trim();
+    return text;
+  };
+
   const formatMarkdown = (content) => {
-    const lines = content.split("\n");
+    // Strip HTML tags first
+    const cleanContent = stripHtmlTags(content);
+    const lines = cleanContent.split("\n");
     const elements = [];
     let listItems = [];
     let keyIndex = 0;
@@ -298,8 +553,8 @@ export default function BlogDetail() {
             sx={{
               mt: 3,
               mb: 2,
-              fontWeight: 700,
-              color: "#1a1a1a",
+              fontWeight: 800,
+              color: "#0d1b0d",
               fontSize: { xs: "1.4rem", md: "1.6rem" },
             }}
           >
@@ -315,7 +570,7 @@ export default function BlogDetail() {
             component="strong"
             sx={{
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "#0d1b0d",
               display: "block",
               mb: 1.5,
               fontSize: { xs: "1.05rem", md: "1.1rem" },
@@ -334,7 +589,7 @@ export default function BlogDetail() {
             variant="body1"
             sx={{
               mb: 1.5,
-              color: "text.secondary",
+              color: "#4c664c",
               lineHeight: 1.8,
               fontSize: { xs: "1.05rem", md: "1.1rem" },
               fontWeight: 500,
@@ -358,9 +613,9 @@ export default function BlogDetail() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "60vh",
-          bgcolor: "#f9f7f3", // Warm White from palette
+          bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
-            "linear-gradient(135deg, rgba(249, 247, 243, 0.95) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(249, 247, 243, 0.95) 100%)",
+            "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
           position: "relative",
           overflow: "hidden",
           "&::before": {
@@ -371,13 +626,13 @@ export default function BlogDetail() {
             right: 0,
             bottom: 0,
             background:
-              "radial-gradient(circle at 20% 80%, rgba(200, 169, 126, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 115, 85, 0.08) 0%, transparent 50%)", // Accent Gold and Secondary Brown
+              "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
         }}
       >
         <Box sx={{ position: "relative", zIndex: 1 }}>
-          <CircularProgress sx={{ color: "#c8a97e" }} />
+          <CircularProgress sx={{ color: "#13ec13" }} />
         </Box>
       </Box>
     );
@@ -390,9 +645,9 @@ export default function BlogDetail() {
           pt: 0.75,
           pb: 0.75,
           px: 0,
-          bgcolor: "#f9f7f3",
+          bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
-            "linear-gradient(135deg, rgba(249, 247, 243, 0.95) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(249, 247, 243, 0.95) 100%)",
+            "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
         }}
       >
         <Container maxWidth="md" sx={{ py: 8 }}>
@@ -404,9 +659,11 @@ export default function BlogDetail() {
             onClick={() => navigate("/blog")}
             variant="contained"
             sx={{
-              backgroundColor: "#8b7355",
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
               "&:hover": {
-                backgroundColor: "#c8a97e",
+                backgroundColor: "#11d411",
               },
             }}
           >
@@ -506,9 +763,9 @@ export default function BlogDetail() {
           pt: 0.75,
           pb: 0.75,
           px: 0,
-          bgcolor: "#f9f7f3",
+          bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
-            "linear-gradient(135deg, rgba(249, 247, 243, 0.95) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(249, 247, 243, 0.95) 100%)",
+            "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
           position: "relative",
           overflow: "hidden",
           minHeight: "100vh",
@@ -520,17 +777,17 @@ export default function BlogDetail() {
             right: 0,
             bottom: 0,
             background:
-              "radial-gradient(circle at 20% 80%, rgba(200, 169, 126, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 115, 85, 0.08) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
         }}
       >
       <Container
-        maxWidth="xl"
+        maxWidth={false}
         sx={{
           position: "relative",
           zIndex: 1,
-          px: { xs: 1.5, sm: 1.5, md: 1.5 },
+          px: { xs: 0.375, sm: 0.5, md: 0.75 },
           pt: { xs: 0.375, sm: 0.375, md: 0.375 },
         }}
       >
@@ -545,30 +802,36 @@ export default function BlogDetail() {
             onClick={() => navigate("/blog")}
             sx={{
               mt: 0.5,
-              mb: 0.5,
-              backgroundColor: "#c8a97e", // Accent Gold
-              color: "white",
-              fontWeight: 600,
+              mb: 0.75,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
+              px: 3,
+              py: 1,
+              borderRadius: 2,
               outline: "none",
               "&:focus": { outline: "none", boxShadow: "none" },
               "&:focus-visible": { outline: "none", boxShadow: "none" },
               "&:hover": {
-                backgroundColor: "#8b7355", // Secondary Brown
-                color: "white",
+                backgroundColor: "#11d411",
+                transform: "translateY(-2px)",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
               },
+              transition: "all 0.3s ease",
             }}
           >
             Back to Blog
           </Button>
 
           <Paper
-            elevation={3}
+            elevation={0}
             sx={{
               py: { xs: 0.75, sm: 1, md: 1.25 },
               px: { xs: 1.5, sm: 1.5, md: 1.5 },
               borderRadius: { xs: 3, md: 4 },
               background: "#FFFFFF",
-              border: "1px solid rgba(139, 115, 85, 0.2)",
+              border: "1px solid rgba(19, 236, 19, 0.15)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
               overflow: "hidden",
             }}
           >
@@ -602,9 +865,9 @@ export default function BlogDetail() {
                   label={post?.category || "Article"}
                   sx={{
                     mb: 2,
-                    backgroundColor: "#c8a97e",
-                    color: "white",
-                    fontWeight: 600,
+                    backgroundColor: "#13ec13",
+                    color: "#0d1b0d",
+                    fontWeight: 700,
                     fontSize: "0.9rem",
                     px: 1,
                   }}
@@ -612,9 +875,9 @@ export default function BlogDetail() {
               <Typography
                 variant="h3"
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 900,
                   mb: 2,
-                  color: "#1a1a1a",
+                  color: "#0d1b0d",
                   fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.6rem" },
                   lineHeight: 1.2,
                 }}
@@ -631,7 +894,7 @@ export default function BlogDetail() {
                     gap: 2,
                     mb: 3,
                     pb: 2,
-                    borderBottom: "1px solid rgba(139, 115, 85, 0.2)",
+                    borderBottom: "1px solid rgba(19, 236, 19, 0.15)",
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
@@ -645,7 +908,7 @@ export default function BlogDetail() {
                         variant="body2"
                         sx={{
                           fontWeight: 700,
-                          color: "#1a1a1a",
+                          color: "#0d1b0d",
                           fontSize: "0.95rem",
                         }}
                       >
@@ -660,12 +923,12 @@ export default function BlogDetail() {
                         }}
                       >
                         <CalendarToday
-                          sx={{ fontSize: 14, color: "#8b7355" }}
+                          sx={{ fontSize: 14, color: "#13ec13" }}
                         />
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#666666",
+                            color: "#4c664c",
                             fontWeight: 600,
                             fontSize: "0.85rem",
                           }}
@@ -680,12 +943,12 @@ export default function BlogDetail() {
                           ) : "Loading..."}
                         </Typography>
                         <AccessTime
-                          sx={{ fontSize: 14, color: "#8b7355", ml: 1 }}
+                          sx={{ fontSize: 14, color: "#13ec13", ml: 1 }}
                         />
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#666666",
+                            color: "#4c664c",
                             fontWeight: 600,
                             fontSize: "0.85rem",
                           }}
@@ -703,7 +966,7 @@ export default function BlogDetail() {
                       sx={{
                         display: { xs: "none", sm: "flex" },
                         alignItems: "center",
-                        color: "#666666",
+                        color: "#4c664c",
                         fontWeight: 600,
                         mr: 1,
                       }}
@@ -784,11 +1047,11 @@ export default function BlogDetail() {
                       animate={{ scale: [1, 1.12, 1] }}
                       transition={{ duration: 0.25, ease: "easeOut" }}
                       sx={{
-                      borderColor: "#8b7355",
-                      color: "#8b7355",
+                      borderColor: "#13ec13",
+                      color: "#13ec13",
                       fontWeight: 700,
                       ml: { xs: 0, sm: 1 },
-                      "&:hover": { borderColor: "#c8a97e", backgroundColor: "rgba(139, 115, 85, 0.08)" },
+                      "&:hover": { borderColor: "#11d411", backgroundColor: "rgba(19, 236, 19, 0.1)" },
                         "&:focus": { outline: "none" },
                         "&:focus-visible": { outline: "none" },
                       }}
@@ -805,7 +1068,7 @@ export default function BlogDetail() {
                   mb: 4,
                   "& p": {
                     mb: 2,
-                    color: "#666666",
+                    color: "#4c664c",
                     lineHeight: 1.8,
                     fontSize: { xs: "1.05rem", md: "1.1rem" },
                     fontWeight: 500,
@@ -813,8 +1076,8 @@ export default function BlogDetail() {
                   "& h2": {
                     mt: 4,
                     mb: 2,
-                    fontWeight: 700,
-                    color: "#1a1a1a",
+                    fontWeight: 800,
+                    color: "#0d1b0d",
                     fontSize: { xs: "1.5rem", md: "1.75rem" },
                   },
                   "& ul": {
@@ -823,17 +1086,17 @@ export default function BlogDetail() {
                   },
                   "& li": {
                     mb: 1,
-                    color: "#666666",
+                    color: "#4c664c",
                     lineHeight: 1.8,
                   },
                   "& strong": {
                     fontWeight: 700,
-                    color: "#1a1a1a",
+                    color: "#0d1b0d",
                   },
                 }}
               >
                 {post?.content ? formatMarkdown(post.content) : (
-                  <Typography variant="body1" sx={{ color: "#666666", fontStyle: "italic" }}>
+                  <Typography variant="body1" sx={{ color: "#4c664c", fontStyle: "italic" }}>
                     Loading content...
                   </Typography>
                 )}
@@ -844,9 +1107,9 @@ export default function BlogDetail() {
                 <Typography
                   variant="h6"
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     mb: 1.5,
-                    color: "#1a1a1a",
+                    color: "#0d1b0d",
                     fontSize: "1.2rem",
                   }}
                 >
@@ -859,16 +1122,16 @@ export default function BlogDetail() {
                       label={tag}
                       variant="outlined"
                       sx={{
-                        borderColor: "rgba(139, 115, 85, 0.3)",
-                        color: "#8b7355",
-                        fontWeight: 600,
+                        borderColor: "rgba(19, 236, 19, 0.3)",
+                        color: "#13ec13",
+                        fontWeight: 700,
                         "&:hover": {
-                          backgroundColor: "rgba(139, 115, 85, 0.1)",
+                          backgroundColor: "rgba(19, 236, 19, 0.1)",
                         },
                       }}
                     />
                   )) || (
-                    <Typography variant="body2" sx={{ color: "#666666", fontStyle: "italic" }}>
+                    <Typography variant="body2" sx={{ color: "#4c664c", fontStyle: "italic" }}>
                       Loading tags...
                     </Typography>
                   )}
@@ -883,9 +1146,9 @@ export default function BlogDetail() {
                   <Typography
                     variant="h5"
                     sx={{
-                      fontWeight: 700,
+                      fontWeight: 800,
                       mb: 3,
-                      color: "#1a1a1a",
+                      color: "#0d1b0d",
                       fontSize: { xs: "1.4rem", md: "1.6rem" },
                     }}
                   >
@@ -942,9 +1205,9 @@ export default function BlogDetail() {
                                 size="small"
                                 sx={{
                                   mb: 1,
-                                  backgroundColor: "#c8a97e",
-                                  color: "white",
-                                  fontWeight: 600,
+                                  backgroundColor: "#13ec13",
+                                  color: "#0d1b0d",
+                                  fontWeight: 700,
                                   fontSize: "0.75rem",
                                   alignSelf: "flex-start",
                                 }}
@@ -952,9 +1215,9 @@ export default function BlogDetail() {
                               <Typography
                                 variant="h6"
                                 sx={{
-                                  fontWeight: 700,
+                                  fontWeight: 800,
                                   mb: 1,
-                                  color: "#1a1a1a",
+                                  color: "#0d1b0d",
                                   fontSize: "1.1rem",
                                   lineHeight: 1.3,
                                   display: "-webkit-box",
@@ -969,7 +1232,7 @@ export default function BlogDetail() {
                                 variant="body2"
                                 sx={{
                                   mb: 2,
-                                  color: "#666666",
+                                  color: "#4c664c",
                                   lineHeight: 1.6,
                                   display: "-webkit-box",
                                   WebkitLineClamp: 2,
@@ -981,9 +1244,10 @@ export default function BlogDetail() {
                               </Typography>
                               <Button
                                 endIcon={<ArrowForward />}
+                                onClick={() => navigate(`/blog/${relatedPost.slug}`)}
                                 sx={{
-                                  color: "#8b7355",
-                                  fontWeight: 600,
+                                  color: "#13ec13",
+                                  fontWeight: 700,
                                   alignSelf: "flex-start",
                                   justifyContent: "flex-start",
                                   px: 0,
@@ -991,7 +1255,7 @@ export default function BlogDetail() {
                                   "&:focus-visible": { outline: "none", boxShadow: "none" },
                                   "&:hover": {
                                     backgroundColor: "transparent",
-                                    color: "#c8a97e",
+                                    color: "#11d411",
                                   },
                                 }}
                               >
@@ -1012,7 +1276,7 @@ export default function BlogDetail() {
                   mt: 5,
                   p: 3,
                   background:
-                    "linear-gradient(135deg, #c8a97e, #8b7355)",
+                    "linear-gradient(135deg, #13ec13, #11d411)",
                   borderRadius: 3,
                   textAlign: "center",
                 }}
@@ -1020,34 +1284,37 @@ export default function BlogDetail() {
                 <Typography
                   variant="h5"
                   sx={{
-                    fontWeight: 700,
+                    fontWeight: 800,
                     mb: 2,
-                    color: "white",
+                    color: "#0d1b0d",
                     fontSize: { xs: "1.3rem", md: "1.5rem" },
                   }}
                 >
-                  Ready to Experience Your Own Safari Adventure?
+                  Ready to Transform Your Agribusiness?
                 </Typography>
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={() => navigate("/plan")}
+                  onClick={() => navigate("/contact")}
                   sx={{
-                    backgroundColor: "white",
-                    color: "#1a1a1a",
+                    backgroundColor: "#0d1b0d",
+                    color: "#13ec13",
                     fontWeight: 700,
                     px: 4,
                     py: 1.5,
+                    borderRadius: 2,
                     outline: "none",
                     "&:focus": { outline: "none", boxShadow: "none" },
                     "&:focus-visible": { outline: "none", boxShadow: "none" },
                     "&:hover": {
-                      backgroundColor: "#f9f7f3",
-                      color: "#1a1a1a",
+                      backgroundColor: "#0a150a",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(13, 27, 13, 0.3)",
                     },
+                    transition: "all 0.3s ease",
                   }}
                 >
-                  Plan Your Safari
+                  Contact MK
                 </Button>
               </Box>
             </Box>

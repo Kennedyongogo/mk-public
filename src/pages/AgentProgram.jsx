@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -8,6 +9,17 @@ import {
   Card,
   Chip,
   Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import {
   Architecture,
@@ -21,8 +33,11 @@ import {
   Payments,
   FactCheck,
   ArrowForward,
+  Close,
+  Send,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 
 const MotionBox = motion(Box);
 
@@ -89,7 +104,196 @@ const services = [
   },
 ];
 
+// Helper function to create slug from title
+const createSlugFromTitle = (title) => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+};
+
 export default function AgentProgram() {
+  const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openContactDialog, setOpenContactDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    projectType: "",
+    location: "",
+    scaleOfOperation: "",
+    expectedOutcomes: "",
+  });
+  const [contactFormData, setContactFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    serviceType: "",
+    message: "",
+  });
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleContactInputChange = (field, value) => {
+    setContactFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData({
+      projectType: "",
+      location: "",
+      scaleOfOperation: "",
+      expectedOutcomes: "",
+    });
+  };
+
+  const handleOpenContactDialog = () => {
+    setOpenContactDialog(true);
+  };
+
+  const handleCloseContactDialog = () => {
+    setOpenContactDialog(false);
+    setContactFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      serviceType: "",
+      message: "",
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!formData.projectType || !formData.location || !formData.scaleOfOperation || !formData.expectedOutcomes) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in all required fields.",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/quote", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit quote request");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Quote Request Submitted!",
+        text: "Thank you for your interest. We'll prepare a detailed proposal and get back to you soon.",
+        confirmButtonColor: "#13ec13",
+      });
+
+      handleCloseDialog();
+    } catch (err) {
+      console.error("Error submitting quote request:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err.message || "Please try again later.",
+        confirmButtonColor: "#13ec13",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!contactFormData.fullName || !contactFormData.email || !contactFormData.message) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in all required fields (Full Name, Email, and Message).",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactFormData.email)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Email",
+        text: "Please enter a valid email address.",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    setContactLoading(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(contactFormData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to send message");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Message Sent!",
+        text: "Thank you for contacting us. We'll get back to you soon.",
+        confirmButtonColor: "#13ec13",
+      });
+
+      handleCloseContactDialog();
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err.message || "Please try again later.",
+        confirmButtonColor: "#13ec13",
+      });
+    } finally {
+      setContactLoading(false);
+    }
+  };
+
   // Detect when hero section is visible and notify header (similar to HeroSection)
   useEffect(() => {
     const heroSection = document.getElementById("services-hero-section");
@@ -351,7 +555,12 @@ export default function AgentProgram() {
                     {service.description}
                   </Typography>
                   <Link
-                    href="#"
+                    component="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const slug = createSlugFromTitle(service.title);
+                      navigate(`/service/${slug}`);
+                    }}
                     sx={{
                       color: "#0fbd0f",
                       fontSize: "0.875rem",
@@ -360,6 +569,10 @@ export default function AgentProgram() {
                       alignItems: "center",
                       gap: 0.5,
                       textDecoration: "none",
+                      cursor: "pointer",
+                      border: "none",
+                      background: "none",
+                      padding: 0,
                       "&:hover": {
                         textDecoration: "underline",
                       },
@@ -429,6 +642,7 @@ export default function AgentProgram() {
               >
                 <Button
                   variant="contained"
+                  onClick={handleOpenDialog}
                   sx={{
                     bgcolor: "#0fbd0f",
                     color: "white",
@@ -455,6 +669,7 @@ export default function AgentProgram() {
                 </Button>
                 <Button
                   variant="outlined"
+                  onClick={handleOpenContactDialog}
                   sx={{
                     borderColor: "#0fbd0f",
                     borderWidth: 2,
@@ -487,6 +702,577 @@ export default function AgentProgram() {
         </Container>
       </Box>
 
+      {/* Quote Request Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            maxWidth: "600px",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: "#0d1b0d",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 2,
+            px: 3,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            }}
+          >
+            Request a Quote
+          </Typography>
+          <IconButton
+            onClick={handleCloseDialog}
+            sx={{
+              color: "white",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            backgroundColor: "#f6f8f6",
+          }}
+        >
+          <Box 
+            component="form" 
+            onSubmit={handleSubmit} 
+            id="quote-form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2.5,
+              width: "100%",
+            }}
+          >
+            {/* Type of Project */}
+            <FormControl fullWidth sx={{ width: "100%", mt: 1 }}>
+              <InputLabel
+                sx={{
+                  "&.Mui-focused": {
+                    color: "#13ec13",
+                  },
+                }}
+              >
+                Type of Project *
+              </InputLabel>
+              <Select
+                value={formData.projectType}
+                onChange={(e) => handleInputChange("projectType", e.target.value)}
+                label="Type of Project *"
+                required
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(0, 0, 0, 0.23)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                }}
+              >
+                <MenuItem value="Crop">Crop</MenuItem>
+                <MenuItem value="Livestock">Livestock</MenuItem>
+                <MenuItem value="BSF">BSF (Black Soldier Fly)</MenuItem>
+                <MenuItem value="Mixed Farming">Mixed Farming</MenuItem>
+                <MenuItem value="Aquaculture">Aquaculture</MenuItem>
+                <MenuItem value="Agro-processing">Agro-processing</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Location */}
+            <TextField
+              fullWidth
+              label="Location"
+              required
+              value={formData.location}
+              onChange={(e) => handleInputChange("location", e.target.value)}
+              placeholder="Enter project location (e.g., Nairobi, Kiambu County)"
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Scale of Operation */}
+            <FormControl fullWidth sx={{ width: "100%" }}>
+              <InputLabel
+                sx={{
+                  "&.Mui-focused": {
+                    color: "#13ec13",
+                  },
+                }}
+              >
+                Scale of Operation *
+              </InputLabel>
+              <Select
+                value={formData.scaleOfOperation}
+                onChange={(e) => handleInputChange("scaleOfOperation", e.target.value)}
+                label="Scale of Operation *"
+                required
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(0, 0, 0, 0.23)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                }}
+              >
+                <MenuItem value="Small Scale">Small Scale (1-10 hectares/units)</MenuItem>
+                <MenuItem value="Medium Scale">Medium Scale (10-50 hectares/units)</MenuItem>
+                <MenuItem value="Large Scale">Large Scale (50+ hectares/units)</MenuItem>
+                <MenuItem value="Commercial">Commercial Enterprise</MenuItem>
+                <MenuItem value="Industrial">Industrial Scale</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Expected Outcomes */}
+            <TextField
+              fullWidth
+              label="Expected Outcomes"
+              multiline
+              rows={5}
+              required
+              value={formData.expectedOutcomes}
+              onChange={(e) => handleInputChange("expectedOutcomes", e.target.value)}
+              placeholder="Describe your project goals, expected results, and any specific requirements..."
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            pt: 0,
+            backgroundColor: "#f6f8f6",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={handleCloseDialog}
+            sx={{
+              mr: 2,
+              px: 3,
+              py: 1,
+              color: "#666",
+              textTransform: "none",
+              fontWeight: 600,
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.05)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="quote-form"
+            variant="contained"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Send />}
+            sx={{
+              px: 4,
+              py: 1,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
+              textTransform: "none",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "#11d411",
+                boxShadow: "0 6px 16px rgba(17, 212, 17, 0.4)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:disabled": {
+                backgroundColor: "#ccc",
+                color: "white",
+              },
+            }}
+          >
+            {loading ? "Submitting..." : "Request Quote"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Contact Dialog */}
+      <Dialog
+        open={openContactDialog}
+        onClose={handleCloseContactDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            maxWidth: "600px",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: "#0d1b0d",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 2,
+            px: 3,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            }}
+          >
+            Contact Us
+          </Typography>
+          <IconButton
+            onClick={handleCloseContactDialog}
+            sx={{
+              color: "white",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            backgroundColor: "#f6f8f6",
+          }}
+        >
+          <Box 
+            component="form" 
+            onSubmit={handleContactSubmit} 
+            id="contact-form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2.5,
+              width: "100%",
+            }}
+          >
+            {/* Full Name */}
+            <TextField
+              fullWidth
+              label="Full Name"
+              required
+              value={contactFormData.fullName}
+              onChange={(e) => handleContactInputChange("fullName", e.target.value)}
+              sx={{
+                width: "100%",
+                mt: 1,
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Email */}
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              required
+              value={contactFormData.email}
+              onChange={(e) => handleContactInputChange("email", e.target.value)}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Phone Number */}
+            <TextField
+              fullWidth
+              label="Phone Number"
+              type="tel"
+              value={contactFormData.phone}
+              onChange={(e) => handleContactInputChange("phone", e.target.value)}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Type of Service */}
+            <FormControl fullWidth sx={{ width: "100%" }}>
+              <InputLabel
+                sx={{
+                  "&.Mui-focused": {
+                    color: "#13ec13",
+                  },
+                }}
+              >
+                Type of Service Interested In
+              </InputLabel>
+              <Select
+                value={contactFormData.serviceType}
+                onChange={(e) => handleContactInputChange("serviceType", e.target.value)}
+                label="Type of Service Interested In"
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(0, 0, 0, 0.23)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                }}
+              >
+                <MenuItem value="Project Design & Development">Project Design & Development</MenuItem>
+                <MenuItem value="BSF Training & Setup">BSF Training & Setup</MenuItem>
+                <MenuItem value="Proposal Writing">Proposal Writing</MenuItem>
+                <MenuItem value="Farm Consultation">Farm Consultation</MenuItem>
+                <MenuItem value="Agribusiness Planning">Agribusiness Planning</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Message */}
+            <TextField
+              fullWidth
+              label="Message"
+              multiline
+              rows={5}
+              required
+              value={contactFormData.message}
+              onChange={(e) => handleContactInputChange("message", e.target.value)}
+              placeholder="Tell us about your agribusiness needs..."
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            pt: 0,
+            backgroundColor: "#f6f8f6",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={handleCloseContactDialog}
+            sx={{
+              mr: 2,
+              px: 3,
+              py: 1,
+              color: "#666",
+              textTransform: "none",
+              fontWeight: 600,
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.05)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="contact-form"
+            variant="contained"
+            disabled={contactLoading}
+            startIcon={contactLoading ? <CircularProgress size={20} color="inherit" /> : <Send />}
+            sx={{
+              px: 4,
+              py: 1,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
+              textTransform: "none",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "#11d411",
+                boxShadow: "0 6px 16px rgba(17, 212, 17, 0.4)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:disabled": {
+                backgroundColor: "#ccc",
+                color: "white",
+              },
+            }}
+          >
+            {contactLoading ? "Sending..." : "Send Message"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

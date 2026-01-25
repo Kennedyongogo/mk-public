@@ -73,7 +73,7 @@ export default function KeyServicesSection() {
     <Box
       sx={{
         pt: 0,
-        pb: { xs: 6, md: 10 },
+        pb: 0,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
       }}
     >

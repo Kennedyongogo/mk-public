@@ -5,10 +5,9 @@ import {
   Grid,
   Typography,
   Stack,
-  Divider,
   Card,
 } from "@mui/material";
-import { LocationOn, Email, Phone } from "@mui/icons-material";
+import { LocationOn, Email, Phone, Language } from "@mui/icons-material";
 
 export default function ContactSection() {
   return (
@@ -16,49 +15,53 @@ export default function ContactSection() {
       id="contact-section"
       sx={{
         position: "relative",
-        pt: { xs: 0, sm: 0, md: 0 },
-        pb: { xs: 1, sm: 1.5, md: 2 },
+        pt: 0,
+        pb: { xs: 0.5, sm: 0.75, md: 1 },
         px: 0,
-        background: "#FFFFFF",
+        background: "rgba(255, 255, 255, 0.5)",
       }}
     >
       <Card
         sx={{
           mx: { xs: 0.75, sm: 0.75, md: 0.75 },
+          mt: 0.75,
+          mb: 0.2,
           borderRadius: { xs: 3, md: 4 },
           background: "#FFFFFF",
-          border: "1px solid rgba(139, 115, 85, 0.2)",
+          border: "1px solid rgba(15, 189, 15, 0.15)",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           overflow: "hidden",
         }}
       >
         <Container
-          maxWidth="xl"
+          maxWidth={false}
+          disableGutters
           sx={{
-            px: { xs: 0.75, sm: 1.5, md: 1.5 },
-            pt: { xs: 0, sm: 0, md: 0 },
+            px: 0,
+            width: "100%",
           }}
         >
           <Box
             sx={{
-              py: { xs: 0.75, sm: 1, md: 1.25 },
+              py: { xs: 2, sm: 2.5, md: 3 },
               width: "100%",
               boxSizing: "border-box",
             }}
           >
-            <Stack spacing={{ xs: 2.5, md: 3.5 }}>
+            <Stack spacing={1}>
               <Stack
-                spacing={1}
+                spacing={0.75}
                 alignItems="center"
                 textAlign="center"
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", px: 1 }}
               >
                 <Typography
                   variant="overline"
                   sx={{
                     letterSpacing: 2,
-                    color: "#c8a97e",
+                    color: "#13ec13",
                     fontWeight: 700,
+                    fontSize: "0.875rem",
                   }}
                 >
                   Get in touch
@@ -66,103 +69,240 @@ export default function ContactSection() {
                 <Typography
                   variant="h4"
                   sx={{
-                    fontWeight: 800,
-                    color: "#1a1a1a",
+                    fontWeight: 900,
+                    color: "#0d1b0d",
                     lineHeight: 1.2,
-                    whiteSpace: "nowrap",
-                    fontSize: { xs: "1.25rem", sm: "1.5rem", md: "2.125rem" },
+                    fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.75rem" },
                   }}
                 >
-                  Plan your next adventure with us
+                  Start Your <span style={{ color: "#13ec13" }}>Agricultural Journey</span> with Us
                 </Typography>
                 <Typography
                   variant="body1"
                   sx={{
-                    color: "#1a1a1a",
-                    lineHeight: 1.6,
-                    maxWidth: 720,
-                    fontSize: "1.3rem",
+                    color: "#4c664c",
+                    lineHeight: 1.7,
+                    maxWidth: 800,
+                    fontSize: { xs: "1rem", md: "1.125rem" },
+                    mb: 2,
                   }}
                 >
-                  Tell us what you would like to experience and we will tailor a
-                  safari that matches your travel style, group size, and dates.
+                  Whether you're looking to optimize your current farm operations or start a 
+                  new sustainable project, our team is ready to guide you every step of the way.
                 </Typography>
+              </Stack>
 
-                <Grid container spacing={1.5} sx={{ width: "100%" }}>
-                  {[
-                    {
-                      icon: <Phone sx={{ fontSize: 18 }} />,
-                      label: "Call us",
-                      value: "+254 731 913293",
-                      color: "#8b7355",
-                    },
-                    {
-                      icon: <Email sx={{ fontSize: 18 }} />,
-                      label: "Email",
-                      value: "info@akirasafaris.co.ke",
-                      color: "#c8a97e",
-                    },
-                    {
-                      icon: <LocationOn sx={{ fontSize: 18 }} />,
-                      label: "Postal Address:",
-                      value: "P.O. Box 42886–00100\nNairobi, Kenya",
-                      color: "#8b7355",
-                    },
-                    {
-                      icon: <Phone sx={{ fontSize: 18 }} />,
-                      label: "Alternative Contacts:",
-                      value:
-                        "+254 721 913 293\n+254 726 913 872\n+254 739 611 948",
-                      color: "#8b7355",
-                    },
-                  ].map((item) => (
-                    <Grid size={{ xs: 6, md: 3 }} key={item.label} sx={{ display: "flex" }}>
-                      <Stack
-                        direction="column"
-                        spacing={{ xs: 0.75, md: 0.5 }}
-                        alignItems="center"
-                        justifyContent="center"
+              <Box 
+                sx={{ 
+                  display: "flex", 
+                  flexDirection: "row",
+                  gap: 2,
+                  width: "100%",
+                  boxSizing: "border-box",
+                  px: { xs: 1, sm: 1, md: 1 },
+                }}
+              >
+                {[
+                  {
+                    icon: <Phone sx={{ fontSize: 20 }} />,
+                    label: "Phone/WhatsApp",
+                    value: "+254 769963782",
+                    color: "#13ec13",
+                  },
+                  {
+                    icon: <Email sx={{ fontSize: 20 }} />,
+                    label: "Email",
+                    value: "mkagribusinessconsultants@gmail.com",
+                    color: "#0d1b0d",
+                  },
+                  {
+                    icon: <LocationOn sx={{ fontSize: 20 }} />,
+                    label: "Location",
+                    value: "Nairobi, Kenya",
+                    color: "#13ec13",
+                  },
+                  {
+                    icon: <Language sx={{ fontSize: 20 }} />,
+                    label: "Website",
+                    value: "www.mkagribusinessconsultancy.com",
+                    color: "#0d1b0d",
+                  },
+                ].map((item) => (
+                  <Box
+                    key={item.label}
+                    sx={{
+                      flex: "1 1 0",
+                      minWidth: 0,
+                      p: 3,
+                      borderRadius: 4,
+                      background: item.color === "#13ec13" 
+                        ? "rgba(19, 236, 19, 0.04)" 
+                        : "rgba(13, 27, 13, 0.04)",
+                      border: `1px solid ${item.color}15`,
+                      transition: "all 0.35s ease",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: "180px",
+                      boxSizing: "border-box",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0 12px 30px rgba(0,0,0,0.08)",
+                        borderColor: `${item.color}40`,
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "12px",
+                        background: item.color,
+                        color: "white",
+                        boxShadow: `0 8px 20px ${item.color}33`,
+                        mb: 1.5,
+                      }}
+                    >
+                      {item.icon}
+                    </Box>
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography
+                        variant="subtitle2"
                         sx={{
-                          p: { xs: 0.5, sm: 0.75, md: 0.75 },
-                          borderRadius: 3,
-                          background: `linear-gradient(135deg, ${item.color}12, ${item.color}28)`,
-                          border: `1px solid ${item.color}33`,
-                          boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
-                          transition: "all 0.35s ease",
-                          width: "100%",
-                          height: "100%",
-                          boxSizing: "border-box",
-                          "&:hover": {
-                            transform: "translateY(-4px) scale(1.01)",
-                            boxShadow: "0 16px 34px rgba(0,0,0,0.16)",
-                            borderColor: `${item.color}66`,
-                          },
+                          fontWeight: 800,
+                          color: "#0d1b0d",
+                          textTransform: "uppercase",
+                          letterSpacing: 1,
+                          fontSize: "0.75rem",
+                          mb: 0.5,
                         }}
                       >
+                        {item.label}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#4c664c",
+                          lineHeight: 1.4,
+                          fontWeight: 600,
+                          fontSize: "0.95rem",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {item.value}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+
+                {/* <Box 
+                  sx={{ 
+                    display: "flex", 
+                    flexDirection: { xs: "column", sm: "row" }, 
+                    flexWrap: { xs: "nowrap", sm: "wrap", md: "nowrap" },
+                    gap: 2,
+                    width: "100%",
+                    justifyContent: "center",
+                    boxSizing: "border-box",
+                    px: { xs: 0, sm: 0, md: 0 },
+                  }}
+                >
+                  {[
+                    {
+                      icon: <Phone sx={{ fontSize: 20 }} />,
+                      label: "Phone/WhatsApp",
+                      value: "+254 769963782",
+                      color: "#13ec13",
+                    },
+                    {
+                      icon: <Email sx={{ fontSize: 20 }} />,
+                      label: "Email",
+                      value: "mkagribusinessconsultants@gmail.com",
+                      color: "#0d1b0d",
+                    },
+                    {
+                      icon: <LocationOn sx={{ fontSize: 20 }} />,
+                      label: "Location",
+                      value: "Nairobi, Kenya",
+                      color: "#13ec13",
+                    },
+                    {
+                      icon: <Language sx={{ fontSize: 20 }} />,
+                      label: "Website",
+                      value: "www.mkagribusinessconsultancy.com",
+                      color: "#0d1b0d",
+                    },
+                  ].map((item) => (
+                    <Box
+                      key={item.label}
+                      sx={{
+                        flex: { 
+                          xs: "1 1 100%", 
+                          sm: "0 0 calc(50% - 8px)", 
+                          md: "0 0 calc(25% - 12px)" 
+                        },
+                        minWidth: 0,
+                        maxWidth: { 
+                          xs: "100%", 
+                          sm: "calc(50% - 8px)", 
+                          md: "calc(25% - 12px)" 
+                        },
+                        width: { 
+                          xs: "100%", 
+                          sm: "calc(50% - 8px)", 
+                          md: "calc(25% - 12px)" 
+                        },
+                        p: 3,
+                        borderRadius: 4,
+                        background: item.color === "#13ec13" 
+                          ? "rgba(19, 236, 19, 0.04)" 
+                          : "rgba(13, 27, 13, 0.04)",
+                        border: `1px solid ${item.color}15`,
+                        transition: "all 0.35s ease",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minHeight: "180px",
+                        boxSizing: "border-box",
+                        "&:hover": {
+                          transform: "translateY(-5px)",
+                          boxShadow: "0 12px 30px rgba(0,0,0,0.08)",
+                          borderColor: `${item.color}40`,
+                        },
+                      }}
+                    >
                       <Box
                         sx={{
-                          width: 32,
-                          height: 32,
+                          width: 44,
+                          height: 44,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           borderRadius: "12px",
-                          background: "rgba(255,255,255,0.85)",
-                          color: item.color,
-                          boxShadow: `0 6px 18px ${item.color}33`,
+                          background: item.color,
+                          color: "white",
+                          boxShadow: `0 8px 20px ${item.color}33`,
+                          mb: 1.5,
                         }}
                       >
                         {item.icon}
                       </Box>
-                      <Box sx={{ textAlign: "center", width: "100%" }}>
+                      <Box sx={{ textAlign: "center" }}>
                         <Typography
                           variant="subtitle2"
                           sx={{
-                            fontWeight: 900,
-                            color: "#1a1a1a",
-                            letterSpacing: 0.15,
-                            textAlign: "center",
-                            fontSize: "1.05rem",
+                            fontWeight: 800,
+                            color: "#0d1b0d",
+                            textTransform: "uppercase",
+                            letterSpacing: 1,
+                            fontSize: "0.75rem",
+                            mb: 0.5,
                           }}
                         >
                           {item.label}
@@ -170,22 +310,19 @@ export default function ContactSection() {
                         <Typography
                           variant="body2"
                           sx={{
-                            color: "#1a1a1a",
-                            lineHeight: 1.3,
-                            fontWeight: 700,
-                            textAlign: "center",
-                            whiteSpace: "pre-line",
-                            fontSize: "1rem",
+                            color: "#4c664c",
+                            lineHeight: 1.4,
+                            fontWeight: 600,
+                            fontSize: "0.95rem",
+                            wordBreak: "break-word",
                           }}
                         >
                           {item.value}
                         </Typography>
                       </Box>
-                    </Stack>
-                    </Grid>
+                    </Box>
                   ))}
-                </Grid>
-              </Stack>
+                </Box> */}
             </Stack>
           </Box>
         </Container>

@@ -93,7 +93,7 @@ export default function Footer() {
     <Box
       component="footer"
       sx={{
-        background: "#f9f7f3",
+        background: "#0d1b0d",
         pt: { xs: 0, sm: 0, md: 0 },
         pb: 0.4,
         mt: "auto",
@@ -171,14 +171,14 @@ export default function Footer() {
                           sx={{
                             fontWeight: 700,
                             background:
-                              "linear-gradient(45deg, #8b7355, #1a1a1a)", // Secondary Brown to Primary Black
+                              "linear-gradient(45deg, #13ec13, #ffffff)", // Green to White
                             backgroundClip: "text",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
                             fontSize: { xs: "1.1rem", sm: "1.5rem" },
                           }}
                         >
-                          Akira Safaris
+                          Mk agribusiness consultants
                         </Typography>
                       </Box>
 
@@ -188,35 +188,33 @@ export default function Footer() {
                           sx={{
                             mb: { xs: 0.5, sm: 1 },
                             fontWeight: 600,
-                            color: "#c8a97e", // Accent Gold
+                            color: "#13ec13", // Green
                             fontSize: { xs: "1rem", sm: "1.25rem" },
                           }}
                         >
-                          Experience the Magic of Africa.
+                          Ready to Transform Your Farm?
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={{
                             mb: 0.5,
                             lineHeight: 1.6,
-                            color: "#1a1a1a",
+                            color: "rgba(255, 255, 255, 0.7)",
                             fontSize: { xs: "1.1rem", sm: "1.2rem" },
                           }}
                         >
-                          Akira Safaris opens the door to Africa's awe-inspiring
-                          beauty,
+                          Connect with our specialists today to take your
                         </Typography>
                         <Typography
                           variant="body1"
                           sx={{
                             mb: { xs: 1, sm: 1.5 },
                             lineHeight: 1.6,
-                            color: "#1a1a1a",
+                            color: "rgba(255, 255, 255, 0.7)",
                             fontSize: { xs: "1.1rem", sm: "1.2rem" },
                           }}
                         >
-                          wonders, and hidden treasures. Creating transformative
-                          journeys across this extraordinary continent.
+                          agribusiness to the next level of profitability and sustainability.
                         </Typography>
                       </Box>
 
@@ -230,47 +228,47 @@ export default function Footer() {
                         }}
                       >
                         <Chip
-                          label="Wildlife"
+                          label="Sustainability"
                           size="small"
                           sx={{
                             background:
-                              "linear-gradient(45deg, #8b7355, #c8a97e)", // Secondary Brown to Accent Gold
+                              "linear-gradient(45deg, #13ec13, #0d1b0d)",
                             color: "white",
                             fontWeight: 600,
                             fontSize: { xs: "0.7rem", sm: "0.75rem" },
                             "&:hover": {
                               transform: "scale(1.05)",
-                              boxShadow: "0 4px 12px rgba(139, 115, 85, 0.4)",
+                              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.4)",
                             },
                           }}
                         />
                         <Chip
-                          label="Adventure"
+                          label="Innovation"
                           size="small"
                           sx={{
                             background:
-                              "linear-gradient(45deg, #c8a97e, #8b7355)", // Accent Gold to Secondary Brown
+                              "linear-gradient(45deg, #0d1b0d, #13ec13)",
                             color: "white",
                             fontWeight: 600,
                             fontSize: { xs: "0.7rem", sm: "0.75rem" },
                             "&:hover": {
                               transform: "scale(1.05)",
-                              boxShadow: "0 4px 12px rgba(200, 169, 126, 0.4)",
+                              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.4)",
                             },
                           }}
                         />
                         <Chip
-                          label="Safari Tours"
+                          label="Profitability"
                           size="small"
                           sx={{
                             background:
-                              "linear-gradient(45deg, #8b7355, #c8a97e)", // Secondary Brown to Accent Gold
+                              "linear-gradient(45deg, #13ec13, #0d1b0d)",
                             color: "white",
                             fontWeight: 600,
                             fontSize: { xs: "0.7rem", sm: "0.75rem" },
                             "&:hover": {
                               transform: "scale(1.05)",
-                              boxShadow: "0 4px 12px rgba(139, 115, 85, 0.4)",
+                              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.4)",
                             },
                           }}
                         />
@@ -283,7 +281,7 @@ export default function Footer() {
                           sx={{
                             mb: { xs: 0.5, sm: 1 },
                             fontWeight: 600,
-                            color: "#1a1a1a",
+                            color: "white",
                             fontSize: { xs: "1rem", sm: "1.25rem" },
                           }}
                         >
@@ -327,9 +325,9 @@ export default function Footer() {
                               aria-label={social.label}
                               onClick={() => handleSocialClick(social.label)}
                               sx={{
-                                color: social.color,
-                                background: "rgba(0,0,0,0.05)",
-                                border: "1px solid rgba(0,0,0,0.1)",
+                                color: "rgba(255, 255, 255, 0.8)",
+                                background: "rgba(19, 236, 19, 0.05)",
+                                border: "1px solid rgba(19, 236, 19, 0.1)",
                                 transition:
                                   "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                                 outline: "none",
@@ -342,6 +340,7 @@ export default function Footer() {
                                 "&:hover": {
                                   background: social.color,
                                   color: "white",
+                                  border: `1px solid ${social.color}`,
                                   transform: "translateY(-3px) scale(1.1)",
                                   boxShadow: `0 8px 25px ${social.color}40`,
                                 },
@@ -374,7 +373,7 @@ export default function Footer() {
                         sx={{
                           fontWeight: 700,
                           background:
-                            "linear-gradient(45deg, #8b7355, #1a1a1a)", // Secondary Brown to Primary Black
+                            "linear-gradient(45deg, #13ec13, #ffffff)", // Green to White
                           backgroundClip: "text",
                           WebkitBackgroundClip: "text",
                           WebkitTextFillColor: "transparent",
@@ -421,9 +420,9 @@ export default function Footer() {
                             aria-label={social.label}
                             onClick={() => handleSocialClick(social.label)}
                             sx={{
-                              color: social.color,
-                              background: "rgba(0,0,0,0.05)",
-                              border: "1px solid rgba(0,0,0,0.1)",
+                              color: "rgba(255, 255, 255, 0.8)",
+                              background: "rgba(19, 236, 19, 0.05)",
+                              border: "1px solid rgba(19, 236, 19, 0.1)",
                               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                               outline: "none",
                               "&:focus": {
@@ -435,6 +434,7 @@ export default function Footer() {
                               "&:hover": {
                                 background: social.color,
                                 color: "white",
+                                border: `1px solid ${social.color}`,
                                 transform: "translateY(-3px) scale(1.1)",
                                 boxShadow: `0 8px 25px ${social.color}40`,
                               },
@@ -478,21 +478,21 @@ export default function Footer() {
                     <Typography
                       variant="body1"
                       sx={{
-                        color: "#1a1a1a",
+                        color: "rgba(255, 255, 255, 0.7)",
                         fontWeight: 500,
                         fontSize: { xs: "0.85rem", sm: "0.95rem" },
                       }}
                     >
-                      © {new Date().getFullYear()} Akira Safaris. All rights
+                      © {new Date().getFullYear()} Mk agribusiness consultants. All rights
                       reserved.
                     </Typography>
                     <Box
                       sx={{
                         py: { xs: 0.15, sm: 0.18 },
                         px: { xs: 0.45, sm: 0.5 },
-                        background: "rgba(128, 128, 128, 0.15)", // subtle grey
+                        background: "rgba(255, 255, 255, 0.1)", // subtle white
                         backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(128, 128, 128, 0.35)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
                         borderRadius: "12px",
                         textAlign: "center",
                         minWidth: "auto",
@@ -500,7 +500,7 @@ export default function Footer() {
                         cursor: "pointer",
                         transition: "all 0.25s ease",
                         "&:hover": {
-                          background: "rgba(128, 128, 128, 0.25)",
+                          background: "rgba(255, 255, 255, 0.2)",
                           boxShadow: "0 10px 32px rgba(0, 0, 0, 0.16)",
                           backdropFilter: "blur(14px)",
                           transform: "translateY(-2px)",
@@ -510,7 +510,7 @@ export default function Footer() {
                       <Typography
                         variant="body2"
                         sx={{
-                          color: "#1a1a1a",
+                          color: "white",
                           fontWeight: 700,
                           fontSize: { xs: "0.78rem", sm: "0.9rem" },
                         }}

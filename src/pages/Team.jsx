@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -9,6 +9,17 @@ import {
   CardContent,
   Grid,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
 import {
   RocketLaunch,
@@ -25,10 +36,109 @@ import {
   LocationOn,
   Public,
   Share,
+  Close,
+  Send,
 } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 export default function Team() {
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    serviceType: "",
+    message: "",
+  });
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      serviceType: "",
+      message: "",
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (!formData.fullName || !formData.email || !formData.message) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in all required fields (Full Name, Email, and Message).",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Email",
+        text: "Please enter a valid email address.",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to send message");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Message Sent!",
+        text: "Thank you for contacting us. We'll get back to you soon.",
+        confirmButtonColor: "#13ec13",
+      });
+
+      handleCloseDialog();
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err.message || "Please try again later.",
+        confirmButtonColor: "#13ec13",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -169,6 +279,7 @@ export default function Team() {
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center" }}>
                   <Button
                     variant="contained"
+                    onClick={() => navigate("/agent-program")}
                     sx={{
                       bgcolor: "#11d411",
                       color: "white",
@@ -811,6 +922,7 @@ export default function Team() {
               >
                 <Button
                   variant="contained"
+                  onClick={handleOpenDialog}
                   sx={{
                     bgcolor: "white",
                     color: "#11d411",
@@ -835,6 +947,7 @@ export default function Team() {
                 </Button>
                 <Button
                   variant="outlined"
+                  onClick={() => navigate("/projects")}
                   sx={{
                     borderColor: "rgba(255, 255, 255, 0.3)",
                     color: "white",
@@ -866,6 +979,297 @@ export default function Team() {
         </Container>
       </Box>
       </Card>
+
+      {/* Contact Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            maxWidth: "600px",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: "#0d1b0d",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 2,
+            px: 3,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            }}
+          >
+            Contact Us
+          </Typography>
+          <IconButton
+            onClick={handleCloseDialog}
+            sx={{
+              color: "white",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            backgroundColor: "#f6f8f6",
+          }}
+        >
+          <Box 
+            component="form" 
+            onSubmit={handleSubmit} 
+            id="contact-form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2.5,
+              width: "100%",
+            }}
+          >
+            {/* Full Name */}
+            <TextField
+              fullWidth
+              label="Full Name"
+              required
+              value={formData.fullName}
+              onChange={(e) => handleInputChange("fullName", e.target.value)}
+              sx={{
+                width: "100%",
+                mt: 1,
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Email */}
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Phone Number */}
+            <TextField
+              fullWidth
+              label="Phone Number"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+
+            {/* Type of Service */}
+            <FormControl fullWidth sx={{ width: "100%" }}>
+              <InputLabel
+                sx={{
+                  "&.Mui-focused": {
+                    color: "#13ec13",
+                  },
+                }}
+              >
+                Type of Service Interested In
+              </InputLabel>
+              <Select
+                value={formData.serviceType}
+                onChange={(e) => handleInputChange("serviceType", e.target.value)}
+                label="Type of Service Interested In"
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(0, 0, 0, 0.23)",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                }}
+              >
+                <MenuItem value="Project Design & Development">Project Design & Development</MenuItem>
+                <MenuItem value="BSF Training & Setup">BSF Training & Setup</MenuItem>
+                <MenuItem value="Proposal Writing">Proposal Writing</MenuItem>
+                <MenuItem value="Farm Consultation">Farm Consultation</MenuItem>
+                <MenuItem value="Agribusiness Planning">Agribusiness Planning</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Message */}
+            <TextField
+              fullWidth
+              label="Message"
+              multiline
+              rows={5}
+              required
+              value={formData.message}
+              onChange={(e) => handleInputChange("message", e.target.value)}
+              placeholder="Tell us about your agribusiness needs..."
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#13ec13",
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#13ec13",
+                },
+              }}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            pt: 0,
+            backgroundColor: "#f6f8f6",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={handleCloseDialog}
+            sx={{
+              mr: 2,
+              px: 3,
+              py: 1,
+              color: "#666",
+              textTransform: "none",
+              fontWeight: 600,
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.05)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="contact-form"
+            variant="contained"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Send />}
+            sx={{
+              px: 4,
+              py: 1,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
+              textTransform: "none",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "#11d411",
+                boxShadow: "0 6px 16px rgba(17, 212, 17, 0.4)",
+              },
+              "&:focus": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:disabled": {
+                backgroundColor: "#ccc",
+                color: "white",
+              },
+            }}
+          >
+            {loading ? "Sending..." : "Send Message"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

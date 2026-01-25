@@ -234,7 +234,7 @@ export default function PublicHeader() {
         
         // Hide header immediately when user starts scrolling down (any scroll > 20px)
         setIsHeaderVisible(isAtVeryTop);
-      } else if (location.pathname === "/team") {
+      } else if (location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") {
         // Hide header immediately when scrolling down (same as homepage and agent-program)
         const scrollY = window.scrollY;
         const isAtVeryTop = scrollY <= 20;
@@ -351,14 +351,14 @@ export default function PublicHeader() {
             (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
               ? "none"
               : "1px solid rgba(15, 189, 15, 0.15)",
-          // Hide header when scrolling past hero section on home page, agent-program page, or team page
+          // Hide header when scrolling past hero section on home page, agent-program page, team page, blog page, or projects page
           transform:
-            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible
+            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible
               ? "translateY(-100%)"
               : "translateY(0)",
-          opacity: (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible ? 0 : 1,
+          opacity: (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? 0 : 1,
           pointerEvents:
-            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team") && !isHeaderVisible ? "none" : "auto",
+            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? "none" : "auto",
           // Hide active underline when any nav button is hovered
           "&:has(button:hover) button[data-active='true']::after": {
             opacity: 0,

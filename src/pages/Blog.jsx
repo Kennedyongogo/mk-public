@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -75,6 +76,7 @@ const latestArticles = [
   },
   {
     id: 3,
+    slug: "soil-health-the-farmers-bank",
     title: "Soil Health: The Farmer's Bank",
     category: "Regenerative",
     description: "Strategies for restoring depleted soils through crop rotation and organic mineralization.",
@@ -107,7 +109,37 @@ const latestArticles = [
   },
 ];
 
+// Helper function to create slug from title or use id
+const createSlug = (post) => {
+  if (post.slug) return post.slug;
+  if (post.title) {
+    return post.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
+  return post.id.toString();
+};
+
+// Add slugs to sample posts to match BlogDetail
+const featuredPostsWithSlugs = featuredPosts.map(post => ({
+  ...post,
+  slug: createSlug(post),
+}));
+
+const latestArticlesWithSlugs = latestArticles.map(article => ({
+  ...article,
+  slug: createSlug(article),
+}));
+
 export default function Blog() {
+  const navigate = useNavigate();
+
+  const handleReadArticle = (post) => {
+    const slug = createSlug(post);
+    navigate(`/blog/${slug}`);
+  };
+
   return (
     <Box
       sx={{
@@ -288,7 +320,7 @@ export default function Blog() {
                   },
                 }}
               >
-                {featuredPosts.map((post) => (
+                {featuredPostsWithSlugs.map((post) => (
                   <Card
                     key={post.id}
                     sx={{
@@ -327,6 +359,7 @@ export default function Blog() {
                       </Typography>
                       <Button
                         endIcon={<ArrowForward />}
+                        onClick={() => handleReadArticle(post)}
                         sx={{
                           color: "#0fbd0f",
                           fontWeight: 700,
@@ -448,7 +481,7 @@ export default function Blog() {
                   },
                 }}
               >
-                {latestArticles.map((article) => (
+                {latestArticlesWithSlugs.map((article) => (
                   <Card
                     key={article.id}
                     sx={{
@@ -525,6 +558,7 @@ export default function Blog() {
                           </Typography>
                         </Box>
                         <Button
+                          onClick={() => handleReadArticle(article)}
                           sx={{
                             color: "#0fbd0f",
                             fontWeight: 700,

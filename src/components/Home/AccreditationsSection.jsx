@@ -1,176 +1,204 @@
-import React from "react";
-import { Box, Container, Typography, Card } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Card,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Grid,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { motion } from "framer-motion";
 
 const MotionBox = motion(Box);
 
+const faqs = [
+  {
+    question: "How much do your services cost?",
+    answer: "Pricing depends on the project size, scope, and complexity. We provide customized quotations after a brief consultation.",
+  },
+  {
+    question: "Do you help in writing donor or bank proposals?",
+    answer: "Yes, we prepare complete, fundable proposals and support clients through the submission process.",
+  },
+  {
+    question: "Can you visit my farm physically?",
+    answer: "Absolutely. We conduct on-site farm assessments to ensure accurate recommendations.",
+  },
+  {
+    question: "Do you help with sourcing farm inputs and markets?",
+    answer: "Yes, we link farmers to verified suppliers and market outlets.",
+  },
+];
+
 export default function AccreditationsSection() {
-  // Accreditation logos data
-  // Note: You'll need to add the actual logo images to your public/images folder
-  const accreditations = [
-    {
-      name: "SafariBookings.com",
-      image: "/acredited/safari-bookings-removebg-preview.png",
-      url: "https://www.safaribookings.com/reviews/p6185",
-      alt: "SafariBookings.com - Trusted Safari Booking Platform",
-    },
-    {
-      name: "Tripadvisor",
-      image: "/acredited/tripavisor_logo-removebg-preview.png",
-      url: "https://www.tripadvisor.com/Attraction_Review-g294207-d25259315-Reviews-AKIRA_SAFARIS-Nairobi.html",
-      alt: "Tripadvisor - Travel Reviews and Recommendations",
-    },
-    {
-      name: "Magical Kenya",
-      image: "/acredited/magical-removebg-preview.png",
-      url: "https://www.magicalkenya.com",
-      alt: "Magical Kenya - Official Kenya Tourism Board",
-    },
-    {
-      name: "TRA - Tourism Regulatory Authority",
-      image: "/acredited/tra-removebg-preview.png",
-      url: "https://www.tourismauthority.go.ke",
-      alt: "Tourism Regulatory Authority - Licensed Operator",
-    },
-    {
-      name: "Kenya Wildlife Service",
-      image: "/acredited/kenya-wildlife-service_0-removebg-preview.png",
-      url: "https://www.kws.go.ke",
-      alt: "Kenya Wildlife Service - Wildlife Conservation",
-    },
-    {
-      name: "Amref Flying Doctors",
-      image: "/acredited/Amref_Health_Africa_logo-removebg-preview.png",
-      url: "https://amref.org",
-      alt: "Amref Flying Doctors - Medical Emergency Services",
-    },
-  ];
+  const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <Box
       sx={{
-        pt: { xs: 0, sm: 0, md: 0 },
-        pb: { xs: 0.5, sm: 0.75, md: 1 },
+        pt: 0,
+        pb: 0,
         position: "relative",
         zIndex: 1,
-        backgroundColor: "#f9f7f3", // Warm White background
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
       }}
     >
       <Card
         sx={{
           mx: { xs: 0.75, sm: 0.75, md: 0.75 },
+          mt: 0.75,
+          mb: 0.75,
           borderRadius: { xs: 3, md: 4 },
           background: "#FFFFFF",
-          border: "1px solid rgba(139, 115, 85, 0.2)",
+          border: "1px solid rgba(15, 189, 15, 0.15)",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           position: "relative",
-          overflow: { xs: "visible", sm: "hidden" },
+          overflow: "hidden",
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth={false} disableGutters sx={{ px: 0, width: "100%" }}>
           <MotionBox
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             sx={{
-              py: { xs: 4, sm: 5, md: 6 },
-              px: { xs: 2, sm: 3, md: 4 },
+              py: { xs: 3, md: 4 },
+              px: 0,
+              width: "100%",
             }}
           >
             {/* Header */}
-            <Box sx={{ textAlign: "center", mb: { xs: 3, md: 4 } }}>
+            <Box sx={{ textAlign: "center", mb: { xs: 4, md: 6 }, px: 2 }}>
               <Typography
-                variant="h3"
                 sx={{
+                  fontSize: "0.875rem",
                   fontWeight: 700,
-                  mb: 2,
-                  color: "#1a1a1a",
-                  fontSize: { xs: "0.9rem", sm: "1.2rem", md: "1.75rem" },
-                  whiteSpace: "nowrap",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  color: "#13ec13",
+                  mb: 1.5,
                 }}
               >
-                OUR ACCREDITATIONS & BOOKING SECURITY
+                Got Questions?
               </Typography>
               <Typography
-                variant="body1"
+                variant="h2"
                 sx={{
-                  color: "#666666",
-                  fontSize: { xs: "1.05rem", sm: "1.15rem", md: "1.25rem" },
-                  maxWidth: "800px",
-                  mx: "auto",
-                  lineHeight: 1.7,
+                  fontWeight: 900,
+                  mb: 2,
+                  color: "#0d1b0d",
+                  fontSize: { xs: "2.25rem", md: "3rem" },
                 }}
               >
-                Akira Safaris is licensed by the Kenya Tourism
-                Regulatory Authority (TRA) and is also affiliated with multiple
-                booking platforms.
+                Frequently Asked <span style={{ color: "#13ec13" }}>Questions</span>
               </Typography>
+              <Box
+                sx={{
+                  width: 60,
+                  height: 4,
+                  bgcolor: "#13ec13",
+                  mx: "auto",
+                  borderRadius: 2,
+                }}
+              />
             </Box>
 
-            {/* Logos Grid - 2 per row on small screens, single row on large */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: { xs: "wrap", sm: "nowrap" },
-                justifyContent: { xs: "space-between", sm: "center" },
-                alignItems: "center",
-                gap: { xs: 1, sm: 2, md: 3 },
-                px: { xs: 1, sm: 2, md: 3 },
-                overflowX: { xs: "visible", sm: "visible" },
-              }}
-            >
-              {accreditations.map((accreditation, index) => (
-                <MotionBox
-                  key={index}
-                  component="a"
-                  href={accreditation.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flex: { xs: "0 0 calc(50% - 4px)", sm: "0 0 auto" },
-                    width: { xs: "calc(50% - 4px)", sm: "auto" },
-                    minWidth: { xs: "calc(50% - 4px)", sm: "120px", md: "140px" },
-                    maxWidth: { xs: "calc(50% - 4px)", sm: "150px", md: "180px" },
-                    height: { xs: "60px", sm: "80px", md: "100px" },
-                    padding: { xs: 0.5, sm: 1, md: 1.5 },
-                    boxSizing: "border-box",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                    },
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Box
-                    component="img"
-                    src={accreditation.image}
-                    alt={accreditation.alt}
+            {/* FAQ List */}
+            <Box sx={{ width: "100%" }}>
+                {faqs.map((faq, index) => (
+                  <Accordion
+                    key={index}
+                    expanded={expanded === `panel${index}`}
+                    onChange={handleChange(`panel${index}`)}
+                    elevation={0}
                     sx={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      objectFit: "contain",
-                      filter: "grayscale(0%)",
-                      transition: "filter 0.3s ease",
+                      mb: 2,
+                      mx: 0.75,
+                      width: "calc(100% - 12px)", // Accounts for mx: 0.75 (6px + 6px)
+                      background: "#f8f9f8", // Subtle off-white background for distinction
+                      border: "1px solid rgba(15, 189, 15, 0.2)", // More visible border
+                      borderRadius: "16px !important",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", // Subtle shadow for depth
+                      "&::before": { display: "none" },
                       "&:hover": {
-                        filter: "grayscale(0%)",
+                        borderColor: "rgba(19, 236, 19, 0.4)",
+                        bgcolor: "rgba(19, 236, 19, 0.05)",
+                        boxShadow: "0 4px 12px rgba(19, 236, 19, 0.15)",
+                        transform: "translateY(-2px)", // Slight lift on hover
                       },
+                      ...(expanded === `panel${index}` && {
+                        borderColor: "#13ec13",
+                        bgcolor: "rgba(19, 236, 19, 0.08)",
+                        boxShadow: "0 8px 25px rgba(19, 236, 19, 0.2)",
+                      }),
                     }}
-                    onError={(e) => {
-                      // Fallback if image doesn't load
-                      e.target.style.display = "none";
-                      const parent = e.target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `<div style="text-align: center; color: #666; font-size: 0.85rem;">${accreditation.name}</div>`;
+                  >
+                    <AccordionSummary
+                      expandIcon={
+                        <ExpandMoreIcon
+                          sx={{
+                            color: expanded === `panel${index}` ? "#13ec13" : "#4c664c",
+                          }}
+                        />
                       }
-                    }}
-                  />
-                </MotionBox>
-              ))}
+                      sx={{
+                        px: { xs: 2, md: 3 },
+                        py: 1,
+                        "& .MuiAccordionSummary-content": {
+                          alignItems: "center",
+                          gap: 2,
+                        },
+                      }}
+                    >
+                      <HelpOutlineIcon
+                        sx={{
+                          color: expanded === `panel${index}` ? "#13ec13" : "#13ec13",
+                          fontSize: "1.5rem",
+                          opacity: 0.8,
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: { xs: "1rem", md: "1.125rem" },
+                          color: expanded === `panel${index}` ? "#0d1b0d" : "#4c664c",
+                          transition: "color 0.3s ease",
+                        }}
+                      >
+                        {faq.question}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails
+                      sx={{
+                        px: { xs: 2, md: 3 },
+                        pb: 3,
+                        pt: 0,
+                        ml: { md: 5 }, // Align with text after icon
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: "#4c664c",
+                          fontSize: "1.05rem",
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {faq.answer}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
             </Box>
           </MotionBox>
         </Container>
@@ -178,4 +206,3 @@ export default function AccreditationsSection() {
     </Box>
   );
 }
-

@@ -14,6 +14,34 @@ import {
 import { LocationOn, CalendarToday, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
+// Hardcoded client testimonials
+const hardcodedReviews = [
+  {
+    id: 1,
+    name: "Joseph M.",
+    comment: "MK Agribusiness Consultants helped us design a poultry project that turned from idea to profit within a year. Their professionalism and hands-on support are unmatched.",
+    location: "Kiambu County",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    name: "AgriYouth Group",
+    comment: "Their BSF training and setup design changed our waste management approach and reduced our feed costs significantly.",
+    location: "Machakos",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    name: "Mary K.",
+    comment: "They developed our proposal for a fruit processing unit, which was later approved for funding. The team is highly skilled and professional.",
+    location: "Nairobi",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export default function BackgroundImageSection() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -37,22 +65,24 @@ export default function BackgroundImageSection() {
     }
   };
 
-  // Fetch reviews from the database
+  // Fetch reviews from the database, fallback to hardcoded reviews
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const res = await fetch("/api/reviews/approved?limit=100");
         const data = await res.json();
 
-        if (res.ok && data.success) {
-          setReviews(data.data || []);
+        if (res.ok && data.success && data.data && data.data.length > 0) {
+          // Use API reviews if available
+          setReviews(data.data);
         } else {
-          console.error("Failed to load reviews:", data.message);
-          setReviews([]);
+          // Use hardcoded reviews as fallback
+          setReviews(hardcodedReviews);
         }
       } catch (err) {
         console.error("Error loading reviews:", err);
-        setReviews([]);
+        // Use hardcoded reviews as fallback
+        setReviews(hardcodedReviews);
       }
     };
 
@@ -79,24 +109,24 @@ export default function BackgroundImageSection() {
 
           setBackgroundImages(imageUrls);
         } else {
-          // Fallback to some default images if API fails or no items
+          // Fallback to agriculture-related images if API fails or no items
           setBackgroundImages([
-            "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&h=1080&fit=crop&q=90",
-            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&q=90",
-            "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920&h=1080&fit=crop&q=90",
-            "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=1920&h=1080&fit=crop&q=90",
-            "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&h=1080&fit=crop&q=90",
+            "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&h=1080&fit=crop&q=90", // Green fields
+            "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&h=1080&fit=crop&q=90", // Farm landscape
+            "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1920&h=1080&fit=crop&q=90", // Agriculture field
+            "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&h=1080&fit=crop&q=90", // Crop field
+            "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&q=90", // Farm scene
           ]);
         }
       } catch (error) {
         console.error("Failed to fetch background images:", error);
-        // Fallback to default images
+        // Fallback to agriculture-related images
         setBackgroundImages([
-          "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1920&h=1080&fit=crop&q=90",
-          "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&q=90",
-          "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920&h=1080&fit=crop&q=90",
-          "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=1920&h=1080&fit=crop&q=90",
-          "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&h=1080&fit=crop&q=90",
+          "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&h=1080&fit=crop&q=90", // Green fields
+          "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&h=1080&fit=crop&q=90", // Farm landscape
+          "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1920&h=1080&fit=crop&q=90", // Agriculture field
+          "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&h=1080&fit=crop&q=90", // Crop field
+          "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&q=90", // Farm scene
         ]);
       } finally {
         setLoading(false);
@@ -138,18 +168,18 @@ export default function BackgroundImageSection() {
       id="reviews-section"
       sx={{
         pt: { xs: 0, sm: 0, md: 0 },
-        pb: { xs: 0.5, sm: 0.75, md: 1 },
+        pb: { xs: 0.25, sm: 0.375, md: 0.5 },
         position: "relative",
         zIndex: 1,
-        backgroundColor: "#f9f7f3", // Warm White background
+        backgroundColor: "#f6f8f6", // Light green-tinted background
       }}
     >
       <Card
         sx={{
-          mx: { xs: 0.75, sm: 0.75, md: 0.75 },
+          mx: { xs: 0.375, sm: 0.375, md: 0.375 },
           borderRadius: { xs: 3, md: 4 },
           background: "#FFFFFF",
-          border: "1px solid rgba(139, 115, 85, 0.2)",
+          border: "1px solid rgba(19, 236, 19, 0.15)",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           position: "relative",
           overflow: { xs: "visible", sm: "hidden" },
@@ -186,7 +216,7 @@ export default function BackgroundImageSection() {
                 }}
                 onError={(e) => {
                   e.target.src =
-                    "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1200&h=600&fit=crop";
+                    "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&h=600&fit=crop";
                 }}
               />
             ))
@@ -199,7 +229,7 @@ export default function BackgroundImageSection() {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                background: "linear-gradient(135deg, #8b7355 0%, #c8a97e 100%)",
+                background: "linear-gradient(135deg, #13ec13 0%, #11d411 100%)",
                 opacity: 0.8,
               }}
             />
@@ -208,9 +238,9 @@ export default function BackgroundImageSection() {
         <Container
           maxWidth="xl"
           sx={{
-            px: { xs: 1.5, sm: 1.5, md: 1.5 },
-            pt: { xs: 1, sm: 0, md: 0 },
-            pb: { xs: 1, sm: 0, md: 0 },
+            px: { xs: 0.75, sm: 0.75, md: 0.75 },
+            pt: { xs: 0.5, sm: 0, md: 0 },
+            pb: { xs: 0.5, sm: 0, md: 0 },
             position: "relative",
             zIndex: 1,
           }}
@@ -226,9 +256,9 @@ export default function BackgroundImageSection() {
             <Box
               sx={{
                 textAlign: "center",
-                mb: { xs: 1, sm: 1.5, md: 2 },
+                mb: { xs: 0.5, sm: 0.75, md: 1 },
                 position: "relative",
-                py: { xs: 1, sm: 1.5, md: 2 },
+                py: { xs: 0.5, sm: 0.75, md: 1 },
                 zIndex: 2,
               }}
             >
@@ -251,7 +281,7 @@ export default function BackgroundImageSection() {
                   textShadow: "2px 2px 4px rgba(255, 255, 255, 0.8)",
                 }}
               >
-                Akira Safaris Reviews
+                MK Agribusiness Testimonials
               </Typography>
             </Box>
 
@@ -265,7 +295,7 @@ export default function BackgroundImageSection() {
                   alignItems: "center",
                   justifyContent: "center",
                   minHeight: { xs: "250px", sm: "300px", md: "350px" },
-                  p: { xs: 1.5, sm: 2, md: 3 },
+                  p: { xs: 0.75, sm: 1, md: 1.5 },
                 }}
               >
                 {reviews.map((review, index) => (
@@ -302,7 +332,7 @@ export default function BackgroundImageSection() {
                         },
                       }}
                     >
-                      <CardContent sx={{ p: { xs: 2.5, sm: 3, md: 4 } }}>
+                      <CardContent sx={{ p: { xs: 1.25, sm: 1.5, md: 2 } }}>
                         {/* User Info */}
                         <Box
                           sx={{
@@ -339,7 +369,7 @@ export default function BackgroundImageSection() {
                               size="medium"
                               sx={{
                                 "& .MuiRating-iconFilled": {
-                                  color: "#c8a97e", // Accent Gold
+                                  color: "#13ec13", // Primary Green
                                 },
                               }}
                             />
@@ -434,8 +464,8 @@ export default function BackgroundImageSection() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  mt: { xs: 2, sm: 2.5, md: 3 },
-                  mb: { xs: 1, sm: 1.5, md: 2 },
+                  mt: { xs: 1, sm: 1.25, md: 1.5 },
+                  mb: { xs: 0.5, sm: 0.75, md: 1 },
                   position: "relative",
                   zIndex: 2,
                 }}
@@ -445,27 +475,27 @@ export default function BackgroundImageSection() {
                   endIcon={<ArrowForward />}
                   onClick={() => navigate("/reviews")}
                   sx={{
-                    backgroundColor: "#c8a97e", // Accent Gold
-                    color: "#FFFFFF",
-                    fontWeight: 600,
+                    backgroundColor: "#13ec13", // Primary Green
+                    color: "#0d1b0d",
+                    fontWeight: 700,
                     textTransform: "none",
                     fontSize: { xs: "0.875rem", sm: "0.9375rem", md: "1rem" },
-                    px: { xs: 2, sm: 2.5, md: 3 },
-                    py: { xs: 0.75, sm: 1, md: 1.25 },
+                    px: { xs: 1, sm: 1.25, md: 1.5 },
+                    py: { xs: 0.375, sm: 0.5, md: 0.625 },
                     borderRadius: 2,
                     "&:hover": {
-                      backgroundColor: "#8b7355", // Secondary Brown
-                      color: "#FFFFFF",
+                      backgroundColor: "#11d411", // Darker Green
+                      color: "#0d1b0d",
                     },
                     "&:focus": {
                       outline: "none",
-                      backgroundColor: "#c8a97e",
+                      backgroundColor: "#13ec13",
                     },
                     "&:focus-visible": {
                       outline: "none",
-                      backgroundColor: "#c8a97e",
+                      backgroundColor: "#13ec13",
                     },
-                    boxShadow: "0 2px 8px rgba(200, 169, 126, 0.3)",
+                    boxShadow: "0 2px 8px rgba(19, 236, 19, 0.3)",
                   }}
                 >
                   View All

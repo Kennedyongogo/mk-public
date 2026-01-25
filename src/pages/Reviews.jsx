@@ -28,6 +28,34 @@ import Swal from "sweetalert2";
 
 const MotionBox = motion(Box);
 
+// Hardcoded client testimonials (same as BackgroundImageSection)
+const hardcodedReviews = [
+  {
+    id: 1,
+    name: "Joseph M.",
+    comment: "MK Agribusiness Consultants helped us design a poultry project that turned from idea to profit within a year. Their professionalism and hands-on support are unmatched.",
+    location: "Kiambu County",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    name: "AgriYouth Group",
+    comment: "Their BSF training and setup design changed our waste management approach and reduced our feed costs significantly.",
+    location: "Machakos",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    name: "Mary K.",
+    comment: "They developed our proposal for a fruit processing unit, which was later approved for funding. The team is highly skilled and professional.",
+    location: "Nairobi",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export default function Reviews() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -72,14 +100,24 @@ export default function Reviews() {
       const res = await fetch("/api/reviews/approved?limit=100");
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to load reviews");
+      let apiReviews = [];
+      if (res.ok && data.success && data.data) {
+        apiReviews = data.data;
       }
 
-      setReviews(data.data || []);
+      // Merge hardcoded reviews with API reviews, hardcoded ones first
+      // Filter out any API reviews that might duplicate hardcoded ones by name
+      const hardcodedNames = hardcodedReviews.map(r => r.name.toLowerCase());
+      const uniqueApiReviews = apiReviews.filter(
+        review => !hardcodedNames.includes(review.name?.toLowerCase())
+      );
+
+      // Combine: hardcoded reviews first, then unique API reviews
+      setReviews([...hardcodedReviews, ...uniqueApiReviews]);
     } catch (err) {
       console.error("Error loading reviews:", err);
-      setReviews([]);
+      // Even on error, show hardcoded reviews
+      setReviews(hardcodedReviews);
     } finally {
       setListLoading(false);
     }
@@ -113,7 +151,7 @@ export default function Reviews() {
         icon: "success",
         title: "Thank you!",
         text: "Your review was submitted and is awaiting approval.",
-        confirmButtonColor: "#c8a97e",
+        confirmButtonColor: "#13ec13",
       });
 
       setFormData({
@@ -133,7 +171,7 @@ export default function Reviews() {
         icon: "error",
         title: "Submission failed",
         text: err.message || "Please try again.",
-        confirmButtonColor: "#c8a97e",
+        confirmButtonColor: "#13ec13",
       });
     } finally {
       setLoading(false);
@@ -144,9 +182,9 @@ export default function Reviews() {
     <Box
       sx={{
         pt: 1.5,
-        pb: 1.5,
+        pb: 0.75,
         px: 0,
-        bgcolor: "#f9f7f3", // Warm White background
+        bgcolor: "#f6f8f6", // Light green-tinted background
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
@@ -157,7 +195,7 @@ export default function Reviews() {
         sx={{
           position: "relative",
           zIndex: 1,
-          px: { xs: 1.5, sm: 1.5, md: 1.5 },
+          px: { xs: 0.75, sm: 0.75, md: 0.75 },
           pt: { xs: 0.75, sm: 0.75, md: 0.75 },
         }}
       >
@@ -180,17 +218,17 @@ export default function Reviews() {
               }, 100);
             }}
             sx={{
-              mt: 0.5,
+              mt: 0.07,
               mb: 0.5,
-              backgroundColor: "#c8a97e", // Accent Gold
-              color: "white",
-              fontWeight: 600,
+              backgroundColor: "#13ec13", // Primary Green
+              color: "#0d1b0d",
+              fontWeight: 700,
               outline: "none",
               "&:focus": { outline: "none", boxShadow: "none" },
               "&:focus-visible": { outline: "none", boxShadow: "none" },
               "&:hover": {
-                backgroundColor: "#8b7355", // Secondary Brown
-                color: "white",
+                backgroundColor: "#11d411", // Darker Green
+                color: "#0d1b0d",
               },
             }}
           >
@@ -201,10 +239,10 @@ export default function Reviews() {
             elevation={3}
             sx={{
               py: { xs: 1.5, sm: 2, md: 2.5 },
-              px: { xs: 1.5, sm: 1.5, md: 1.5 },
+              px: { xs: 0.75, sm: 0.75, md: 0.75 },
               borderRadius: { xs: 3, md: 4 },
               background: "#FFFFFF",
-              border: "1px solid rgba(139, 115, 85, 0.2)", // Secondary Brown border
+              border: "1px solid rgba(19, 236, 19, 0.15)", // Primary Green border
               minHeight: "auto",
               height: "auto",
               overflow: "hidden",
@@ -229,7 +267,7 @@ export default function Reviews() {
                     transform: "translateX(-50%)",
                     width: { xs: "60px", sm: "70px", md: "80px" },
                     height: "4px",
-                    background: "linear-gradient(45deg, #8b7355, #c8a97e)", // Secondary Brown to Accent Gold
+                    background: "linear-gradient(45deg, #13ec13, #11d411)", // Green gradient
                     borderRadius: "2px",
                   },
                 }}
@@ -249,7 +287,7 @@ export default function Reviews() {
                   color: "#666666", // Secondary text color
                 }}
               >
-                Read what our guests have to say about their safari experiences
+                Read what our clients have to say about their agribusiness experiences
               </Typography>
             </Box>
 
@@ -269,7 +307,7 @@ export default function Reviews() {
                       py: 6,
                     }}
                   >
-                    <CircularProgress sx={{ color: "#c8a97e" }} />
+                    <CircularProgress sx={{ color: "#13ec13" }} />
                   </Box>
                 </Grid>
               )}
@@ -354,7 +392,7 @@ export default function Reviews() {
                             size="small"
                             sx={{
                             "& .MuiRating-iconFilled": {
-                                color: "#c8a97e", // Accent Gold
+                                color: "#13ec13", // Primary Green
                             },
                             }}
                           />
@@ -400,7 +438,7 @@ export default function Reviews() {
                             <LocationOn
                               sx={{
                                 fontSize: { xs: 16, md: 18 },
-                                color: "#c8a97e", // Accent Gold
+                                color: "#13ec13", // Primary Green
                               }}
                             />
                             <Typography
@@ -454,7 +492,7 @@ export default function Reviews() {
                   p: { xs: 2, sm: 3, md: 4 },
                   borderRadius: { xs: 3, md: 4 },
                   background: "#FFFFFF",
-                  border: "1px solid rgba(139, 115, 85, 0.2)", // Secondary Brown border
+                  border: "1px solid rgba(19, 236, 19, 0.15)", // Primary Green border
                 }}
               >
                 <Typography
@@ -478,7 +516,7 @@ export default function Reviews() {
                     textAlign: "center",
                   }}
                 >
-                  We'd love to hear about your safari adventure!
+                  We'd love to hear about your experience with MK Agribusiness!
                 </Typography>
 
                 <Box component="form" onSubmit={handleSubmit}>
@@ -495,6 +533,15 @@ export default function Reviews() {
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#13ec13",
                           },
                         }}
                       />
@@ -513,6 +560,15 @@ export default function Reviews() {
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#13ec13",
                           },
                         }}
                       />
@@ -530,6 +586,15 @@ export default function Reviews() {
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#13ec13",
                           },
                         }}
                       />
@@ -538,21 +603,45 @@ export default function Reviews() {
                     {/* Location */}
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <FormControl fullWidth>
-                        <InputLabel>Location You Visited</InputLabel>
+                        <InputLabel
+                          sx={{
+                            "&.Mui-focused": {
+                              color: "#13ec13",
+                            },
+                          }}
+                        >
+                          Location / County
+                        </InputLabel>
                         <Select
                           value={formData.location}
                           onChange={(e) => handleInputChange("location", e.target.value)}
-                          label="Location You Visited"
+                          label="Location / County"
                           sx={{
                             backgroundColor: "white",
                             borderRadius: 2,
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "rgba(0, 0, 0, 0.23)",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused": {
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "#13ec13",
+                              },
+                            },
                           }}
                         >
-                          <MenuItem value="Maasai Mara National Reserve">Maasai Mara National Reserve</MenuItem>
-                          <MenuItem value="Amboseli National Park">Amboseli National Park</MenuItem>
-                          <MenuItem value="Samburu National Reserve">Samburu National Reserve</MenuItem>
-                          <MenuItem value="Tsavo National Park">Tsavo National Park</MenuItem>
-                          <MenuItem value="Lake Nakuru National Park">Lake Nakuru National Park</MenuItem>
+                          <MenuItem value="Nairobi">Nairobi</MenuItem>
+                          <MenuItem value="Kiambu County">Kiambu County</MenuItem>
+                          <MenuItem value="Machakos">Machakos</MenuItem>
+                          <MenuItem value="Nakuru">Nakuru</MenuItem>
+                          <MenuItem value="Uasin Gishu">Uasin Gishu</MenuItem>
+                          <MenuItem value="Meru">Meru</MenuItem>
+                          <MenuItem value="Other">Other</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -578,7 +667,7 @@ export default function Reviews() {
                           size="large"
                           sx={{
                             "& .MuiRating-iconFilled": {
-                                color: "#B85C38", // Burnt orange/rust
+                                color: "#13ec13", // Primary Green
                             },
                           }}
                         />
@@ -595,11 +684,20 @@ export default function Reviews() {
                         required
                         value={formData.comment}
                         onChange={(e) => handleInputChange("comment", e.target.value)}
-                        placeholder="Share your experience with us..."
+                        placeholder="Share your experience with MK Agribusiness Consultants..."
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "#13ec13",
+                            },
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "#13ec13",
                           },
                         }}
                       />
@@ -613,9 +711,9 @@ export default function Reviews() {
                             checked={formData.recommend}
                             onChange={(e) => handleInputChange("recommend", e.target.checked)}
                             sx={{
-                            color: "#c8a97e", // Accent Gold
+                            color: "#13ec13", // Primary Green
                             "&.Mui-checked": {
-                              color: "#c8a97e",
+                              color: "#13ec13",
                             },
                             }}
                           />
@@ -644,18 +742,18 @@ export default function Reviews() {
                           endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Send />}
                           disabled={loading || !formData.name || !formData.email || !formData.comment || formData.rating === 0}
                           sx={{
-                            backgroundColor: "#c8a97e", // Accent Gold
-                            color: "white",
+                            backgroundColor: "#13ec13", // Primary Green
+                            color: "#0d1b0d",
                             px: { xs: 4, sm: 5, md: 6 },
                             py: { xs: 1.25, sm: 1.5 },
                             borderRadius: 3,
                             fontSize: { xs: "0.875rem", md: "1rem" },
                             fontWeight: 600,
                             textTransform: "none",
-                            boxShadow: "0 4px 12px rgba(200, 169, 126, 0.3)",
+                            boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
                             "&:hover": {
-                              backgroundColor: "#8b7355", // Secondary Brown
-                              boxShadow: "0 6px 16px rgba(139, 115, 85, 0.4)",
+                              backgroundColor: "#11d411", // Darker Green
+                              boxShadow: "0 6px 16px rgba(17, 212, 17, 0.4)",
                               transform: "translateY(-2px)",
                             },
                             "&:disabled": {
