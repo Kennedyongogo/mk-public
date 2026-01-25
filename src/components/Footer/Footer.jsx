@@ -156,8 +156,8 @@ export default function Footer() {
                           }}
                         >
                           <img
-                            src="/images/WhatsApp_Image_2025-12-14_at_10.56.47_AM-removebg-preview%20(1).png"
-                            alt="Akira Safaris Logo"
+                            src="/images/ChatGPT Image Jan 25, 2026, 10_28_05 AM.png"
+                            alt="MK Agribusiness Consultants Logo"
                             style={{
                               height: "44px",
                               maxHeight: "48px",
