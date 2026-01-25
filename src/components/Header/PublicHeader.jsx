@@ -241,10 +241,6 @@ export default function PublicHeader() {
         
         // Hide header immediately when user starts scrolling down (any scroll > 20px)
         setIsHeaderVisible(isAtVeryTop);
-      } else if (location.pathname === "/destinations") {
-        // Set Destinations as active when on destinations page
-        setActiveSection("mission-section");
-        setIsHeaderVisible(true); // Always visible on other pages
       } else {
         setIsHeaderVisible(true); // Always visible on other pages
       }
@@ -604,6 +600,7 @@ export default function PublicHeader() {
             >
               <Button
                 variant="contained"
+                onClick={() => navigate("/book-consultation")}
                 sx={{
                   px: 3,
                   py: 1.5,
@@ -831,6 +828,42 @@ export default function PublicHeader() {
               );
             })}
           </List>
+          <Divider sx={{ my: 1.5, borderColor: "rgba(15, 189, 15, 0.15)" }} />
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              setMobileMenuOpen(false);
+              navigate("/book-consultation");
+            }}
+            sx={{
+              px: 3,
+              py: 1.5,
+              fontSize: "0.875rem",
+              fontWeight: 700,
+              borderRadius: 2,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              textTransform: "none",
+              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              transition: "all 0.3s ease",
+              "&:focus": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              },
+              "&:hover": {
+                backgroundColor: "#11d411",
+                transform: "translateY(-2px)",
+                boxShadow: "0 6px 16px rgba(19, 236, 19, 0.4)",
+              },
+            }}
+          >
+            Book a Consultation
+          </Button>
         </Box>
       </Drawer>
 

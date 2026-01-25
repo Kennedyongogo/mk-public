@@ -139,6 +139,7 @@ export default function HeroSection() {
               >
                 <Button
                   variant="contained"
+                  onClick={() => navigate("/book-consultation")}
                   sx={{
                     minWidth: "160px",
                     py: 2,
@@ -166,6 +167,7 @@ export default function HeroSection() {
                 </Button>
                 <Button
                   variant="outlined"
+                  onClick={() => navigate("/staff")}
                   sx={{
                     minWidth: "160px",
                     py: 2,

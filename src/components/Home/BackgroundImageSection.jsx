@@ -70,9 +70,28 @@ export default function BackgroundImageSection() {
     const fetchReviews = async () => {
       try {
         const res = await fetch("/api/reviews/approved?limit=100");
-        const data = await res.json();
+        
+        // Check if response is ok and has content
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-        if (res.ok && data.success && data.data && data.data.length > 0) {
+        // Check if response has content before parsing
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Response is not JSON");
+        }
+
+        // Get text first to check if it's empty
+        const text = await res.text();
+        if (!text || text.trim() === "") {
+          throw new Error("Empty response");
+        }
+
+        // Parse JSON
+        const data = JSON.parse(text);
+
+        if (data.success && data.data && data.data.length > 0) {
           // Use API reviews if available
           setReviews(data.data);
         } else {
@@ -94,9 +113,28 @@ export default function BackgroundImageSection() {
     const fetchBackgroundImages = async () => {
       try {
         const response = await fetch("/api/gallery/public?all=true&type=image");
-        const data = await response.json();
+        
+        // Check if response is ok and has content
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        if (data.success && data.data.items.length > 0) {
+        // Check if response has content before parsing
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Response is not JSON");
+        }
+
+        // Get text first to check if it's empty
+        const text = await response.text();
+        if (!text || text.trim() === "") {
+          throw new Error("Empty response");
+        }
+
+        // Parse JSON
+        const data = JSON.parse(text);
+
+        if (data.success && data.data && data.data.items && data.data.items.length > 0) {
           // Convert gallery items to image URLs
           const imageUrls = data.data.items.map((item) => {
             // Build full image URL from filePath
@@ -247,7 +285,7 @@ export default function BackgroundImageSection() {
         >
           <Box
             sx={{
-              minHeight: { xs: "250px", sm: "300px", md: "350px" },
+              minHeight: { xs: "350px", sm: "300px", md: "350px" },
               position: "relative",
               overflow: { xs: "visible", sm: "hidden" },
             }}
@@ -259,7 +297,7 @@ export default function BackgroundImageSection() {
                 mb: { xs: 0.5, sm: 0.75, md: 1 },
                 position: "relative",
                 py: { xs: 0.5, sm: 0.75, md: 1 },
-                zIndex: 2,
+                zIndex: 3,
               }}
             >
               <Typography
@@ -295,23 +333,26 @@ export default function BackgroundImageSection() {
                   alignItems: "center",
                   justifyContent: "center",
                   minHeight: { xs: "250px", sm: "300px", md: "350px" },
-                  p: { xs: 0.75, sm: 1, md: 1.5 },
+                  p: { xs: 0.5, sm: 1, md: 1.5 },
+                  pt: { xs: 1, sm: 1, md: 1.5 },
+                  pb: { xs: 2.5, sm: 1, md: 1.5 },
+                  mt: { xs: 0.5, sm: 0, md: 0 },
+                  mb: { xs: 1.5, sm: 0, md: 0 },
                 }}
               >
                 {reviews.map((review, index) => (
                   <Box
                     key={review.id}
                     sx={{
-                      position: { xs: "relative", sm: "absolute" },
-                      width: { xs: "100%", sm: "90%", md: "600px" },
-                      maxWidth: "600px",
-                      mx: { xs: "auto", sm: 0 },
-                      mb: { xs: index === currentReviewIndex ? 0 : 0, sm: 0 },
+                      position: "absolute",
+                      width: { xs: "95%", sm: "90%", md: "600px" },
+                      maxWidth: { xs: "400px", sm: "500px", md: "600px" },
+                      left: "50%",
+                      top: "50%",
+                      transform: index === currentReviewIndex
+                        ? "translateX(-50%) translateY(-50%) scale(1)"
+                        : "translateX(-50%) translateY(-30%) scale(0.95)",
                       opacity: index === currentReviewIndex ? 1 : 0,
-                      transform:
-                        index === currentReviewIndex
-                          ? "translateY(0) scale(1)"
-                          : "translateY(20px) scale(0.95)",
                       transition:
                         "opacity 1s ease-in-out, transform 1s ease-in-out",
                       pointerEvents:
@@ -323,7 +364,7 @@ export default function BackgroundImageSection() {
                       sx={{
                         backgroundColor: "rgba(255, 255, 255, 0.95)",
                         backdropFilter: "blur(10px)",
-                        borderRadius: 3,
+                        borderRadius: { xs: 2, sm: 2.5, md: 3 },
                         boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
                         transition: "transform 0.3s ease, box-shadow 0.3s ease",
                         "&:hover": {
@@ -332,21 +373,21 @@ export default function BackgroundImageSection() {
                         },
                       }}
                     >
-                      <CardContent sx={{ p: { xs: 1.25, sm: 1.5, md: 2 } }}>
+                      <CardContent sx={{ p: { xs: 1, sm: 1.5, md: 2 } }}>
                         {/* User Info */}
                         <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
-                            mb: 2.5,
+                            mb: { xs: 1.5, sm: 2, md: 2.5 },
                           }}
                         >
                           <Avatar
                             alt={review.name}
                             sx={{
-                              width: { xs: 56, md: 64 },
-                              height: { xs: 56, md: 64 },
-                              mr: 2,
+                              width: { xs: 40, sm: 48, md: 64 },
+                              height: { xs: 40, sm: 48, md: 64 },
+                              mr: { xs: 1, sm: 1.5, md: 2 },
                             }}
                           >
                             {review.name.charAt(0)}
@@ -356,7 +397,7 @@ export default function BackgroundImageSection() {
                               variant="h6"
                               sx={{
                                 fontWeight: 600,
-                                fontSize: { xs: "1.4rem", md: "1.4rem" },
+                                fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
                                 mb: 0.5,
                               }}
                             >
@@ -366,11 +407,12 @@ export default function BackgroundImageSection() {
                               value={review.rating}
                               readOnly
                               precision={0.5}
-                              size="medium"
+                              size="small"
                               sx={{
                                 "& .MuiRating-iconFilled": {
                                   color: "#13ec13", // Primary Green
                                 },
+                                fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },
                               }}
                             />
                           </Box>
@@ -381,9 +423,9 @@ export default function BackgroundImageSection() {
                           variant="body1"
                           sx={{
                             color: "#666666",
-                            mb: 2.5,
-                            fontSize: { xs: "1.4rem", md: "1.4rem" },
-                            lineHeight: 1.7,
+                            mb: { xs: 1.5, sm: 2, md: 2.5 },
+                            fontSize: { xs: "0.875rem", sm: "1rem", md: "1.4rem" },
+                            lineHeight: { xs: 1.5, sm: 1.6, md: 1.7 },
                             fontStyle: "italic",
                           }}
                         >
@@ -395,8 +437,8 @@ export default function BackgroundImageSection() {
                           sx={{
                             display: "flex",
                             flexDirection: "column",
-                            gap: 1.5,
-                            pt: 2,
+                            gap: { xs: 1, sm: 1.25, md: 1.5 },
+                            pt: { xs: 1.5, sm: 1.75, md: 2 },
                             borderTop: "1px solid rgba(0,0,0,0.1)",
                           }}
                         >
@@ -405,19 +447,19 @@ export default function BackgroundImageSection() {
                               sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                gap: 1,
+                                gap: 0.75,
                               }}
                             >
                               <LocationOn
                                 sx={{
-                                  fontSize: { xs: 18, md: 20 },
+                                  fontSize: { xs: 16, sm: 18, md: 20 },
                                   color: "primary.main",
                                 }}
                               />
                               <Typography
                                 variant="body2"
                                 sx={{
-                                  fontSize: { xs: "0.8125rem", md: "0.875rem" },
+                                  fontSize: { xs: "0.75rem", sm: "0.8125rem", md: "0.875rem" },
                                   color: "#666666",
                                   fontWeight: 500,
                                 }}
@@ -430,19 +472,19 @@ export default function BackgroundImageSection() {
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              gap: 1,
+                              gap: 0.75,
                             }}
                           >
                             <CalendarToday
                               sx={{
-                                fontSize: { xs: 18, md: 20 },
+                                fontSize: { xs: 16, sm: 18, md: 20 },
                                 color: "#666666",
                               }}
                             />
                             <Typography
                               variant="body2"
                               sx={{
-                                fontSize: { xs: "0.8125rem", md: "0.875rem" },
+                                fontSize: { xs: "0.75rem", sm: "0.8125rem", md: "0.875rem" },
                                 color: "#666666",
                               }}
                             >
@@ -464,10 +506,11 @@ export default function BackgroundImageSection() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  mt: { xs: 1, sm: 1.25, md: 1.5 },
+                  mt: { xs: 2, sm: 1.25, md: 1.5 },
                   mb: { xs: 0.5, sm: 0.75, md: 1 },
                   position: "relative",
-                  zIndex: 2,
+                  zIndex: 3,
+                  pt: { xs: 1, sm: 0, md: 0 },
                 }}
               >
                 <Button

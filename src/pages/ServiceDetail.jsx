@@ -14,6 +14,15 @@ import {
   useTheme,
   CircularProgress,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import {
@@ -22,7 +31,10 @@ import {
   LinkedIn,
   WhatsApp,
   ArrowForward,
+  Close,
+  Send,
 } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 const MotionBox = motion(Box);
 
@@ -284,6 +296,14 @@ export default function ServiceDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedServices, setRelatedServices] = useState([]);
+  const [openQuoteDialog, setOpenQuoteDialog] = useState(false);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteFormData, setQuoteFormData] = useState({
+    projectType: "",
+    location: "",
+    scaleOfOperation: "",
+    expectedOutcomes: "",
+  });
 
   useEffect(() => {
     const fetchService = async () => {
@@ -332,6 +352,64 @@ export default function ServiceDetail() {
     };
     
     window.open(shareUrls[platform], "_blank", "width=600,height=400");
+  };
+
+  const handleOpenQuoteDialog = () => setOpenQuoteDialog(true);
+
+  const handleCloseQuoteDialog = () => {
+    setOpenQuoteDialog(false);
+    setQuoteFormData({
+      projectType: "",
+      location: "",
+      scaleOfOperation: "",
+      expectedOutcomes: "",
+    });
+  };
+
+  const handleQuoteInputChange = (field, value) => {
+    setQuoteFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleQuoteSubmit = async (e) => {
+    e.preventDefault();
+    if (!quoteFormData.projectType || !quoteFormData.location || !quoteFormData.scaleOfOperation || !quoteFormData.expectedOutcomes) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in all required fields.",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+    setQuoteLoading(true);
+    try {
+      const response = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...quoteFormData, service: service?.title }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit quote request");
+      }
+      Swal.fire({
+        icon: "success",
+        title: "Quote Request Submitted!",
+        text: "Thank you for your interest. We'll prepare a detailed proposal and get back to you soon.",
+        confirmButtonColor: "#13ec13",
+      });
+      handleCloseQuoteDialog();
+    } catch (err) {
+      console.error("Error submitting quote request:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: err.message || "Please try again later.",
+        confirmButtonColor: "#13ec13",
+      });
+    } finally {
+      setQuoteLoading(false);
+    }
   };
 
   const formatMarkdown = (content) => {
@@ -871,7 +949,7 @@ export default function ServiceDetail() {
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={() => navigate("/agent-program")}
+                  onClick={handleOpenQuoteDialog}
                   sx={{
                     backgroundColor: "#0d1b0d",
                     color: "#13ec13",
@@ -898,6 +976,222 @@ export default function ServiceDetail() {
         </MotionBox>
       </Container>
     </Box>
+
+      {/* Quote Request Dialog */}
+      <Dialog
+        open={openQuoteDialog}
+        onClose={handleCloseQuoteDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            maxWidth: "600px",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: "#0d1b0d",
+            color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 2,
+            px: 3,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            }}
+          >
+            Request a Quote
+          </Typography>
+          <IconButton
+            onClick={handleCloseQuoteDialog}
+            sx={{
+              color: "white",
+              outline: "none",
+              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+              "&:focus": { outline: "none", boxShadow: "none" },
+              "&:focus-visible": { outline: "none", boxShadow: "none" },
+            }}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            backgroundColor: "#f6f8f6",
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={handleQuoteSubmit}
+            id="service-quote-form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2.5,
+              width: "100%",
+            }}
+          >
+            <FormControl fullWidth sx={{ width: "100%", mt: 1 }}>
+              <InputLabel sx={{ "&.Mui-focused": { color: "#13ec13" } }}>
+                Type of Project *
+              </InputLabel>
+              <Select
+                value={quoteFormData.projectType}
+                onChange={(e) => handleQuoteInputChange("projectType", e.target.value)}
+                label="Type of Project *"
+                required
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "rgba(0, 0, 0, 0.23)" },
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                }}
+              >
+                <MenuItem value="Crop">Crop</MenuItem>
+                <MenuItem value="Livestock">Livestock</MenuItem>
+                <MenuItem value="BSF">BSF (Black Soldier Fly)</MenuItem>
+                <MenuItem value="Mixed Farming">Mixed Farming</MenuItem>
+                <MenuItem value="Aquaculture">Aquaculture</MenuItem>
+                <MenuItem value="Agro-processing">Agro-processing</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              fullWidth
+              label="Location"
+              required
+              value={quoteFormData.location}
+              onChange={(e) => handleQuoteInputChange("location", e.target.value)}
+              placeholder="Enter project location (e.g., Nairobi, Kiambu County)"
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#13ec13" },
+              }}
+            />
+
+            <FormControl fullWidth sx={{ width: "100%" }}>
+              <InputLabel sx={{ "&.Mui-focused": { color: "#13ec13" } }}>
+                Scale of Operation *
+              </InputLabel>
+              <Select
+                value={quoteFormData.scaleOfOperation}
+                onChange={(e) => handleQuoteInputChange("scaleOfOperation", e.target.value)}
+                label="Scale of Operation *"
+                required
+                sx={{
+                  width: "100%",
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "rgba(0, 0, 0, 0.23)" },
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                }}
+              >
+                <MenuItem value="Small Scale">Small Scale (1-10 hectares/units)</MenuItem>
+                <MenuItem value="Medium Scale">Medium Scale (10-50 hectares/units)</MenuItem>
+                <MenuItem value="Large Scale">Large Scale (50+ hectares/units)</MenuItem>
+                <MenuItem value="Commercial">Commercial Enterprise</MenuItem>
+                <MenuItem value="Industrial">Industrial Scale</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              fullWidth
+              label="Expected Outcomes"
+              multiline
+              rows={5}
+              required
+              value={quoteFormData.expectedOutcomes}
+              onChange={(e) => handleQuoteInputChange("expectedOutcomes", e.target.value)}
+              placeholder="Describe your project goals, expected results, and any specific requirements..."
+              sx={{
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  borderRadius: 2,
+                  "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#13ec13" },
+                },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#13ec13" },
+              }}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            pt: 0,
+            backgroundColor: "#f6f8f6",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={handleCloseQuoteDialog}
+            sx={{
+              mr: 2,
+              px: 3,
+              py: 1,
+              color: "#666",
+              textTransform: "none",
+              fontWeight: 600,
+              outline: "none",
+              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.05)" },
+              "&:focus": { outline: "none", boxShadow: "none" },
+              "&:focus-visible": { outline: "none", boxShadow: "none" },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="service-quote-form"
+            variant="contained"
+            disabled={quoteLoading}
+            startIcon={quoteLoading ? <CircularProgress size={20} color="inherit" /> : <Send />}
+            sx={{
+              px: 4,
+              py: 1,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              fontWeight: 700,
+              textTransform: "none",
+              borderRadius: 2,
+              boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",
+              outline: "none",
+              "&:hover": {
+                backgroundColor: "#11d411",
+                boxShadow: "0 6px 16px rgba(17, 212, 17, 0.4)",
+              },
+              "&:focus": { outline: "none", boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)" },
+              "&:focus-visible": { outline: "none", boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)" },
+              "&:disabled": { backgroundColor: "#ccc", color: "white" },
+            }}
+          >
+            {quoteLoading ? "Submitting..." : "Request Quote"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

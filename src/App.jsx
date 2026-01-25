@@ -20,21 +20,13 @@ const TeamMemberDetail = lazy(() => import("./pages/TeamMemberDetail"));
 const Team = lazy(() => import("./pages/Team"));
 const Staff = lazy(() => import("./pages/Staff"));
 const Reviews = lazy(() => import("./pages/Reviews"));
-const Plan = lazy(() => import("./pages/Plan"));
-const DestinationDetails = lazy(() => import("./pages/DestinationDetails"));
-const CategoryDetails = lazy(() => import("./pages/CategoryDetails"));
 const CategoryPackages = lazy(() => import("./components/Destination/CategoryPackages"));
-const PackageDetail = lazy(() => import("./pages/PackageDetail"));
-const PackageInquiry = lazy(() => import("./pages/PackageInquiry"));
-const Destinations = lazy(() => import("./pages/Destinations"));
-const CampLodges = lazy(() => import("./pages/CampLodges"));
-const CampLodgeDetail = lazy(() => import("./pages/CampLodgeDetail"));
-const Tour = lazy(() => import("./pages/Tour"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
 const AgentProgram = lazy(() => import("./pages/AgentProgram"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
+const BookConsultation = lazy(() => import("./pages/BookConsultation"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -72,9 +64,9 @@ function App() {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                bgcolor: "#F5F1E8",
+                bgcolor: "#f6f8f6",
                 background:
-                  "linear-gradient(135deg, rgba(245, 241, 232, 0.95) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(232, 224, 209, 0.95) 100%)",
+                  "linear-gradient(135deg, rgba(246, 248, 246, 0.98) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(232, 245, 232, 0.95) 100%)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -88,46 +80,48 @@ function App() {
                   right: 0,
                   bottom: 0,
                   background:
-                    "radial-gradient(circle at 20% 80%, rgba(184, 92, 56, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(107, 78, 61, 0.08) 0%, transparent 50%)",
+                    "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.06) 0%, transparent 50%)",
                   zIndex: -1,
                 },
               }}
             >
               <Box sx={{ mb: 3, position: "relative", zIndex: 1, textAlign: "center" }}>
-                {/* Safari animal icon */}
+                {/* Plant icon */}
                 <Box
                   sx={{
-                    fontSize: "3.5rem",
+                    fontSize: "4rem",
                     mb: 2,
                     animation: "bounce 2s ease-in-out infinite",
+                    lineHeight: 1,
+                    filter: "drop-shadow(0 0 12px rgba(19, 236, 19, 0.4))",
                   }}
                 >
-                  🦁
+                  🌱
                 </Box>
 
                 <Typography
                   variant="h4"
                   sx={{
                     fontWeight: 700,
-                    color: "#3D2817",
+                    color: "#0d1b0d",
                     mb: 1,
                     textAlign: "center",
-                    fontSize: { xs: "1.8rem", md: "2.2rem" },
+                    fontSize: { xs: "1.6rem", md: "2rem" },
                   }}
                 >
-                  Akira Safaris
+                  MK Agribusiness Consultancy
                 </Typography>
                 <Typography
                   variant="h6"
                   sx={{
-                    color: "#B85C38",
+                    color: "#13ec13",
                     textAlign: "center",
-                    fontWeight: 500,
+                    fontWeight: 600,
                     mb: 2,
-                    fontSize: { xs: "1.1rem", md: "1.3rem" },
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                   }}
                 >
-                  Crafting Your African Adventure
+                  Growing sustainable futures
                 </Typography>
 
                 {/* Animated progress dots */}
@@ -139,9 +133,9 @@ function App() {
                         width: 10,
                         height: 10,
                         borderRadius: "50%",
-                        backgroundColor: "#B85C38",
+                        backgroundColor: "#13ec13",
                         animation: `pulse 1.5s ease-in-out infinite ${index * 0.2}s`,
-                        boxShadow: "0 0 10px rgba(184, 92, 56, 0.3)",
+                        boxShadow: "0 0 10px rgba(19, 236, 19, 0.4)",
                       }}
                     />
                   ))}
@@ -151,7 +145,7 @@ function App() {
               <Typography
                 variant="body1"
                 sx={{
-                  color: "#6B4E3D",
+                  color: "#0d1b0d",
                   textAlign: "center",
                   fontWeight: 500,
                   position: "relative",
@@ -160,23 +154,23 @@ function App() {
                   fontSize: "1.1rem",
                 }}
               >
-                Preparing your safari experience...
+                Preparing your experience...
               </Typography>
 
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#8B7355",
+                  color: "#4c664c",
                   textAlign: "center",
                   fontWeight: 400,
                   position: "relative",
                   zIndex: 1,
-                  opacity: 0.8,
-                  maxWidth: "300px",
+                  opacity: 0.85,
+                  maxWidth: "320px",
                   mx: "auto",
                 }}
               >
-                Loading destinations, wildlife, and unforgettable moments
+                Loading services, projects, and expert agribusiness insights
               </Typography>
             </Box>
           }
@@ -217,6 +211,15 @@ function App() {
               }
             />
             <Route
+              path="/book-consultation"
+              element={
+                <>
+                  <BookConsultation />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
               path="/reviews"
               element={
                 <>
@@ -226,91 +229,10 @@ function App() {
               }
             />
             <Route
-              path="/plan"
-              element={
-                <>
-                  <Plan />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/destinations"
-              element={
-                <>
-                  <Destinations />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/destination/:id"
-              element={
-                <>
-                  <DestinationDetails />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/category-details"
-              element={
-                <>
-                  <CategoryDetails />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
               path="/category-packages"
               element={
                 <>
                   <CategoryPackages />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/package-detail"
-              element={
-                <>
-                  <PackageDetail />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/package-inquiry"
-              element={
-                <>
-                  <PackageInquiry />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/camp-lodges"
-              element={
-                <>
-                  <CampLodges />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/camp-lodges/:id"
-              element={
-                <>
-                  <CampLodgeDetail />
-                  <Footer />
-                </>
-              }
-            />
-            <Route
-              path="/tour"
-              element={
-                <>
-                  <Tour />
                   <Footer />
                 </>
               }

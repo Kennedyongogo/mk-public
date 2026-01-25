@@ -96,6 +96,7 @@ export default function ContactSection() {
                 sx={{ 
                   display: "flex", 
                   flexDirection: "row",
+                  flexWrap: "wrap",
                   gap: 2,
                   width: "100%",
                   boxSizing: "border-box",
@@ -131,7 +132,7 @@ export default function ContactSection() {
                   <Box
                     key={item.label}
                     sx={{
-                      flex: "1 1 0",
+                      flex: { xs: "0 0 calc(50% - 8px)", md: "1 1 0" },
                       minWidth: 0,
                       p: 3,
                       borderRadius: 4,

@@ -2,10 +2,10 @@ import React from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
-// Floating WhatsApp entry point - Direct chat with Akira Safaris
+// Floating WhatsApp entry point - Direct chat with MK Agribusiness Consultants
 const Chatbot = () => {
-  const whatsappNumber = "254731913293"; // Akira Safaris WhatsApp number
-  const defaultMessage = "Hello Akira Safaris, I'm interested in your safari packages!";
+  const whatsappNumber = "254769963782"; // MK Agribusiness Consultants WhatsApp number from ContactSection
+  const defaultMessage = "Hello MK Agribusiness Consultants, I'm interested in your agribusiness services!";
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
 
   return (
@@ -17,7 +17,7 @@ const Chatbot = () => {
         zIndex: 1001,
       }}
     >
-      <Tooltip title="Chat with us on WhatsApp">
+      <Tooltip title="Chat with MK Agribusiness on WhatsApp">
         <IconButton
           component="a"
           href={whatsappLink}

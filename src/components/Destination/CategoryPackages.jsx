@@ -408,7 +408,6 @@ export default function CategoryPackages() {
       return () => clearTimeout(timer);
     }
   }, [location.state]);
-  const destinationId = location.state?.destinationId;
 
   // Auto-transition images in dialog if there are multiple
   useEffect(() => {
@@ -424,16 +423,8 @@ export default function CategoryPackages() {
   }, [packageDialogOpen, selectedPackage]);
 
   const handlePackageClick = (pkg) => {
-    // Navigate to PackageDetail page instead of opening dialog
-    navigate("/package-detail", {
-      state: {
-        package: pkg,
-        category: category,
-        destination: destination,
-        destinationId: destinationId,
-        returnPath: location.pathname,
-      },
-    });
+    setSelectedPackage(pkg);
+    setPackageDialogOpen(true);
   };
 
   const handleClosePackageDialog = () => {
@@ -443,30 +434,11 @@ export default function CategoryPackages() {
   };
 
   const handleInquire = (pkg) => {
-    // Create unique identifier for the package
-    const packageId = `${category?.category_name || 'unknown'}-${pkg.number || 'unknown'}`;
-    
-    // Navigate to dedicated package inquiry page with package details
-    navigate("/package-inquiry", { 
-      state: { 
-        package: pkg,
-        destination: destination,
-        category: category, // Pass the full category object, not just the name
-        categoryName: category?.category_name, // Also pass name for convenience
-        packageId: packageId, // Pass the unique ID
-        returnPath: location.pathname, // Store the return path
-        destinationId: destinationId, // Pass destination ID
-      } 
-    });
+    navigate("/book-consultation");
   };
 
   const handleBackToCategories = () => {
-    // Navigate back to destination details page
-    if (destinationId) {
-      navigate(`/destination/${destinationId}`);
-    } else {
-      navigate(-1);
-    }
+    navigate(-1);
   };
 
   // Check if category is valid (must have packages array)
@@ -474,7 +446,7 @@ export default function CategoryPackages() {
     return (
       <Container maxWidth="md" sx={{ py: 8 }}>
         <Alert severity="error" sx={{ mb: 3 }}>
-          Category not found or invalid. Please navigate from a destination page.
+          Category not found or invalid. Please go back.
         </Alert>
         <Button
           startIcon={<ArrowBack />}
@@ -487,7 +459,7 @@ export default function CategoryPackages() {
             },
           }}
         >
-          Back to Destination
+          Back
         </Button>
       </Container>
     );
@@ -553,7 +525,7 @@ export default function CategoryPackages() {
             Back to Categories
           </Button>
 
-          {/* Main Card Container - Like PackageInquiry */}
+          {/* Main Card Container */}
           <Paper
             elevation={3}
             sx={{
