@@ -737,6 +737,7 @@ export default function BlogDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
+          fontFamily: '"Open Sans", sans-serif',
         }}
       >
         <Box sx={{ position: "relative", zIndex: 1 }}>
@@ -756,6 +757,7 @@ export default function BlogDetail() {
           bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
             "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
+          fontFamily: '"Open Sans", sans-serif',
         }}
       >
         <Container maxWidth="md" sx={{ py: 8 }}>
@@ -888,6 +890,7 @@ export default function BlogDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
+          fontFamily: '"Open Sans", sans-serif',
         }}
       >
       <Container

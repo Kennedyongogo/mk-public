@@ -145,6 +145,7 @@ export default function BookConsultation() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
+          fontFamily: '"Open Sans", sans-serif',
         }}
       >
         <Container

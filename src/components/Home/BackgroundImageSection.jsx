@@ -210,6 +210,7 @@ export default function BackgroundImageSection() {
         position: "relative",
         zIndex: 1,
         backgroundColor: "#f6f8f6", // Light green-tinted background
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card
@@ -302,8 +303,7 @@ export default function BackgroundImageSection() {
             >
               <Typography
                 sx={{
-                  fontFamily:
-                    "'Brush Script MT', 'Lucida Handwriting', 'Dancing Script', cursive",
+                  fontFamily: '"Open Sans", sans-serif',
                   fontSize: {
                     xs: "1.5rem",
                     sm: "2rem",

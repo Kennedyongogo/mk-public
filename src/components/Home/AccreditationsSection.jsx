@@ -49,6 +49,7 @@ export default function AccreditationsSection() {
         position: "relative",
         zIndex: 1,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card

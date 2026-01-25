@@ -75,6 +75,7 @@ export default function KeyServicesSection() {
         pt: 0,
         pb: 0,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card

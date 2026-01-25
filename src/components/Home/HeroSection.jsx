@@ -104,6 +104,7 @@ export default function HeroSection() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 4,
+                fontFamily: '"Open Sans", sans-serif',
               }}
             >
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -111,7 +112,7 @@ export default function HeroSection() {
                   variant="h1"
                   sx={{
                     fontSize: { xs: "2.25rem", md: "3.75rem" },
-                    fontWeight: 900,
+                    fontWeight: 600,
                     color: "white",
                     lineHeight: 1.2,
                   }}
@@ -145,7 +146,7 @@ export default function HeroSection() {
                     py: 2,
                     px: 4,
                     fontSize: "1rem",
-                    fontWeight: 700,
+                    fontWeight: 600,
                     borderRadius: 2,
                     backgroundColor: "#13ec13",
                     color: "#0d1b0d",
@@ -173,7 +174,7 @@ export default function HeroSection() {
                     py: 2,
                     px: 4,
                     fontSize: "1rem",
-                    fontWeight: 700,
+                    fontWeight: 600,
                     borderRadius: 2,
                     borderColor: "rgba(255, 255, 255, 0.2)",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",

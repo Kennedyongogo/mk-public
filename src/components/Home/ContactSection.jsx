@@ -19,6 +19,7 @@ export default function ContactSection() {
         pb: { xs: 0.5, sm: 0.75, md: 1 },
         px: 0,
         background: "rgba(255, 255, 255, 0.5)",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card

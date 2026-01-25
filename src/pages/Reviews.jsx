@@ -188,6 +188,7 @@ export default function Reviews() {
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Container

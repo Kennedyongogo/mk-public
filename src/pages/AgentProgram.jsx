@@ -352,6 +352,7 @@ export default function AgentProgram() {
         px: 0,
         bgcolor: "#f6f8f6",
         minHeight: "100vh",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       {/* Hero Section */}

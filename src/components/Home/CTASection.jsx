@@ -130,10 +130,11 @@ export default function CTASection() {
         pt: 0.75,
         pb: 0.75,
         px: 0,
-        bgcolor: "#f6f8f6", // Light green-tinted background
+        bgcolor: "#f6f8f6",
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Container

@@ -218,7 +218,7 @@ export default function Projects() {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f6f8f6", minHeight: "100vh", pt: { xs: 1, md: 2 }, pb: 1 }}>
+    <Box sx={{ bgcolor: "#f6f8f6", minHeight: "100vh", pt: { xs: 1, md: 2 }, pb: 1, fontFamily: '"Open Sans", sans-serif' }}>
       <Card
         sx={{
           mt: 0.3,

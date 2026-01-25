@@ -103,6 +103,7 @@ const CharityMap = ({ projects = [] }) => {
         position: "relative",
         zIndex: 1,
         background: "#FFFFFF",
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card

@@ -148,6 +148,7 @@ export default function Team() {
         display: "flex",
         flexDirection: "column",
         py: { xs: 0.75, md: 0.75 },
+        fontFamily: '"Open Sans", sans-serif',
       }}
     >
       <Card
