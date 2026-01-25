@@ -277,20 +277,14 @@ export default function Projects() {
 
               </Box>
 
-          {/* Populated Stats Cards Section - Side by Side in a Row */}
+          {/* Populated Stats Cards Section - Stacked on small, row on medium+ */}
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
-              flexWrap: "nowrap", // Force all in a row
-              gap: 2, // Tighten gap
+              flexDirection: { xs: "column", md: "row" },
+              gap: { xs: 1.5, md: 2 },
               width: "100%",
-              mb: 2, // Reduced further
-              overflowX: "auto", // Scrollable if row is wider than screen
-              pb: 1, // Space for scrollbar
-              "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar for cleaner look
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
+              mb: 2,
             }}
           >
             {stats.map((stat, idx) => (
@@ -298,7 +292,7 @@ export default function Projects() {
                 key={idx}
                 sx={{
                   flex: 1,
-                  minWidth: { xs: "280px", md: "auto" },
+                  minWidth: 0,
                   display: "flex",
                 }}
               >
@@ -307,7 +301,7 @@ export default function Projects() {
                     width: "100%",
                     display: "flex",
                     flexDirection: "column",
-                    borderRadius: 4,
+                    borderRadius: { xs: 2, md: 4 },
                     border: "1px solid rgba(15, 189, 15, 0.1)",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
                     transition: "all 0.4s ease",
@@ -320,14 +314,14 @@ export default function Projects() {
                 >
                   <CardContent
                     sx={{
-                      p: { xs: 2, md: 3 }, // Further reduced padding
+                      p: { xs: 1.5, md: 3 },
                       flex: 1,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       textAlign: "center",
                       justifyContent: "center",
-                      minHeight: "150px", // Even more compact height
+                      minHeight: { xs: "90px", md: "150px" },
                     }}
                   >
                     <Typography
@@ -335,10 +329,10 @@ export default function Projects() {
                       sx={{
                         color: "rgba(0,0,0,0.5)",
                         fontWeight: 700,
-                        mb: 1,
+                        mb: { xs: 0.5, md: 1 },
                         textTransform: "uppercase",
                         letterSpacing: "0.1em",
-                        fontSize: "0.75rem",
+                        fontSize: { xs: "0.65rem", md: "0.75rem" },
                       }}
                     >
                       {stat.label}
@@ -348,8 +342,8 @@ export default function Projects() {
                       sx={{
                         fontWeight: 900,
                         color: "#0d1b0d",
-                        mb: 1, // Reduced margin
-                        fontSize: { xs: "1.5rem", md: "2rem" }, // Smaller font size
+                        mb: { xs: 0.5, md: 1 },
+                        fontSize: { xs: "1.15rem", md: "2rem" },
                       }}
                     >
                       {stat.value}
@@ -358,17 +352,20 @@ export default function Projects() {
                       sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 1,
+                        gap: { xs: 0.5, md: 1 },
                         color: "#0fbd0f",
                         bgcolor: "rgba(15, 189, 15, 0.08)",
-                        px: 2,
-                        py: 0.5,
+                        px: { xs: 1.25, md: 2 },
+                        py: { xs: 0.25, md: 0.5 },
                         borderRadius: "99px",
                       }}
                     >
                       {stat.icon}
                       <Typography
-                        sx={{ fontWeight: 800, fontSize: "0.85rem" }}
+                        sx={{
+                          fontWeight: 800,
+                          fontSize: { xs: "0.7rem", md: "0.85rem" },
+                        }}
                       >
                         {stat.change}
                       </Typography>
