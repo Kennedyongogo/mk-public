@@ -280,7 +280,7 @@ export default function Team() {
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center" }}>
                   <Button
                     variant="contained"
-                    onClick={() => navigate("/agent-program")}
+                    onClick={() => navigate("/services")}
                     sx={{
                       bgcolor: "#11d411",
                       color: "white",

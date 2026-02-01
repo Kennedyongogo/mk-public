@@ -246,7 +246,7 @@ function App() {
               }
             />
             <Route
-              path="/agent-program"
+              path="/services"
               element={
                 <>
                   <AgentProgram />

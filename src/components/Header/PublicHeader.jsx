@@ -67,7 +67,7 @@ export default function PublicHeader() {
       {
         label: "Our Services",
         icon: <Work />,
-        route: "/agent-program",
+        route: "/services",
         color: "#0fbd0f", // Primary Green
       },
       {
@@ -94,7 +94,7 @@ export default function PublicHeader() {
 
   // Listen to hero section visibility events from HeroSection component
   useEffect(() => {
-    if (location.pathname !== "/" && location.pathname !== "/agent-program") {
+    if (location.pathname !== "/" && location.pathname !== "/services") {
       setIsHeroVisible(false);
       setIsAtTop(false);
       return;
@@ -153,7 +153,7 @@ export default function PublicHeader() {
 
       // Update isAtTop based on scroll position
       // On small screens, when scrolling back up, ensure header becomes transparent at top
-      if (location.pathname === "/" || location.pathname === "/agent-program") {
+      if (location.pathname === "/" || location.pathname === "/services") {
         const isAtVeryTop = scrollY <= 20;
 
         // Check if hero section is actually visible in viewport (only for home page)
@@ -173,8 +173,8 @@ export default function PublicHeader() {
             ? true
             : (isHeroVisible || heroIsVisibleInViewport) && scrollY <= 50;
           setIsAtTop(newIsAtTop);
-        } else if (location.pathname === "/agent-program") {
-          // For agent-program page, make header transparent when at top
+        } else if (location.pathname === "/services") {
+          // For services page, make header transparent when at top
           setIsAtTop(isAtVeryTop);
         }
       }
@@ -227,7 +227,7 @@ export default function PublicHeader() {
             break;
           }
         }
-      } else if (location.pathname === "/agent-program") {
+      } else if (location.pathname === "/services") {
         // Hide header immediately when scrolling down from hero section (same as homepage)
         const scrollY = window.scrollY;
         const isAtVeryTop = scrollY <= 20;
@@ -235,7 +235,7 @@ export default function PublicHeader() {
         // Hide header immediately when user starts scrolling down (any scroll > 20px)
         setIsHeaderVisible(isAtVeryTop);
       } else if (location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") {
-        // Hide header immediately when scrolling down (same as homepage and agent-program)
+        // Hide header immediately when scrolling down (same as homepage and services)
         const scrollY = window.scrollY;
         const isAtVeryTop = scrollY <= 20;
         
@@ -258,8 +258,8 @@ export default function PublicHeader() {
   const leftNavItems = []; // No left nav items - all go to right
   const rightNavItems = navItems; // All nav items on the right
 
-  // Check if header is transparent (on home page or agent-program page when at absolute top)
-  const isServicesPage = location.pathname === "/agent-program";
+  // Check if header is transparent (on home page or services page when at absolute top)
+  const isServicesPage = location.pathname === "/services";
   const isHeaderTransparent = (isHomePage || isServicesPage) && isAtTop;
 
   // Debug logging for font size conditions
@@ -333,28 +333,28 @@ export default function PublicHeader() {
         elevation={0}
         sx={{
           backgroundColor:
-            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
+            (location.pathname === "/" || location.pathname === "/services") && isAtTop
               ? "transparent" // Transparent when at absolute top on home page or services page
               : "rgba(246, 248, 246, 0.8)", // Light background with transparency otherwise
           backdropFilter:
-            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop ? "none" : "blur(12px)",
+            (location.pathname === "/" || location.pathname === "/services") && isAtTop ? "none" : "blur(12px)",
           boxShadow:
-            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
+            (location.pathname === "/" || location.pathname === "/services") && isAtTop
               ? "none"
               : "0 8px 32px rgba(26, 26, 26, 0.12)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           borderBottom:
-            (location.pathname === "/" || location.pathname === "/agent-program") && isAtTop
+            (location.pathname === "/" || location.pathname === "/services") && isAtTop
               ? "none"
               : "1px solid rgba(15, 189, 15, 0.15)",
-          // Hide header when scrolling past hero section on home page, agent-program page, team page, blog page, or projects page
+          // Hide header when scrolling past hero section on home page, services page, team page, blog page, or projects page
           transform:
-            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible
+            (location.pathname === "/" || location.pathname === "/services" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible
               ? "translateY(-100%)"
               : "translateY(0)",
-          opacity: (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? 0 : 1,
+          opacity: (location.pathname === "/" || location.pathname === "/services" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? 0 : 1,
           pointerEvents:
-            (location.pathname === "/" || location.pathname === "/agent-program" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? "none" : "auto",
+            (location.pathname === "/" || location.pathname === "/services" || location.pathname === "/team" || location.pathname === "/blog" || location.pathname === "/projects") && !isHeaderVisible ? "none" : "auto",
           // Hide active underline when any nav button is hovered
           "&:has(button:hover) button[data-active='true']::after": {
             opacity: 0,
@@ -471,7 +471,7 @@ export default function PublicHeader() {
                           color:
                             isActiveItem && location.pathname !== "/"
                               ? item.color
-                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/" || location.pathname === "/agent-program"))
+                              : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/" || location.pathname === "/services"))
                                 ? "white"
                                 : "text.primary",
                         fontSize: {
@@ -538,13 +538,13 @@ export default function PublicHeader() {
                           width: "60%",
                           height: "3px",
                           backgroundColor:
-                            (location.pathname === "/" || (location.pathname === "/agent-program" && isHeaderTransparent)) ? "white" : item.color,
+                            (location.pathname === "/" || (location.pathname === "/services" && isHeaderTransparent)) ? "white" : item.color,
                           borderRadius: "2px 2px 0 0",
                           transition: "all 0.3s ease-out",
                           zIndex: 1,
                         },
                         "&::after":
-                          isActiveItem && (location.pathname === "/" || (location.pathname === "/agent-program" && isHeaderTransparent))
+                          isActiveItem && (location.pathname === "/" || (location.pathname === "/services" && isHeaderTransparent))
                             ? {
                                 content: '""',
                                 position: "absolute",
@@ -640,7 +640,7 @@ export default function PublicHeader() {
                   marginLeft: "auto",
                   color: mobileMenuOpen
                     ? "#0fbd0f" // Primary Green
-                    : (isHeaderTransparent && isHeaderVisible) || (!scrolled && location.pathname === "/")
+                    : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/" || location.pathname === "/services"))
                       ? "white"
                       : "#1a1a1a",
                   transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",

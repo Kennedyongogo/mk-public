@@ -611,7 +611,7 @@ export default function Projects() {
                 </Button>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate("/agent-program")}
+                  onClick={() => navigate("/services")}
                   sx={{
                     borderColor: "rgba(255,255,255,0.2)",
                     color: "white",

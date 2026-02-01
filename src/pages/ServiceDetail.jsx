@@ -563,7 +563,7 @@ export default function ServiceDetail() {
           </Alert>
           <Button
             startIcon={<ArrowBack />}
-            onClick={() => navigate("/agent-program")}
+            onClick={() => navigate("/services")}
             variant="contained"
             sx={{
               backgroundColor: "#13ec13",
@@ -629,7 +629,7 @@ export default function ServiceDetail() {
           {/* Back Button */}
           <Button
             startIcon={<ArrowBack />}
-            onClick={() => navigate("/agent-program")}
+            onClick={() => navigate("/services")}
             sx={{
               mt: 0.5,
               mb: 0.75,

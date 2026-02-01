@@ -36,6 +36,10 @@ const categories = [
   "Agri-Tech",
   "Climate-Smart",
   "Livestock",
+  "Regenerative",
+  "Marketing",
+  "Sustainable Tech",
+  "Other",
 ];
 
 const featuredPosts = [
