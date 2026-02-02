@@ -595,7 +595,7 @@ export default function PublicHeader() {
               })}
             </Box>
 
-            {/* Book a Consultation Button - Far Right */}
+            {/* View Marketplace Button - Far Right */}
             <Box
               sx={{
                 display: { xs: "none", lg: "flex" },
@@ -606,7 +606,7 @@ export default function PublicHeader() {
             >
               <Button
                 variant="contained"
-                onClick={() => navigate("/book-consultation")}
+                onClick={() => navigate("/marketplace")}
                 sx={{
                   px: 3,
                   py: 1.5,
@@ -633,7 +633,7 @@ export default function PublicHeader() {
                   },
                 }}
               >
-                Book a Consultation
+                View Marketplace
               </Button>
             </Box>
 
@@ -840,7 +840,7 @@ export default function PublicHeader() {
             fullWidth
             onClick={() => {
               setMobileMenuOpen(false);
-              navigate("/book-consultation");
+              navigate("/marketplace");
             }}
             sx={{
               px: 3,
@@ -868,7 +868,7 @@ export default function PublicHeader() {
               },
             }}
           >
-            Book a Consultation
+            View Marketplace
           </Button>
         </Box>
       </Drawer>
