@@ -26,6 +26,7 @@ const Services = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
 const BookConsultation = lazy(() => import("./pages/BookConsultation"));
+const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,16 +45,14 @@ function PrivateRoute({ user, children }) {
   return children;
 }
 
-function App() {
-  const [user, setUser] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(true); // Drawer open by default
+function AppLayout() {
+  const location = useLocation();
+  const hideHeader = location.pathname === "/marketplace";
 
   return (
-    <HelmetProvider>
-      <ThemeProvider theme={theme}>
-        <Router style={{ margin: 0, padding: 0 }}>
-          <ScrollToTop />
-          <PublicHeader />
+    <>
+      <ScrollToTop />
+      {!hideHeader && <PublicHeader />}
         <Suspense
           fallback={
             <Box
@@ -272,11 +271,22 @@ function App() {
                 </>
               }
             />
+            <Route path="/marketplace" element={<MarketplaceLogin />} />
           </Routes>
         </Suspense>
         <Chatbot />
-      </Router>
-    </ThemeProvider>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <HelmetProvider>
+      <ThemeProvider theme={theme}>
+        <Router style={{ margin: 0, padding: 0 }}>
+          <AppLayout />
+        </Router>
+      </ThemeProvider>
     </HelmetProvider>
   );
 }

@@ -1,0 +1,108 @@
+/**
+ * Public API helpers for contact, quote, and consultation submissions.
+ * Uses VITE_API_URL in production if set; otherwise same-origin (dev proxy).
+ */
+const getBaseUrl = () => {
+  const env = typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL;
+  return env ? String(env).replace(/\/$/, "") : "";
+};
+
+/**
+ * Submit Contact Us form (public).
+ * @param {{ fullName: string, email: string, phone?: string, serviceType?: string, message: string }} body
+ * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}
+ */
+export async function postContact(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/contact`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to send message");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Submit Get Quotation form (public).
+ * @param {{ projectType: string, location: string, scaleOfOperation: string, expectedOutcomes: string, service?: string }} body
+ * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}
+ */
+export async function postQuote(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/quote`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to submit quote request");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Submit Book Consultation form (public).
+ * @param {{ fullName: string, email: string, phone: string, consultationType: string, preferredDate?: string, preferredTime?: string, message?: string }} body
+ * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}
+ */
+export async function postConsultation(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/consultation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to book consultation");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Subscribe to newsletter (public).
+ * @param {{ email: string, source?: string }} body
+ * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}
+ */
+export async function postNewsletter(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/newsletter`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to subscribe");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}

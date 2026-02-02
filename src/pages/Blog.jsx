@@ -26,6 +26,8 @@ import {
   Agriculture,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import { postNewsletter } from "../api";
 
 const MotionBox = motion(Box);
 
@@ -80,6 +82,8 @@ export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -165,6 +169,50 @@ export default function Blog() {
   const handleReadArticle = (post) => {
     const slug = post.slug || createSlug(post);
     navigate(`/blog/${slug}`);
+  };
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    const email = newsletterEmail.trim().toLowerCase();
+    if (!email) {
+      Swal.fire({
+        icon: "warning",
+        title: "Email required",
+        text: "Please enter your email address.",
+        confirmButtonColor: "#0fbd0f",
+      });
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid email",
+        text: "Please enter a valid email address.",
+        confirmButtonColor: "#0fbd0f",
+      });
+      return;
+    }
+    setNewsletterLoading(true);
+    try {
+      const data = await postNewsletter({ email, source: "blog" });
+      Swal.fire({
+        icon: "success",
+        title: "Subscribed!",
+        text: data.message || "You'll receive our latest updates.",
+        confirmButtonColor: "#0fbd0f",
+      });
+      setNewsletterEmail("");
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Subscription failed",
+        text: err.message || "Please try again later.",
+        confirmButtonColor: "#0fbd0f",
+      });
+    } finally {
+      setNewsletterLoading(false);
+    }
   };
 
   if (loading) {
@@ -476,6 +524,7 @@ export default function Blog() {
                 <Grid item xs={12} md={7} sx={{ width: "100%" }}>
                   <Box
                     component="form"
+                    onSubmit={handleNewsletterSubmit}
                     sx={{
                       display: "flex",
                       gap: 2,
@@ -486,7 +535,11 @@ export default function Blog() {
                   >
                     <TextField
                       fullWidth
+                      type="email"
                       placeholder="Enter your email"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      disabled={newsletterLoading}
                       sx={{
                         flex: 1,
                         minWidth: { xs: "100%", sm: 200 },
@@ -503,7 +556,9 @@ export default function Blog() {
                       }}
                     />
                     <Button
+                      type="submit"
                       variant="contained"
+                      disabled={newsletterLoading}
                       sx={{
                         bgcolor: "#0fbd0f",
                         color: "white",
@@ -522,7 +577,7 @@ export default function Blog() {
                         "&:focus-visible": { outline: "none" },
                       }}
                     >
-                      Subscribe Now
+                      {newsletterLoading ? "Subscribing..." : "Subscribe Now"}
                     </Button>
                   </Box>
                 </Grid>

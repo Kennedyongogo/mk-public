@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { postContact } from "../api";
 import {
   ArrowBack,
   CalendarToday,
@@ -384,18 +385,9 @@ export default function BlogDetail() {
     setContactLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await postContact(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to send message");
       }
 

@@ -39,6 +39,7 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { postQuote, postContact } from "../api";
 
 const MotionBox = motion(Box);
 
@@ -164,18 +165,9 @@ export default function Services() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/quote", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await postQuote(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to submit quote request");
       }
 
@@ -229,18 +221,9 @@ export default function Services() {
     setContactLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(contactFormData),
-      });
+      const data = await postContact(contactFormData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to send message");
       }
 

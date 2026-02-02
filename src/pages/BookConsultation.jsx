@@ -14,9 +14,15 @@ import {
   MenuItem,
   CircularProgress,
 } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { ArrowBack, Send, CalendarToday, AccessTime } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import dayjs from "dayjs";
 import Swal from "sweetalert2";
+import { postConsultation } from "../api";
 
 const MotionBox = motion(Box);
 
@@ -69,18 +75,9 @@ export default function BookConsultation() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/consultation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await postConsultation(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to book consultation");
       }
 
@@ -358,65 +355,98 @@ export default function BookConsultation() {
                     </Select>
                   </FormControl>
 
-                  {/* Preferred Date and Time */}
-                  <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
-                    <TextField
-                      fullWidth
-                      label="Preferred Date"
-                      type="date"
-                      value={formData.preferredDate}
-                      onChange={(e) => handleInputChange("preferredDate", e.target.value)}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        startAdornment: <CalendarToday sx={{ mr: 1, color: "#13ec13" }} />,
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          backgroundColor: "white",
-                          borderRadius: 2,
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#13ec13",
+                  {/* Preferred Date and Time - calendar pickers */}
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
+                      <DatePicker
+                        label="Preferred Date"
+                        value={formData.preferredDate ? dayjs(formData.preferredDate) : null}
+                        onChange={(newValue) =>
+                          handleInputChange("preferredDate", newValue ? dayjs(newValue).format("YYYY-MM-DD") : "")
+                        }
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            sx: {
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "white",
+                                borderRadius: 2,
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#13ec13",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#13ec13",
+                                },
+                              },
+                              "& .MuiInputLabel-root.Mui-focused": {
+                                color: "#13ec13",
+                              },
+                              "& .MuiIconButton-root:focus, & .MuiIconButton-root:focus-visible": {
+                                outline: "none",
+                                boxShadow: "none",
+                              },
+                            },
                           },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#13ec13",
+                          openPickerButton: {
+                            sx: {
+                              color: "#13ec13",
+                              "&:focus": { outline: "none" },
+                              "&:focus-visible": { outline: "none", boxShadow: "none" },
+                            },
                           },
-                        },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#13ec13",
-                        },
-                      }}
-                    />
-                    <TextField
-                      fullWidth
-                      label="Preferred Time"
-                      type="time"
-                      value={formData.preferredTime}
-                      onChange={(e) => handleInputChange("preferredTime", e.target.value)}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        startAdornment: <AccessTime sx={{ mr: 1, color: "#13ec13" }} />,
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          backgroundColor: "white",
-                          borderRadius: 2,
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#13ec13",
+                        }}
+                        slots={{
+                          openPickerIcon: CalendarToday,
+                        }}
+                        minDate={dayjs()}
+                      />
+                      <TimePicker
+                        label="Preferred Time"
+                        value={
+                          formData.preferredTime
+                            ? dayjs(`2000-01-01T${formData.preferredTime}`)
+                            : null
+                        }
+                        onChange={(newValue) =>
+                          handleInputChange("preferredTime", newValue ? dayjs(newValue).format("HH:mm") : "")
+                        }
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            sx: {
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "white",
+                                borderRadius: 2,
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#13ec13",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#13ec13",
+                                },
+                              },
+                              "& .MuiInputLabel-root.Mui-focused": {
+                                color: "#13ec13",
+                              },
+                              "& .MuiIconButton-root:focus, & .MuiIconButton-root:focus-visible": {
+                                outline: "none",
+                                boxShadow: "none",
+                              },
+                            },
                           },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#13ec13",
+                          openPickerButton: {
+                            sx: {
+                              color: "#13ec13",
+                              "&:focus": { outline: "none" },
+                              "&:focus-visible": { outline: "none", boxShadow: "none" },
+                            },
                           },
-                        },
-                        "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#13ec13",
-                        },
-                      }}
-                    />
-                  </Box>
+                        }}
+                        slots={{
+                          openPickerIcon: AccessTime,
+                        }}
+                      />
+                    </Box>
+                  </LocalizationProvider>
 
                   {/* Message */}
                   <TextField

@@ -25,6 +25,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import { postQuote } from "../api";
 import {
   ArrowBack,
   Facebook,
@@ -429,13 +430,8 @@ export default function ServiceDetail() {
     }
     setQuoteLoading(true);
     try {
-      const response = await fetch("/api/quote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...quoteFormData, service: service?.title }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
+      const data = await postQuote({ ...quoteFormData, service: service?.title });
+      if (!data.success) {
         throw new Error(data.message || "Failed to submit quote request");
       }
       Swal.fire({

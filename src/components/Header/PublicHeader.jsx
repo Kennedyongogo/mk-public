@@ -373,20 +373,20 @@ export default function PublicHeader() {
               display: "flex",
               alignItems: "center",
               width: "100%",
-              justifyContent: "space-between",
-              position: "relative",
+              minWidth: 0,
+              gap: { md: 1, lg: 2 },
             }}
           >
-            {/* Left Section - Logo */}
+            {/* Left Section - Logo: one line, font scales with width to fit */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                flex: 1,
-                justifyContent: "flex-start",
+                flex: "0 1 auto",
+                minWidth: 0,
+                maxWidth: { md: "24%", lg: "28%", xl: "30%" },
               }}
             >
-              {/* Logo Section - Left-aligned on all pages */}
               <Fade in={true} timeout={1000}>
                 <Box
                   sx={{
@@ -394,65 +394,57 @@ export default function PublicHeader() {
                     alignItems: "center",
                     cursor: "pointer",
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                    position: "relative",
+                    minWidth: 0,
+                    width: "100%",
                     "&:hover": {
                       transform: "scale(1.05) translateY(-2px)",
                     },
                   }}
                   onClick={() => navigate("/")}
                 >
-                  <Box
+                  <Typography
+                    component="span"
                     sx={{
-                      display: { xs: "block", sm: "block" },
+                      fontFamily: "inherit",
+                      fontWeight: 700,
+                      fontSize: "clamp(0.5rem, 0.65vw + 0.5rem, 1.05rem)",
+                      color:
+                        isHeaderTransparent && isHeaderVisible
+                          ? "#ffffff"
+                          : "#228b22",
+                      lineHeight: 1.1,
+                      transition: "color 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                      textShadow:
+                        isHeaderTransparent && isHeaderVisible
+                          ? "2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 0, 0, 0.4)"
+                          : "none",
+                      background: "none",
+                      backgroundClip: "unset",
+                      WebkitBackgroundClip: "unset",
+                      WebkitTextFillColor:
+                        isHeaderTransparent && isHeaderVisible
+                          ? "#ffffff"
+                          : "#228b22",
+                      letterSpacing: "0.02em",
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontFamily: "inherit",
-                        fontWeight: 700,
-                        fontSize: { xs: "0.85rem", sm: "0.95rem", md: "1.1rem" },
-                        // White color in hero section, green elsewhere
-                        color:
-                          isHeaderTransparent && isHeaderVisible
-                            ? "#ffffff" // White when in hero section
-                            : "#228b22", // Green when inside header
-                        lineHeight: 1.1,
-                        transition:
-                          "color 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-                        textShadow:
-                          isHeaderTransparent && isHeaderVisible
-                            ? "2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 0, 0, 0.4)"
-                            : "none",
-                        background: "none",
-                        backgroundClip: "unset",
-                        WebkitBackgroundClip: "unset",
-                        WebkitTextFillColor:
-                          isHeaderTransparent && isHeaderVisible
-                            ? "#ffffff"
-                            : "#228b22",
-                        letterSpacing: "0.02em",
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap", // Prevent text wrapping
-                      }}
-                    >
-                      MK AGRIBUSINESS CONSULTANTS
-                    </Typography>
-                  </Box>
+                    MK AGRIBUSINESS CONSULTANTS
+                  </Typography>
                 </Box>
               </Fade>
-
             </Box>
 
-            {/* Center Navigation Items */}
+            {/* Center Navigation Items - flex middle so never overlapped by logo */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
-                gap: 1,
+                flex: "1 1 auto",
+                minWidth: 0,
+                gap: { md: 0.5, lg: 1 },
                 alignItems: "center",
                 justifyContent: "center",
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
               }}
             >
               {rightNavItems.map((item, index) => {
@@ -480,15 +472,11 @@ export default function PublicHeader() {
                               : (isHeaderTransparent && isHeaderVisible) || (!scrolled && (location.pathname === "/" || location.pathname === "/services"))
                                 ? "white"
                                 : "text.primary",
-                        fontSize: {
-                          md: "0.875rem",
-                          lg: "0.925rem",
-                          xl: "0.975rem",
-                        },
+                        fontSize: "clamp(0.7rem, 0.9vw + 0.5rem, 0.975rem)",
                         fontWeight:
                           isActiveItem && location.pathname !== "/" ? 700 : 600,
-                        px: { md: 2, lg: 1.5, xl: 2 },
-                        py: { md: 1.2, lg: 1, xl: 1.2 },
+                        px: { md: 1, lg: 1.5, xl: 2 },
+                        py: { md: 0.9, lg: 1, xl: 1.2 },
                         borderRadius: "25px",
                         textTransform: "uppercase",
                         transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -514,13 +502,9 @@ export default function PublicHeader() {
                           outline: "none",
                         },
                         "& .MuiButton-startIcon": {
-                          marginRight: { md: 1, lg: 0.75, xl: 1 },
+                          marginRight: { md: 0.5, lg: 0.75, xl: 1 },
                           "& > *:nth-of-type(1)": {
-                            fontSize: {
-                              md: "1.1rem",
-                              lg: "1rem",
-                              xl: "1.1rem",
-                            },
+                            fontSize: "clamp(0.9rem, 1vw, 1.1rem)",
                             color:
                               isActiveItem && location.pathname !== "/"
                                 ? item.color
@@ -600,7 +584,7 @@ export default function PublicHeader() {
               sx={{
                 display: { xs: "none", lg: "flex" },
                 alignItems: "center",
-                flex: 1,
+                flex: "0 0 auto",
                 justifyContent: "flex-end",
               }}
             >

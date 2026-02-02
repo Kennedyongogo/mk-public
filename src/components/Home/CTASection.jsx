@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { Close, Send } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { postContact } from "../../api";
 
 export default function CTASection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -88,18 +89,9 @@ export default function CTASection() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const data = await postContact(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || "Failed to send message");
       }
 
