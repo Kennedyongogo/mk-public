@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -7,7 +7,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Grid,
+  CircularProgress,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -15,27 +15,37 @@ import { motion } from "framer-motion";
 
 const MotionBox = motion(Box);
 
-const faqs = [
-  {
-    question: "How much do your services cost?",
-    answer: "Pricing depends on the project size, scope, and complexity. We provide customized quotations after a brief consultation.",
-  },
-  {
-    question: "Do you help in writing donor or bank proposals?",
-    answer: "Yes, we prepare complete, fundable proposals and support clients through the submission process.",
-  },
-  {
-    question: "Can you visit my farm physically?",
-    answer: "Absolutely. We conduct on-site farm assessments to ensure accurate recommendations.",
-  },
-  {
-    question: "Do you help with sourcing farm inputs and markets?",
-    answer: "Yes, we link farmers to verified suppliers and market outlets.",
-  },
-];
+const FAQS_API = "/api/faqs/public";
 
 export default function AccreditationsSection() {
   const [expanded, setExpanded] = useState(false);
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch(FAQS_API);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          setFaqs(data.data);
+        } else {
+          setFaqs([]);
+        }
+      } catch (err) {
+        console.error("Error loading FAQs:", err);
+        setError(err.message || "Failed to load FAQs");
+        setFaqs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -113,23 +123,41 @@ export default function AccreditationsSection() {
               />
             </Box>
 
-            {/* FAQ List */}
-            <Box sx={{ width: "100%" }}>
-                {faqs.map((faq, index) => (
+            {/* FAQ List – padding keeps all cards (including expanded) aligned; no margin on accordions */}
+            <Box sx={{ width: "100%", px: { xs: 2, md: 3 }, boxSizing: "border-box" }}>
+              {loading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                  <CircularProgress sx={{ color: "#13ec13" }} />
+                </Box>
+              ) : error ? (
+                <Box sx={{ textAlign: "center", py: 4, px: 2 }}>
+                  <Typography sx={{ color: "#4c664c", fontSize: "1rem" }}>
+                    Unable to load FAQs. Please try again later.
+                  </Typography>
+                </Box>
+              ) : faqs.length === 0 ? (
+                <Box sx={{ textAlign: "center", py: 4, px: 2 }}>
+                  <Typography sx={{ color: "#4c664c", fontSize: "1rem" }}>
+                    No FAQs at the moment.
+                  </Typography>
+                </Box>
+              ) : (
+                faqs.map((faq, index) => (
                   <Accordion
-                    key={index}
+                    key={faq.id || index}
                     expanded={expanded === `panel${index}`}
                     onChange={handleChange(`panel${index}`)}
                     elevation={0}
                     sx={{
                       mb: 2,
-                      mx: 0.75,
-                      width: "calc(100% - 12px)", // Accounts for mx: 0.75 (6px + 6px)
+                      mx: 0,
+                      width: "100%",
+                      boxSizing: "border-box",
                       background: "#f8f9f8", // Subtle off-white background for distinction
                       border: "1px solid rgba(15, 189, 15, 0.2)", // More visible border
                       borderRadius: "16px !important",
                       overflow: "hidden",
-                      transition: "all 0.3s ease",
+                      transition: "border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease",
                       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", // Subtle shadow for depth
                       "&::before": { display: "none" },
                       "&:hover": {
@@ -156,9 +184,20 @@ export default function AccreditationsSection() {
                       sx={{
                         px: { xs: 2, md: 3 },
                         py: 1,
+                        outline: "none",
+                        "&:focus": { outline: "none", boxShadow: "none" },
+                        "&:focus-visible": { outline: "none", boxShadow: "none" },
                         "& .MuiAccordionSummary-content": {
                           alignItems: "center",
                           gap: 2,
+                        },
+                        "& .MuiAccordionSummary-expandIconWrapper": {
+                          "&:focus": { outline: "none", boxShadow: "none" },
+                          "&:focus-visible": { outline: "none", boxShadow: "none" },
+                        },
+                        "& .MuiButtonBase-root": {
+                          "&:focus": { outline: "none", boxShadow: "none" },
+                          "&:focus-visible": { outline: "none", boxShadow: "none" },
                         },
                       }}
                     >
@@ -185,7 +224,9 @@ export default function AccreditationsSection() {
                         px: { xs: 2, md: 3 },
                         pb: 3,
                         pt: 0,
-                        ml: { md: 5 }, // Align with text after icon
+                        ml: { md: 5 },
+                        overflow: "visible",
+                        overflowY: "visible",
                       }}
                     >
                       <Typography
@@ -199,7 +240,8 @@ export default function AccreditationsSection() {
                       </Typography>
                     </AccordionDetails>
                   </Accordion>
-                ))}
+                ))
+              )}
             </Box>
           </MotionBox>
         </Container>

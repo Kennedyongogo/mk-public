@@ -82,6 +82,12 @@ export default function PublicHeader() {
         route: "/blog",
         color: "#0fbd0f", // Primary Green
       },
+      {
+        label: "Testimonials",
+        icon: <RateReview />,
+        route: "/reviews",
+        color: "#4caf50", // Secondary Green
+      },
     ],
     []
   );

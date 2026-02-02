@@ -22,7 +22,7 @@ const Staff = lazy(() => import("./pages/Staff"));
 const Reviews = lazy(() => import("./pages/Reviews"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
-const AgentProgram = lazy(() => import("./pages/AgentProgram"));
+const Services = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
 const BookConsultation = lazy(() => import("./pages/BookConsultation"));
@@ -249,7 +249,7 @@ function App() {
               path="/services"
               element={
                 <>
-                  <AgentProgram />
+                  <Services />
                   <Footer />
                 </>
               }

@@ -3,5 +3,14 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  /* Reserve scrollbar space so layout doesn't shift when FAQ accordion expands */
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+/* Fallback: body as scroll container */
+body {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }

@@ -14,33 +14,15 @@ import {
 import { LocationOn, CalendarToday, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-// Hardcoded client testimonials
-const hardcodedReviews = [
-  {
-    id: 1,
-    name: "Joseph M.",
-    comment: "MK Agribusiness Consultants helped us design a poultry project that turned from idea to profit within a year. Their professionalism and hands-on support are unmatched.",
-    location: "Kiambu County",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    name: "AgriYouth Group",
-    comment: "Their BSF training and setup design changed our waste management approach and reduced our feed costs significantly.",
-    location: "Machakos",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    name: "Mary K.",
-    comment: "They developed our proposal for a fruit processing unit, which was later approved for funding. The team is highly skilled and professional.",
-    location: "Nairobi",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
-];
+const REVIEWS_API = "/api/reviews/approved";
+const SERVICES_API = "/api/services/public";
+
+const buildImageUrl = (path) => {
+  if (!path) return null;
+  const normalized = String(path).replace(/\\/g, "/");
+  if (normalized.startsWith("http")) return normalized;
+  return normalized.startsWith("/") ? normalized : `/${normalized}`;
+};
 
 export default function BackgroundImageSection() {
   const theme = useTheme();
@@ -65,107 +47,50 @@ export default function BackgroundImageSection() {
     }
   };
 
-  // Fetch reviews from the database, fallback to hardcoded reviews
+  // Fetch approved reviews from API
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch("/api/reviews/approved?limit=100");
-        
-        // Check if response is ok and has content
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        // Check if response has content before parsing
+        const res = await fetch(`${REVIEWS_API}?limit=100`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const contentType = res.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Response is not JSON");
-        }
-
-        // Get text first to check if it's empty
+        if (!contentType || !contentType.includes("application/json")) throw new Error("Not JSON");
         const text = await res.text();
-        if (!text || text.trim() === "") {
-          throw new Error("Empty response");
-        }
-
-        // Parse JSON
+        if (!text || !text.trim()) throw new Error("Empty response");
         const data = JSON.parse(text);
-
-        if (data.success && data.data && data.data.length > 0) {
-          // Use API reviews if available
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           setReviews(data.data);
         } else {
-          // Use hardcoded reviews as fallback
-          setReviews(hardcodedReviews);
+          setReviews([]);
         }
       } catch (err) {
         console.error("Error loading reviews:", err);
-        // Use hardcoded reviews as fallback
-        setReviews(hardcodedReviews);
+        setReviews([]);
       }
     };
-
     fetchReviews();
   }, []);
 
-  // Fetch gallery images for background
+  // Fetch background images from all published services (any service with an image)
   useEffect(() => {
     const fetchBackgroundImages = async () => {
       try {
-        const response = await fetch("/api/gallery/public?all=true&type=image");
-        
-        // Check if response is ok and has content
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Check if response has content before parsing
+        const response = await fetch(`${SERVICES_API}?limit=100`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Response is not JSON");
-        }
-
-        // Get text first to check if it's empty
+        if (!contentType || !contentType.includes("application/json")) throw new Error("Not JSON");
         const text = await response.text();
-        if (!text || text.trim() === "") {
-          throw new Error("Empty response");
-        }
-
-        // Parse JSON
+        if (!text || !text.trim()) throw new Error("Empty response");
         const data = JSON.parse(text);
-
-        if (data.success && data.data && data.data.items && data.data.items.length > 0) {
-          // Convert gallery items to image URLs
-          const imageUrls = data.data.items.map((item) => {
-            // Build full image URL from filePath
-            if (item.filePath.startsWith("http")) {
-              return item.filePath;
-            } else {
-              return `/${item.filePath.startsWith("/") ? item.filePath.slice(1) : item.filePath}`;
-            }
-          });
-
-          setBackgroundImages(imageUrls);
-        } else {
-          // Fallback to agriculture-related images if API fails or no items
-          setBackgroundImages([
-            "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&h=1080&fit=crop&q=90", // Green fields
-            "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&h=1080&fit=crop&q=90", // Farm landscape
-            "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1920&h=1080&fit=crop&q=90", // Agriculture field
-            "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&h=1080&fit=crop&q=90", // Crop field
-            "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&q=90", // Farm scene
-          ]);
-        }
+        const services = data.success && Array.isArray(data.data) ? data.data : [];
+        const imageUrls = services
+          .filter((s) => s.image)
+          .map((s) => buildImageUrl(s.image))
+          .filter(Boolean);
+        setBackgroundImages(imageUrls);
       } catch (error) {
         console.error("Failed to fetch background images:", error);
-        // Fallback to agriculture-related images
-        setBackgroundImages([
-          "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&h=1080&fit=crop&q=90", // Green fields
-          "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&h=1080&fit=crop&q=90", // Farm landscape
-          "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1920&h=1080&fit=crop&q=90", // Agriculture field
-          "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&h=1080&fit=crop&q=90", // Crop field
-          "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&h=1080&fit=crop&q=90", // Farm scene
-        ]);
+        setBackgroundImages([]);
       } finally {
         setLoading(false);
       }

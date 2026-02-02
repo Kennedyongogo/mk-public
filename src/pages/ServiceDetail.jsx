@@ -64,6 +64,14 @@ const createSlugFromTitle = (title) => {
     .replace(/(^-|-$)/g, '');
 };
 
+const buildImageUrl = (path) => {
+  if (!path) return null;
+  const normalized = String(path).replace(/\\/g, '/');
+  if (normalized.startsWith('http')) return normalized;
+  if (normalized.startsWith('/')) return normalized;
+  return `/${normalized}`;
+};
+
 // Sample services with detailed content
 const sampleServices = [
   {
@@ -307,28 +315,66 @@ export default function ServiceDetail() {
 
   useEffect(() => {
     const fetchService = async () => {
+      if (!slug) {
+        setLoading(false);
+        setError("Invalid service");
+        return;
+      }
       try {
         setLoading(true);
         setError(null);
         setService(null);
         setRelatedServices([]);
 
-        // Check if it's a sample service
-        const sampleService = sampleServices.find(s => s.slug === slug);
-        
+        // Fetch from API first (published service by slug)
+        const res = await fetch(`/api/services/public/${encodeURIComponent(slug)}`);
+        const data = await res.json();
+
+        if (res.ok && data.success && data.data) {
+          const s = data.data;
+          const imageUrl = buildImageUrl(s.image) || "/placeholder.jpg";
+          setService({
+            id: s.id,
+            slug: s.slug,
+            title: s.title,
+            description: s.shortDescription || s.description,
+            content: s.fullContent || s.description || "",
+            featuredImage: imageUrl,
+            tags: Array.isArray(s.benefits) ? s.benefits : (Array.isArray(s.useCases) ? s.useCases : []),
+          });
+          // Optionally load related services by IDs
+          const relatedIds = Array.isArray(s.relatedServiceIds) ? s.relatedServiceIds : [];
+          if (relatedIds.length > 0) {
+            const allRes = await fetch("/api/services/public?limit=50");
+            const allData = await allRes.json();
+            if (allRes.ok && allData.success && Array.isArray(allData.data)) {
+              const related = allData.data
+                .filter((svc) => relatedIds.includes(svc.id) && svc.slug !== s.slug)
+                .slice(0, 3)
+                .map((svc) => ({
+                  id: svc.id,
+                  slug: svc.slug,
+                  title: svc.title,
+                  description: svc.shortDescription || svc.description,
+                  featuredImage: buildImageUrl(svc.image) || "/placeholder.jpg",
+                }));
+              setRelatedServices(related);
+            }
+          }
+          setLoading(false);
+          return;
+        }
+
+        // Fallback: check if it's a sample service
+        const sampleService = sampleServices.find((s) => s.slug === slug);
         if (sampleService) {
           setService(sampleService);
-          
-          // Set related services (exclude current)
-          const related = sampleServices
-            .filter(s => s.slug !== slug)
-            .slice(0, 3);
+          const related = sampleServices.filter((s) => s.slug !== slug).slice(0, 3);
           setRelatedServices(related);
           setLoading(false);
           return;
         }
 
-        // Try to fetch from API if needed in the future
         throw new Error("Service not found");
       } catch (err) {
         setError(err.message || "Failed to load service");
@@ -563,7 +609,7 @@ export default function ServiceDetail() {
           </Alert>
           <Button
             startIcon={<ArrowBack />}
-            onClick={() => navigate("/services")}
+            onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/"))}
             variant="contained"
             sx={{
               backgroundColor: "#13ec13",
@@ -574,7 +620,7 @@ export default function ServiceDetail() {
               },
             }}
           >
-            Back to Services
+            Back
           </Button>
         </Container>
       </Box>
@@ -626,10 +672,10 @@ export default function ServiceDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Back Button */}
+          {/* Back Button - goes to previous page (e.g. home Key Services) or home if no history */}
           <Button
             startIcon={<ArrowBack />}
-            onClick={() => navigate("/services")}
+            onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/"))}
             sx={{
               mt: 0.5,
               mb: 0.75,
@@ -650,7 +696,7 @@ export default function ServiceDetail() {
               transition: "all 0.3s ease",
             }}
           >
-            Back to Services
+            Back
           </Button>
 
           <Paper

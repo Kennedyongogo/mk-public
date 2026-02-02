@@ -35,86 +35,57 @@ import {
   ArrowForward,
   Close,
   Send,
+  Build,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 
 const MotionBox = motion(Box);
 
-const services = [
-  {
-    icon: Architecture,
-    title: "Project Design & Management",
-    description: "Expert planning and end-to-end execution for large-scale agricultural projects and rural development.",
-    badge: null,
-  },
-  {
-    icon: Description,
-    title: "Proposal Development",
-    description: "Professional grant proposals and business plans tailored to secure funding and drive enterprise growth.",
-    badge: null,
-  },
-  {
-    icon: BugReport,
-    title: "BSF Production",
-    description: "Sustainable protein production through innovative Black Soldier Fly technology for animal feed systems.",
-    badge: { label: "Specialized", color: "primary" },
-  },
-  {
-    icon: SmartToy,
-    title: "Digital Farm Solutions",
-    description: "Cutting-edge digital tools and IoT for precision farming, real-time monitoring, and data management.",
-    badge: { label: "Innovative", color: "info" },
-  },
-  {
-    icon: QueryStats,
-    title: "Market Research",
-    description: "Comprehensive analysis of local and global agricultural markets to identify opportunities and risks.",
-    badge: null,
-  },
-  {
-    icon: LocalShipping,
-    title: "Supply Chain Optimization",
-    description: "Streamlining logistics from the farm gate to the consumer, reducing waste and increasing profitability.",
-    badge: null,
-  },
-  {
-    icon: School,
-    title: "Agricultural Training",
-    description: "Building human capacity through hands-on technical training sessions and workshops for farmers.",
-    badge: null,
-  },
-  {
-    icon: Nature,
-    title: "Sustainability Consulting",
-    description: "Implementing regenerative and eco-friendly practices to ensure long-term environmental viability.",
-    badge: null,
-  },
-  {
-    icon: Payments,
-    title: "Investment Advisory",
-    description: "Strategic financial advice and due diligence for agribusiness investors looking to enter emerging markets.",
-    badge: null,
-  },
-  {
-    icon: FactCheck,
-    title: "Feasibility Studies",
-    description: "Detailed analysis of technical and economic viability to de-risk your agricultural ventures.",
-    badge: null,
-  },
-];
-
-// Helper function to create slug from title
-const createSlugFromTitle = (title) => {
-  if (!title) return '';
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+// Map API icon string to MUI icon component (keep all styling; default Build if unknown)
+const iconMap = {
+  Architecture,
+  Description,
+  BugReport,
+  SmartToy,
+  QueryStats,
+  LocalShipping,
+  School,
+  Nature,
+  Payments,
+  FactCheck,
+  Build,
 };
 
-export default function AgentProgram() {
+const getIconComponent = (iconName) => {
+  if (!iconName) return Build;
+  return iconMap[iconName] || Build;
+};
+
+const buildImageUrl = (path) => {
+  if (!path) return null;
+  const normalized = String(path).replace(/\\/g, "/");
+  if (normalized.startsWith("http")) return normalized;
+  if (normalized.startsWith("/")) return normalized;
+  return `/${normalized}`;
+};
+
+const HERO_IMAGE_DURATION_MS = 5500;
+const HERO_TRANSITION_MS = 1200;
+
+export default function Services() {
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState(null);
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  const heroImageUrls = React.useMemo(() => {
+    return services
+      .filter((s) => s.image)
+      .map((s) => buildImageUrl(s.image))
+      .filter(Boolean);
+  }, [services]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openContactDialog, setOpenContactDialog] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -294,6 +265,40 @@ export default function AgentProgram() {
     }
   };
 
+  // Cycle hero background through service images (uniform transition)
+  useEffect(() => {
+    if (heroImageUrls.length <= 1) return;
+    const interval = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImageUrls.length);
+    }, HERO_IMAGE_DURATION_MS);
+    return () => clearInterval(interval);
+  }, [heroImageUrls.length]);
+
+  // Fetch published services from API
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/services/public?limit=100&isKeyService=false")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.success && Array.isArray(data.data)) {
+          setServices(data.data);
+        } else {
+          setServices([]);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setServicesError(err.message || "Failed to load services");
+          setServices([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setServicesLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
   // Detect when hero section is visible and notify header (similar to HeroSection)
   useEffect(() => {
     const heroSection = document.getElementById("services-hero-section");
@@ -355,7 +360,7 @@ export default function AgentProgram() {
         fontFamily: '"Open Sans", sans-serif',
       }}
     >
-      {/* Hero Section */}
+      {/* Hero Section – background cycles through service images with smooth fade */}
       <Box
         id="services-hero-section"
         sx={{
@@ -368,13 +373,57 @@ export default function AgentProgram() {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          marginTop: { xs: "-80px", md: "-80px" }, // Pull up behind header like HeroSection
-          backgroundImage: `linear-gradient(rgba(13, 27, 13, 0.7), rgba(13, 27, 13, 0.7)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCYeftyIrBBJultBqFUAcIUBu4NeTHkOSFZ4beq50-nmWPotlFGovBAkZIEPfo2kXRnxSEqGQXlEl1duIKl4PmnQ4XbdF-Ho6VSJsDsBSmjUyYPEKklFFbPlKPl9vmjiHnOREyhGm1-QC3h3mYB2OzEQizTK_lit0-oA4DRytV7FXoRSAqQ8OU0nCXNVxkWbxlNIJSLGdwqA6UuYxbX5nLV1EiMaKPludPiJfRRenB0t3h5ob3sTxl_3Cyt5JQwKWI_CZZqCNBM0Y7l")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          marginTop: { xs: "-80px", md: "-80px" },
+          backgroundColor: "#0d1b0d",
         }}
       >
-        <Container maxWidth="lg" sx={{ px: { xs: 2, md: 4 }, py: { xs: 3, md: 5 } }}>
+        {/* Layered service images with uniform crossfade */}
+        {heroImageUrls.length > 0 ? (
+          heroImageUrls.map((url, index) => (
+            <Box
+              key={`${url}-${index}`}
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url(${url})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: index === heroImageIndex ? 1 : 0,
+                transition: `opacity ${HERO_TRANSITION_MS}ms ease-in-out`,
+                zIndex: 0,
+              }}
+              aria-hidden={index !== heroImageIndex}
+            />
+          ))
+        ) : (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "#0d1b0d",
+              zIndex: 0,
+            }}
+          />
+        )}
+        {/* Very light overlay so images are clearly visible; text remains readable */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(rgba(13, 27, 13, 0.15), rgba(13, 27, 13, 0.1))",
+            zIndex: 1,
+          }}
+        />
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2, px: { xs: 2, md: 4 }, py: { xs: 3, md: 5 } }}>
           <Typography
             variant="h1"
             sx={{
@@ -395,38 +444,11 @@ export default function AgentProgram() {
               fontSize: { xs: "1rem", md: "1.25rem" },
               maxWidth: "700px",
               mx: "auto",
-              mb: 4,
+              mb: 0,
             }}
           >
             Empowering agricultural enterprises with expert design, innovation, and sustainable solutions for a thriving future.
           </Typography>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "#0fbd0f",
-              color: "white",
-              fontSize: "1rem",
-              fontWeight: 700,
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              boxShadow: 4,
-              "&:hover": {
-                bgcolor: "#0da50d",
-                boxShadow: 6,
-              },
-              "&:focus": {
-                outline: "none",
-                boxShadow: 4,
-              },
-              "&:focus-visible": {
-                outline: "none",
-                boxShadow: 4,
-              },
-            }}
-          >
-            Explore Offerings
-          </Button>
         </Container>
       </Box>
 
@@ -458,133 +480,158 @@ export default function AgentProgram() {
       {/* Services Grid */}
       <Box sx={{ pt: 2, pb: 5, px: 0 }}>
         <Container maxWidth="xl" disableGutters sx={{ px: 0 }}>
-          <Box
-            sx={{
-              display: "grid",
-              columnGap: 1.5,
-              rowGap: 8,
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, 1fr)",
-                md: "repeat(5, 1fr)",
-              },
-              px: 1.5,
-            }}
-          >
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card
-                  key={index}
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    p: 2.5,
-                    borderRadius: 3,
-                    border: "1px solid rgba(15, 189, 15, 0.1)",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    position: "relative",
-                    bgcolor: "white",
-                    "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: "0 12px 30px rgba(15, 189, 15, 0.15)",
-                      borderColor: "rgba(15, 189, 15, 0.3)",
-                    },
-                  }}
-                >
-                  {service.badge && (
-                    <Chip
-                      label={service.badge.label}
-                      size="small"
+          {servicesLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+              <CircularProgress sx={{ color: "#0fbd0f" }} />
+            </Box>
+          ) : servicesError ? (
+            <Box sx={{ textAlign: "center", py: 6, px: 2 }}>
+              <Typography sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: "1.125rem" }}>{servicesError}</Typography>
+            </Box>
+          ) : services.length === 0 ? (
+            <Box sx={{ textAlign: "center", py: 6, px: 2 }}>
+              <Typography sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: "1.125rem" }}>No services at the moment.</Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "grid",
+                columnGap: 1.5,
+                rowGap: 8,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(5, 1fr)",
+                },
+                px: 1.5,
+              }}
+            >
+              {services.map((service, index) => {
+                const IconComponent = getIconComponent(service.icon);
+                const badge = service.badgeLabel
+                  ? { label: service.badgeLabel, color: service.badgeColor || "primary" }
+                  : null;
+                return (
+                  <Card
+                    key={service.id}
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      p: 2.5,
+                      borderRadius: 3,
+                      border: "1px solid rgba(15, 189, 15, 0.1)",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      position: "relative",
+                      bgcolor: "white",
+                      "&:hover": {
+                        transform: "translateY(-8px)",
+                        boxShadow: "0 12px 30px rgba(15, 189, 15, 0.15)",
+                        borderColor: "rgba(15, 189, 15, 0.3)",
+                      },
+                    }}
+                  >
+                    {badge && (
+                      <Chip
+                        label={badge.label}
+                        size="small"
+                        sx={{
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          fontSize: "0.625rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          height: 20,
+                          bgcolor: badge.color === "info" ? "#1976d2" : "#0fbd0f",
+                          color: "white",
+                        }}
+                      />
+                    )}
+                    <Box
                       sx={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        fontSize: "0.625rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.1em",
-                        height: 20,
-                        bgcolor: service.badge.color === "info" ? "#1976d2" : "#0fbd0f",
-                        color: "white",
+                        width: 42,
+                        height: 42,
+                        bgcolor: "rgba(15, 189, 15, 0.1)",
+                        borderRadius: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#0fbd0f",
+                        mb: 1.5,
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          bgcolor: "#0fbd0f",
+                          color: "white",
+                        },
                       }}
-                    />
-                  )}
-                  <Box
-                    sx={{
-                      width: 42,
-                      height: 42,
-                      bgcolor: "rgba(15, 189, 15, 0.1)",
-                      borderRadius: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#0fbd0f",
-                      mb: 1.5,
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        bgcolor: "#0fbd0f",
-                        color: "white",
-                      },
-                    }}
-                  >
-                    <IconComponent sx={{ fontSize: 26 }} />
-                  </Box>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 1,
-                      color: "#0d1b0d",
-                      fontSize: { xs: "1rem", md: "1.125rem" },
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {service.title}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "rgba(0, 0, 0, 0.6)",
-                      fontSize: "1.125rem",
-                      lineHeight: 1.5,
-                      mb: 1.5,
-                      flex: 1,
-                    }}
-                  >
-                    {service.description}
-                  </Typography>
-                  <Link
-                    component="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const slug = createSlugFromTitle(service.title);
-                      navigate(`/service/${slug}`);
-                    }}
-                    sx={{
-                      color: "#0fbd0f",
-                      fontSize: "0.875rem",
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.5,
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      border: "none",
-                      background: "none",
-                      padding: 0,
-                      "&:hover": {
-                        textDecoration: "underline",
-                      },
-                    }}
-                  >
-                    Learn More <ArrowForward sx={{ fontSize: 16 }} />
-                  </Link>
-                </Card>
-              );
-            })}
-          </Box>
+                    >
+                      <IconComponent sx={{ fontSize: 26 }} />
+                    </Box>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        mb: 1,
+                        color: "#0d1b0d",
+                        fontSize: { xs: "1rem", md: "1.125rem" },
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {service.title}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "rgba(0, 0, 0, 0.6)",
+                        fontSize: "1.125rem",
+                        lineHeight: 1.5,
+                        mb: 1.5,
+                        flex: 1,
+                      }}
+                    >
+                      {service.shortDescription || service.description || ""}
+                    </Typography>
+                    <Link
+                      component="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (service.slug) navigate(`/service/${service.slug}`);
+                      }}
+                      sx={{
+                        color: "#0fbd0f",
+                        fontSize: "0.875rem",
+                        fontWeight: 700,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        textDecoration: "none",
+                        cursor: "pointer",
+                        border: "none",
+                        background: "none",
+                        padding: 0,
+                        outline: "none",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                        "&:focus": {
+                          outline: "none",
+                          boxShadow: "none",
+                        },
+                        "&:focus-visible": {
+                          outline: "none",
+                          boxShadow: "none",
+                        },
+                      }}
+                    >
+                      Learn More <ArrowForward sx={{ fontSize: 16 }} />
+                    </Link>
+                  </Card>
+                );
+              })}
+            </Box>
+          )}
         </Container>
       </Box>
       {/* Call to Action Section */}

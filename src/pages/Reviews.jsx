@@ -13,13 +13,10 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   CircularProgress,
   useMediaQuery,
   useTheme,
+  Autocomplete,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { LocationOn, CalendarToday, Send, ArrowBack } from "@mui/icons-material";
@@ -28,32 +25,17 @@ import Swal from "sweetalert2";
 
 const MotionBox = motion(Box);
 
-// Hardcoded client testimonials (same as BackgroundImageSection)
-const hardcodedReviews = [
-  {
-    id: 1,
-    name: "Joseph M.",
-    comment: "MK Agribusiness Consultants helped us design a poultry project that turned from idea to profit within a year. Their professionalism and hands-on support are unmatched.",
-    location: "Kiambu County",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    name: "AgriYouth Group",
-    comment: "Their BSF training and setup design changed our waste management approach and reduced our feed costs significantly.",
-    location: "Machakos",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    name: "Mary K.",
-    comment: "They developed our proposal for a fruit processing unit, which was later approved for funding. The team is highly skilled and professional.",
-    location: "Nairobi",
-    rating: 5,
-    createdAt: new Date().toISOString(),
-  },
+const REVIEWS_API = "/api/reviews/approved";
+
+// All 47 counties of Kenya (alphabetical)
+const KENYA_COUNTIES = [
+  "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo-Marakwet", "Embu", "Garissa",
+  "Homa Bay", "Isiolo", "Kajiado", "Kakamega", "Kericho", "Kiambu", "Kilifi",
+  "Kirinyaga", "Kisii", "Kisumu", "Kitui", "Kwale", "Laikipia", "Lamu",
+  "Machakos", "Makueni", "Mandera", "Marsabit", "Meru", "Migori", "Mombasa",
+  "Murang'a", "Nairobi", "Nakuru", "Nandi", "Narok", "Nyamira", "Nyandarua",
+  "Nyeri", "Samburu", "Siaya", "Taita-Taveta", "Tana River", "Tharaka-Nithi",
+  "Trans Nzoia", "Turkana", "Uasin Gishu", "Vihiga", "Wajir", "West Pokot",
 ];
 
 export default function Reviews() {
@@ -97,27 +79,16 @@ export default function Reviews() {
   const fetchReviews = async () => {
     try {
       setListLoading(true);
-      const res = await fetch("/api/reviews/approved?limit=100");
+      const res = await fetch(`${REVIEWS_API}?limit=100`);
       const data = await res.json();
-
-      let apiReviews = [];
-      if (res.ok && data.success && data.data) {
-        apiReviews = data.data;
+      if (res.ok && data.success && Array.isArray(data.data) && data.data.length > 0) {
+        setReviews(data.data);
+      } else {
+        setReviews([]);
       }
-
-      // Merge hardcoded reviews with API reviews, hardcoded ones first
-      // Filter out any API reviews that might duplicate hardcoded ones by name
-      const hardcodedNames = hardcodedReviews.map(r => r.name.toLowerCase());
-      const uniqueApiReviews = apiReviews.filter(
-        review => !hardcodedNames.includes(review.name?.toLowerCase())
-      );
-
-      // Combine: hardcoded reviews first, then unique API reviews
-      setReviews([...hardcodedReviews, ...uniqueApiReviews]);
     } catch (err) {
       console.error("Error loading reviews:", err);
-      // Even on error, show hardcoded reviews
-      setReviews(hardcodedReviews);
+      setReviews([]);
     } finally {
       setListLoading(false);
     }
@@ -601,50 +572,56 @@ export default function Reviews() {
                       />
                     </Grid>
 
-                    {/* Location */}
+                    {/* Location – all 47 Kenyan counties (searchable) */}
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <FormControl fullWidth>
-                        <InputLabel
-                          sx={{
-                            "&.Mui-focused": {
-                              color: "#13ec13",
+                      <Autocomplete
+                        value={formData.location || null}
+                        onChange={(_, newValue) => handleInputChange("location", newValue || "")}
+                        options={KENYA_COUNTIES}
+                        getOptionLabel={(option) => option || ""}
+                        isOptionEqualToValue={(option, value) => option === value}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="County"
+                            placeholder="Search or select county..."
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "white",
+                                borderRadius: 2,
+                                "& fieldset": { borderColor: "rgba(0, 0, 0, 0.23)" },
+                                "&:hover fieldset": { borderColor: "#13ec13" },
+                                "&.Mui-focused fieldset": { borderColor: "#13ec13", borderWidth: "2px" },
+                              },
+                              "& .MuiInputLabel-root.Mui-focused": { color: "#13ec13" },
+                            }}
+                          />
+                        )}
+                        ListboxProps={{
+                          sx: {
+                            maxHeight: 320,
+                            "& .MuiAutocomplete-option": {
+                              py: 1.25,
+                              fontSize: "0.9375rem",
                             },
-                          }}
-                        >
-                          Location / County
-                        </InputLabel>
-                        <Select
-                          value={formData.location}
-                          onChange={(e) => handleInputChange("location", e.target.value)}
-                          label="Location / County"
-                          sx={{
-                            backgroundColor: "white",
-                            borderRadius: 2,
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.23)",
-                            },
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#13ec13",
-                            },
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "#13ec13",
-                            },
-                            "&.Mui-focused": {
-                              "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "#13ec13",
+                          },
+                        }}
+                        slotProps={{
+                          popper: {
+                            sx: {
+                              "& .MuiAutocomplete-listbox": {
+                                "& .MuiAutocomplete-option[aria-selected='true']": {
+                                  bgcolor: "rgba(19, 236, 19, 0.12)",
+                                },
+                                "& .MuiAutocomplete-option.Mui-focused": {
+                                  bgcolor: "rgba(19, 236, 19, 0.08)",
+                                },
                               },
                             },
-                          }}
-                        >
-                          <MenuItem value="Nairobi">Nairobi</MenuItem>
-                          <MenuItem value="Kiambu County">Kiambu County</MenuItem>
-                          <MenuItem value="Machakos">Machakos</MenuItem>
-                          <MenuItem value="Nakuru">Nakuru</MenuItem>
-                          <MenuItem value="Uasin Gishu">Uasin Gishu</MenuItem>
-                          <MenuItem value="Meru">Meru</MenuItem>
-                          <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                      </FormControl>
+                          },
+                        }}
+                        noOptionsText="No county found"
+                      />
                     </Grid>
 
                     {/* Star Rating */}
