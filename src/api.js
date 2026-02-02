@@ -106,3 +106,113 @@ export async function postNewsletter(body) {
   }
   return data;
 }
+
+function getMarketplaceAuthHeaders() {
+  const token = typeof localStorage !== "undefined" ? localStorage.getItem("marketplace_token") : null;
+  const headers = { "Content-Type": "application/json", Accept: "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
+/**
+ * Register marketplace user (minimal: email, phone, password, fullName, termsAccepted, privacyAccepted).
+ */
+export async function registerMarketplaceUser(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Registration failed");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Login marketplace user (email, password).
+ */
+export async function loginMarketplaceUser(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Login failed");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Get current marketplace user + profile (requires token).
+ */
+export async function getMarketplaceMe() {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/me`, {
+    method: "GET",
+    headers: getMarketplaceAuthHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to fetch profile");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Upload marketplace profile photo. Returns { profilePhotoUrl }. Requires token.
+ * @param {File} file - Image file (e.g. from input type="file")
+ */
+export async function uploadMarketplaceProfilePhoto(file) {
+  const base = getBaseUrl();
+  const token = typeof localStorage !== "undefined" ? localStorage.getItem("marketplace_token") : null;
+  const formData = new FormData();
+  formData.append("profile_photo", file);
+  const res = await fetch(`${base}/api/marketplace/upload-photo`, {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to upload profile photo");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Complete marketplace profile (role + common + role-specific). Requires token.
+ */
+export async function completeMarketplaceProfile(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/complete`, {
+    method: "PUT",
+    headers: getMarketplaceAuthHeaders(),
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to complete profile");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}

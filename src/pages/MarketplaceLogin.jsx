@@ -13,6 +13,7 @@ import {
   Link,
   FormControlLabel,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import {
   Agriculture,
@@ -25,7 +26,11 @@ import {
   Visibility,
   VisibilityOff,
   ArrowBack,
+  Phone,
+  Person,
 } from "@mui/icons-material";
+import Swal from "sweetalert2";
+import { loginMarketplaceUser, registerMarketplaceUser } from "../api";
 
 const PRIMARY = "#11d452";
 const PRIMARY_DARK = "#0ea33d";
@@ -44,8 +49,90 @@ export default function MarketplaceLogin() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [regEmail, setRegEmail] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [regFullName, setRegFullName] = useState("");
+  const [regTerms, setRegTerms] = useState(false);
+  const [regPrivacy, setRegPrivacy] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
 
-  const handleTabChange = (_, newValue) => setTab(newValue);
+  const handleTabChange = (_, newValue) => {
+    setTab(newValue);
+    setLoginError("");
+    setRegisterError("");
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+    if (!emailOrPhone.trim() || !password) {
+      setLoginError("Please enter email and password.");
+      return;
+    }
+    setLoginLoading(true);
+    try {
+      const { data } = await loginMarketplaceUser({
+        email: emailOrPhone.trim().toLowerCase(),
+        password,
+      });
+      localStorage.setItem("marketplace_token", data.token);
+      localStorage.setItem("marketplace_user", JSON.stringify(data.user));
+      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false });
+      if (data.user.profileCompleted) {
+        navigate("/");
+      } else {
+        navigate("/profile/complete");
+      }
+    } catch (err) {
+      setLoginError(err.message || "Login failed.");
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setRegisterError("");
+    if (!regEmail.trim() || !regPassword || !regFullName.trim()) {
+      setRegisterError("Email, password and full name are required.");
+      return;
+    }
+    if (regPassword.length < 6) {
+      setRegisterError("Password must be at least 6 characters.");
+      return;
+    }
+    if (regPassword !== regConfirmPassword) {
+      setRegisterError("Passwords do not match.");
+      return;
+    }
+    if (!regTerms || !regPrivacy) {
+      setRegisterError("You must accept the terms of use and privacy policy.");
+      return;
+    }
+    setRegisterLoading(true);
+    try {
+      await registerMarketplaceUser({
+        email: regEmail.trim().toLowerCase(),
+        phone: regPhone.trim() || undefined,
+        password: regPassword,
+        fullName: regFullName.trim(),
+        termsAccepted: true,
+        privacyAccepted: true,
+      });
+      Swal.fire({ icon: "success", title: "Account created! Please log in.", timer: 2000, showConfirmButton: false });
+      setTab(0);
+      setEmailOrPhone(regEmail.trim().toLowerCase());
+      setPassword("");
+    } catch (err) {
+      setRegisterError(err.message || "Registration failed.");
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -199,7 +286,9 @@ export default function MarketplaceLogin() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          p: "clamp(0.5rem, 2vh, 1.5rem)",
+          pt: { xs: 6, sm: 7 },
+          px: "clamp(0.5rem, 2vh, 1.5rem)",
+          pb: "clamp(0.5rem, 2vh, 1.5rem)",
           bgcolor: BG_LIGHT,
           overflow: "hidden",
           position: "relative",
@@ -271,6 +360,7 @@ export default function MarketplaceLogin() {
             minHeight: 0,
             display: "flex",
             flexDirection: "column",
+            mt: 1.5,
           }}
         >
           <Tabs
@@ -300,7 +390,7 @@ export default function MarketplaceLogin() {
             <Tab label="Register" disableRipple />
           </Tabs>
 
-          <Box sx={{ p: "clamp(0.75rem, 1.5vh, 1.5rem)", flex: 1, minHeight: 0 }}>
+          <Box sx={{ p: "clamp(0.75rem, 1.5vh, 1.5rem)", flex: 1, minHeight: 0, overflow: "auto" }}>
             {tab === 0 && (
               <>
                 <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: "clamp(1.25rem, 2.5vh, 1.75rem)" }}>
@@ -310,10 +400,17 @@ export default function MarketplaceLogin() {
                   Access your agribusiness dashboard and marketplace operations.
                 </Typography>
 
-                <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
+                {loginError && (
+                  <Alert severity="error" sx={{ mb: 1 }} onClose={() => setLoginError("")}>
+                    {loginError}
+                  </Alert>
+                )}
+
+                <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
                   <TextField
                     fullWidth
-                    label="Email or Phone Number"
+                    type="email"
+                    label="Email"
                     placeholder="name@company.com"
                     value={emailOrPhone}
                     onChange={(e) => setEmailOrPhone(e.target.value)}
@@ -350,7 +447,17 @@ export default function MarketplaceLogin() {
                       ),
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" size="small">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                            size="small"
+                            disableRipple
+                            sx={{
+                              outline: "none",
+                              "&:focus": { outline: "none" },
+                              "&:focus-visible": { outline: "none", boxShadow: "none" },
+                            }}
+                          >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                         </InputAdornment>
@@ -383,10 +490,12 @@ export default function MarketplaceLogin() {
                     </Link>
                   </Box>
                   <Button
+                    type="submit"
                     fullWidth
                     variant="contained"
                     size="large"
                     disableRipple
+                    disabled={loginLoading}
                     sx={{
                       py: 1.5,
                       fontWeight: 700,
@@ -401,7 +510,7 @@ export default function MarketplaceLogin() {
                       "&:hover": { bgcolor: PRIMARY_DARK, boxShadow: `0 12px 28px ${PRIMARY}50` },
                     }}
                   >
-                    Login to Dashboard
+                    {loginLoading ? <CircularProgress size={24} sx={{ color: BG_DARK }} /> : "Login to Dashboard"}
                   </Button>
                 </Box>
 
@@ -434,30 +543,201 @@ export default function MarketplaceLogin() {
                   Create Account
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)" }}>
-                  Join the marketplace to connect with farmers and buyers.
+                  Join the marketplace. You’ll complete your profile after signing up.
                 </Typography>
-                <Typography color="text.secondary" variant="body2" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
-                  Registration form can be wired here when backend is ready.
-                </Typography>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  size="large"
-                  disableRipple
-                  sx={{
-                    mt: 1.5,
-                    fontSize: "1.05rem",
-                    borderColor: PRIMARY,
-                    color: PRIMARY,
-                    outline: "none",
-                    "&:focus": { outline: "none", boxShadow: "none" },
-                    "&:focus-visible": { outline: "none", boxShadow: "none" },
-                    "&:hover": { borderColor: PRIMARY_DARK, bgcolor: `${PRIMARY}10` },
-                  }}
-                  onClick={() => setTab(0)}
-                >
-                  Back to Login
-                </Button>
+
+                {registerError && (
+                  <Alert severity="error" sx={{ mb: 1 }} onClose={() => setRegisterError("")}>
+                    {registerError}
+                  </Alert>
+                )}
+
+                <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
+                  <TextField
+                    fullWidth
+                    type="email"
+                    required
+                    label="Email"
+                    placeholder="name@company.com"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        fontSize: "1rem",
+                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
+                      },
+                    }}
+                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Phone (optional)"
+                    placeholder="+255..."
+                    value={regPhone}
+                    onChange={(e) => setRegPhone(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        fontSize: "1rem",
+                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
+                      },
+                    }}
+                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                  />
+                  <TextField
+                    fullWidth
+                    required
+                    label="Full name"
+                    placeholder="Your full name"
+                    value={regFullName}
+                    onChange={(e) => setRegFullName(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        fontSize: "1rem",
+                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
+                      },
+                    }}
+                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                  />
+                  <TextField
+                    fullWidth
+                    required
+                    type={showRegPassword ? "text" : "password"}
+                    label="Password"
+                    placeholder="At least 6 characters"
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowRegPassword(!showRegPassword)}
+                            edge="end"
+                            size="small"
+                            disableRipple
+                            sx={{
+                              outline: "none",
+                              "&:focus": { outline: "none" },
+                              "&:focus-visible": { outline: "none", boxShadow: "none" },
+                            }}
+                          >
+                            {showRegPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        fontSize: "1rem",
+                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
+                      },
+                    }}
+                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                  />
+                  <TextField
+                    fullWidth
+                    required
+                    type={showRegPassword ? "text" : "password"}
+                    label="Confirm password"
+                    placeholder="Repeat password"
+                    value={regConfirmPassword}
+                    onChange={(e) => setRegConfirmPassword(e.target.value)}
+                    error={regPassword !== regConfirmPassword && regConfirmPassword.length > 0}
+                    helperText={regPassword !== regConfirmPassword && regConfirmPassword.length > 0 ? "Passwords do not match" : ""}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        fontSize: "1rem",
+                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
+                      },
+                    }}
+                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                    }
+                    label={
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
+                        I accept the{" "}
+                        <Link href="#" variant="body2" sx={{ color: PRIMARY }}>
+                          Terms of Use
+                        </Link>
+                      </Typography>
+                    }
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                    }
+                    label={
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
+                        I accept the{" "}
+                        <Link href="#" variant="body2" sx={{ color: PRIMARY }}>
+                          Privacy Policy
+                        </Link>
+                      </Typography>
+                    }
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    disableRipple
+                    disabled={registerLoading}
+                    sx={{
+                      py: 1.5,
+                      fontWeight: 700,
+                      fontSize: "1.05rem",
+                      bgcolor: PRIMARY,
+                      color: BG_DARK,
+                      textTransform: "none",
+                      boxShadow: `0 10px 25px ${PRIMARY}40`,
+                      outline: "none",
+                      "&:focus": { outline: "none", boxShadow: `0 10px 25px ${PRIMARY}40` },
+                      "&:focus-visible": { outline: "none", boxShadow: `0 10px 25px ${PRIMARY}40` },
+                      "&:hover": { bgcolor: PRIMARY_DARK, boxShadow: `0 12px 28px ${PRIMARY}50` },
+                    }}
+                  >
+                    {registerLoading ? <CircularProgress size={24} sx={{ color: BG_DARK }} /> : "Register"}
+                  </Button>
+                </Box>
+
+                <Box sx={{ mt: "clamp(0.5rem, 1.5vh, 1rem)", pt: 1.5, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
+                    Already have an account?{" "}
+                    <Link component="button" variant="body2" sx={{ color: PRIMARY, fontWeight: 700, textDecoration: "none" }} onClick={() => setTab(0)}>
+                      Log in
+                    </Link>
+                  </Typography>
+                </Box>
               </>
             )}
           </Box>

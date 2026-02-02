@@ -27,6 +27,7 @@ const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
 const BookConsultation = lazy(() => import("./pages/BookConsultation"));
 const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));
+const ProfileComplete = lazy(() => import("./pages/ProfileComplete"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -47,7 +48,7 @@ function PrivateRoute({ user, children }) {
 
 function AppLayout() {
   const location = useLocation();
-  const hideHeader = location.pathname === "/marketplace";
+  const hideHeader = location.pathname === "/marketplace" || location.pathname === "/profile/complete";
 
   return (
     <>
@@ -272,6 +273,7 @@ function AppLayout() {
               }
             />
             <Route path="/marketplace" element={<MarketplaceLogin />} />
+            <Route path="/profile/complete" element={<ProfileComplete />} />
           </Routes>
         </Suspense>
         <Chatbot />
