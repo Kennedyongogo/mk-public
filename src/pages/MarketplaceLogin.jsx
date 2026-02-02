@@ -62,15 +62,12 @@ export default function MarketplaceLogin() {
 
   const handleTabChange = (_, newValue) => {
     setTab(newValue);
-    setLoginError("");
-    setRegisterError("");
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginError("");
     if (!emailOrPhone.trim() || !password) {
-      setLoginError("Please enter email and password.");
+      Swal.fire({ icon: "error", title: "Login", text: "Please enter email and password." });
       return;
     }
     setLoginLoading(true);
@@ -88,7 +85,7 @@ export default function MarketplaceLogin() {
         navigate("/profile/complete");
       }
     } catch (err) {
-      setLoginError(err.message || "Login failed.");
+      Swal.fire({ icon: "error", title: "Login failed", text: err.message || "Login failed." });
     } finally {
       setLoginLoading(false);
     }
@@ -96,21 +93,20 @@ export default function MarketplaceLogin() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setRegisterError("");
     if (!regEmail.trim() || !regPassword || !regFullName.trim()) {
-      setRegisterError("Email, password and full name are required.");
+      Swal.fire({ icon: "error", title: "Registration", text: "Email, password and full name are required." });
       return;
     }
     if (regPassword.length < 6) {
-      setRegisterError("Password must be at least 6 characters.");
+      Swal.fire({ icon: "error", title: "Registration", text: "Password must be at least 6 characters." });
       return;
     }
     if (regPassword !== regConfirmPassword) {
-      setRegisterError("Passwords do not match.");
+      Swal.fire({ icon: "error", title: "Registration", text: "Passwords do not match." });
       return;
     }
     if (!regTerms || !regPrivacy) {
-      setRegisterError("You must accept the terms of use and privacy policy.");
+      Swal.fire({ icon: "error", title: "Registration", text: "You must accept the terms of use and privacy policy." });
       return;
     }
     setRegisterLoading(true);
@@ -128,7 +124,7 @@ export default function MarketplaceLogin() {
       setEmailOrPhone(regEmail.trim().toLowerCase());
       setPassword("");
     } catch (err) {
-      setRegisterError(err.message || "Registration failed.");
+      Swal.fire({ icon: "error", title: "Registration failed", text: err.message || "Registration failed." });
     } finally {
       setRegisterLoading(false);
     }
@@ -286,9 +282,9 @@ export default function MarketplaceLogin() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          pt: { xs: 6, sm: 7 },
+          pt: { xs: 5, sm: 6 },
           px: "clamp(0.5rem, 2vh, 1.5rem)",
-          pb: "clamp(0.5rem, 2vh, 1.5rem)",
+          pb: "clamp(0.5rem, 1.5vh, 1rem)",
           bgcolor: BG_LIGHT,
           overflow: "hidden",
           position: "relative",
@@ -350,7 +346,7 @@ export default function MarketplaceLogin() {
           sx={{
             width: "100%",
             maxWidth: 480,
-            maxHeight: { xs: "none", lg: "min(85vh, 560px)" },
+            maxHeight: { xs: "none", lg: "min(78vh, 520px)" },
             borderRadius: 2,
             overflow: "hidden",
             border: "1px solid",
@@ -399,12 +395,6 @@ export default function MarketplaceLogin() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)" }}>
                   Access your agribusiness dashboard and marketplace operations.
                 </Typography>
-
-                {loginError && (
-                  <Alert severity="error" sx={{ mb: 1 }} onClose={() => setLoginError("")}>
-                    {loginError}
-                  </Alert>
-                )}
 
                 <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
                   <TextField
@@ -514,7 +504,7 @@ export default function MarketplaceLogin() {
                   </Button>
                 </Box>
 
-                <Box sx={{ mt: "clamp(0.5rem, 1.5vh, 1rem)", pt: 1.5, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
+                <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", pt: 1, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
                     Don&apos;t have an account yet?{" "}
                     <Link
@@ -528,7 +518,7 @@ export default function MarketplaceLogin() {
                   </Typography>
                 </Box>
 
-                <Box sx={{ mt: "clamp(0.5rem, 1vh, 1rem)", display: "flex", alignItems: "center", justifyContent: "center", gap: 1, opacity: 0.7 }}>
+                <Box sx={{ mt: "clamp(0.4rem, 0.8vh, 0.75rem)", display: "flex", alignItems: "center", justifyContent: "center", gap: 1, opacity: 0.7 }}>
                   <VerifiedUser sx={{ fontSize: 20, color: "text.secondary" }} />
                   <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic", fontSize: "clamp(0.8rem, 1.2vh, 0.9rem)" }}>
                     Login required to protect farmers and buyers
@@ -545,12 +535,6 @@ export default function MarketplaceLogin() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)" }}>
                   Join the marketplace. You’ll complete your profile after signing up.
                 </Typography>
-
-                {registerError && (
-                  <Alert severity="error" sx={{ mb: 1 }} onClose={() => setRegisterError("")}>
-                    {registerError}
-                  </Alert>
-                )}
 
                 <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
                   <TextField
@@ -730,12 +714,19 @@ export default function MarketplaceLogin() {
                   </Button>
                 </Box>
 
-                <Box sx={{ mt: "clamp(0.5rem, 1.5vh, 1rem)", pt: 1.5, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
+                <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", pt: 1, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
                     Already have an account?{" "}
                     <Link component="button" variant="body2" sx={{ color: PRIMARY, fontWeight: 700, textDecoration: "none" }} onClick={() => setTab(0)}>
                       Log in
                     </Link>
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mt: "clamp(0.4rem, 0.8vh, 0.75rem)", display: "flex", alignItems: "center", justifyContent: "center", gap: 1, opacity: 0.7 }}>
+                  <VerifiedUser sx={{ fontSize: 20, color: "text.secondary" }} />
+                  <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic", fontSize: "clamp(0.8rem, 1.2vh, 0.9rem)" }}>
+                    Login required to protect farmers and buyers
                   </Typography>
                 </Box>
               </>
@@ -744,7 +735,7 @@ export default function MarketplaceLogin() {
         </Paper>
 
         {/* Footer links */}
-        <Box sx={{ mt: "clamp(0.5rem, 1.5vh, 1rem)", display: "flex", gap: 2, flexShrink: 0 }}>
+        <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", mb: 1, display: "flex", gap: 2, flexShrink: 0 }}>
           <Link href="#" variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
             Privacy Policy
           </Link>
