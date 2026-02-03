@@ -130,7 +130,7 @@ export default function ProfileComplete() {
       const user = JSON.parse(localStorage.getItem("marketplace_user") || "{}");
       localStorage.setItem("marketplace_user", JSON.stringify({ ...user, profileCompleted: true, role }));
       Swal.fire({ icon: "success", title: "Profile completed!", timer: 1500, showConfirmButton: false });
-      navigate("/", { replace: true });
+      navigate("/marketplace/dashboard", { replace: true });
     } catch (err) {
       setError(err.message || "Failed to complete profile.");
     } finally {

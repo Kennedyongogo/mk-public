@@ -11,6 +11,8 @@ import { theme } from "./theme";
 import "./App.css";
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import PublicHeader from "./components/Header/PublicHeader";
+import PrivateHeader from "./components/Header/PrivateHeader";
+import MarketplaceGate from "./components/MarketplaceGate";
 import Footer from "./components/Footer/Footer";
 import Chatbot from "./components/Chatbot/Chatbot";
 
@@ -28,6 +30,12 @@ const Projects = lazy(() => import("./pages/Projects"));
 const BookConsultation = lazy(() => import("./pages/BookConsultation"));
 const MarketplaceLogin = lazy(() => import("./pages/MarketplaceLogin"));
 const ProfileComplete = lazy(() => import("./pages/ProfileComplete"));
+const MarketplaceArea = lazy(() => import("./pages/MarketplaceArea"));
+const MarketplaceDashboard = lazy(() => import("./pages/MarketplaceDashboard"));
+const FarmersHub = lazy(() => import("./pages/FarmersHub"));
+const InputsFeeds = lazy(() => import("./pages/InputsFeeds"));
+const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices"));
+const TrainingOpportunities = lazy(() => import("./pages/TrainingOpportunities"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -49,11 +57,16 @@ function PrivateRoute({ user, children }) {
 function AppLayout() {
   const location = useLocation();
   const hideHeader = location.pathname === "/marketplace" || location.pathname === "/profile/complete";
+  const isMarketplaceArea = location.pathname.startsWith("/marketplace/");
+  const isMarketplaceLoggedIn =
+    typeof localStorage !== "undefined" && !!localStorage.getItem("marketplace_token");
+  const showPrivateHeader = !hideHeader && isMarketplaceArea && isMarketplaceLoggedIn;
 
   return (
     <>
       <ScrollToTop />
-      {!hideHeader && <PublicHeader />}
+      {!hideHeader && showPrivateHeader && <PrivateHeader />}
+      {!hideHeader && !showPrivateHeader && <PublicHeader />}
         <Suspense
           fallback={
             <Box
@@ -273,6 +286,72 @@ function AppLayout() {
               }
             />
             <Route path="/marketplace" element={<MarketplaceLogin />} />
+            <Route
+              path="/marketplace/dashboard"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <MarketplaceDashboard />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/farmers-hub"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <FarmersHub />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/inputs-feeds"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <InputsFeeds />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/veterinary-services"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <VeterinaryServices />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <TrainingOpportunities />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/*"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <MarketplaceArea />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
             <Route path="/profile/complete" element={<ProfileComplete />} />
           </Routes>
         </Suspense>

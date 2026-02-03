@@ -4,13 +4,9 @@
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  /* Reserve scrollbar space so layout doesn't shift when FAQ accordion expands */
-  scrollbar-gutter: stable;
-  overflow-y: scroll;
 }
 
-/* Fallback: body as scroll container */
 body {
-  scrollbar-gutter: stable;
-  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
 }

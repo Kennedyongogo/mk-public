@@ -26,7 +26,6 @@ import {
   Visibility,
   VisibilityOff,
   ArrowBack,
-  Phone,
   Person,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -48,11 +47,9 @@ export default function MarketplaceLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
   const [regEmail, setRegEmail] = useState("");
-  const [regPhone, setRegPhone] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
   const [regFullName, setRegFullName] = useState("");
@@ -72,18 +69,21 @@ export default function MarketplaceLogin() {
     }
     setLoginLoading(true);
     try {
-      const { data } = await loginMarketplaceUser({
+      const response = await loginMarketplaceUser({
         email: emailOrPhone.trim().toLowerCase(),
         password,
       });
-      localStorage.setItem("marketplace_token", data.token);
-      localStorage.setItem("marketplace_user", JSON.stringify(data.user));
-      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false });
-      if (data.user.profileCompleted) {
-        navigate("/");
-      } else {
-        navigate("/profile/complete");
+      const payload = response.data || response;
+      const token = payload.token;
+      const user = payload.user;
+      if (!token || !user) {
+        Swal.fire({ icon: "error", title: "Login failed", text: "Invalid response from server." });
+        return;
       }
+      localStorage.setItem("marketplace_token", token);
+      localStorage.setItem("marketplace_user", JSON.stringify(user));
+      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false });
+      navigate("/marketplace/dashboard");
     } catch (err) {
       Swal.fire({ icon: "error", title: "Login failed", text: err.message || "Login failed." });
     } finally {
@@ -113,7 +113,6 @@ export default function MarketplaceLogin() {
     try {
       await registerMarketplaceUser({
         email: regEmail.trim().toLowerCase(),
-        phone: regPhone.trim() || undefined,
         password: regPassword,
         fullName: regFullName.trim(),
         termsAccepted: true,
@@ -386,7 +385,7 @@ export default function MarketplaceLogin() {
             <Tab label="Register" disableRipple />
           </Tabs>
 
-          <Box sx={{ p: "clamp(0.75rem, 1.5vh, 1.5rem)", flex: 1, minHeight: 0, overflow: "auto" }}>
+          <Box sx={{ p: "clamp(0.75rem, 1.5vh, 1.5rem)", flex: 1, minHeight: 0, overflow: "hidden" }}>
             {tab === 0 && (
               <>
                 <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: "clamp(1.25rem, 2.5vh, 1.75rem)" }}>
@@ -464,17 +463,7 @@ export default function MarketplaceLogin() {
                       "& .MuiInputBase-input": { fontSize: "1rem" },
                     }}
                   />
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={remember}
-                          onChange={(e) => setRemember(e.target.checked)}
-                          sx={{ color: "text.secondary", "&.Mui-checked": { color: PRIMARY } }}
-                        />
-                      }
-                      label={<Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.95rem" }}>Keep me logged in for 30 days</Typography>}
-                    />
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link href="#" variant="body2" sx={{ color: PRIMARY, fontWeight: 600, textDecoration: "none", fontSize: "0.95rem" }}>
                       Forgot password?
                     </Link>
@@ -510,18 +499,21 @@ export default function MarketplaceLogin() {
                     <Link
                       component="button"
                       variant="body2"
-                      sx={{ color: PRIMARY, fontWeight: 700, textDecoration: "none", fontSize: "inherit", "&:hover": { textDecoration: "underline" } }}
                       onClick={() => setTab(1)}
+                      sx={{
+                        color: PRIMARY,
+                        fontWeight: 700,
+                        textDecoration: "none",
+                        fontSize: "inherit",
+                        outline: "none",
+                        "&:focus": { outline: "none" },
+                        "&:focus-visible": { outline: "none", boxShadow: "none" },
+                        "&:hover": { textDecoration: "underline", color: PRIMARY_DARK },
+                        transition: "color 0.2s ease",
+                      }}
                     >
                       Create an account
                     </Link>
-                  </Typography>
-                </Box>
-
-                <Box sx={{ mt: "clamp(0.4rem, 0.8vh, 0.75rem)", display: "flex", alignItems: "center", justifyContent: "center", gap: 1, opacity: 0.7 }}>
-                  <VerifiedUser sx={{ fontSize: 20, color: "text.secondary" }} />
-                  <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic", fontSize: "clamp(0.8rem, 1.2vh, 0.9rem)" }}>
-                    Login required to protect farmers and buyers
                   </Typography>
                 </Box>
               </>
@@ -529,16 +521,17 @@ export default function MarketplaceLogin() {
 
             {tab === 1 && (
               <>
-                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: "clamp(1.25rem, 2.5vh, 1.75rem)" }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0, fontSize: "clamp(1.15rem, 2.2vh, 1.6rem)" }}>
                   Create Account
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)" }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5, fontSize: "clamp(0.85rem, 1.5vh, 0.95rem)" }}>
                   Join the marketplace. You’ll complete your profile after signing up.
                 </Typography>
 
-                <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: "clamp(0.5rem, 1.2vh, 1rem)" }}>
+                <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
                   <TextField
                     fullWidth
+                    size="small"
                     type="email"
                     required
                     label="Email"
@@ -561,26 +554,7 @@ export default function MarketplaceLogin() {
                   />
                   <TextField
                     fullWidth
-                    label="Phone (optional)"
-                    placeholder="+255..."
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Phone sx={{ color: "action.active", fontSize: 24 }} />
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        fontSize: "1rem",
-                        "& .MuiOutlinedInput-notchedOutline": { "&:focus-within": { borderColor: PRIMARY } },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
-                      },
-                    }}
-                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
-                  />
-                  <TextField
-                    fullWidth
+                    size="small"
                     required
                     label="Full name"
                     placeholder="Your full name"
@@ -602,6 +576,7 @@ export default function MarketplaceLogin() {
                   />
                   <TextField
                     fullWidth
+                    size="small"
                     required
                     type={showRegPassword ? "text" : "password"}
                     label="Password"
@@ -641,6 +616,7 @@ export default function MarketplaceLogin() {
                   />
                   <TextField
                     fullWidth
+                    size="small"
                     required
                     type={showRegPassword ? "text" : "password"}
                     label="Confirm password"
@@ -665,41 +641,43 @@ export default function MarketplaceLogin() {
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                      <Checkbox size="small" checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
                     }
                     label={
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
                         I accept the{" "}
-                        <Link href="#" variant="body2" sx={{ color: PRIMARY }}>
+                        <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
                           Terms of Use
                         </Link>
                       </Typography>
                     }
+                    sx={{ mt: 0, mb: 0 }}
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                      <Checkbox size="small" checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
                     }
                     label={
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.95rem" }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
                         I accept the{" "}
-                        <Link href="#" variant="body2" sx={{ color: PRIMARY }}>
+                        <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
                           Privacy Policy
                         </Link>
                       </Typography>
                     }
+                    sx={{ mt: 0, mb: 0 }}
                   />
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
-                    size="large"
+                    size="medium"
                     disableRipple
                     disabled={registerLoading}
                     sx={{
-                      py: 1.5,
+                      py: 1.1,
                       fontWeight: 700,
-                      fontSize: "1.05rem",
+                      fontSize: "0.95rem",
                       bgcolor: PRIMARY,
                       color: BG_DARK,
                       textTransform: "none",
@@ -717,16 +695,23 @@ export default function MarketplaceLogin() {
                 <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", pt: 1, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
                     Already have an account?{" "}
-                    <Link component="button" variant="body2" sx={{ color: PRIMARY, fontWeight: 700, textDecoration: "none" }} onClick={() => setTab(0)}>
+                    <Link
+                      component="button"
+                      variant="body2"
+                      onClick={() => setTab(0)}
+                      sx={{
+                        color: PRIMARY,
+                        fontWeight: 700,
+                        textDecoration: "none",
+                        outline: "none",
+                        "&:focus": { outline: "none" },
+                        "&:focus-visible": { outline: "none", boxShadow: "none" },
+                        "&:hover": { textDecoration: "underline", color: PRIMARY_DARK },
+                        transition: "color 0.2s ease",
+                      }}
+                    >
                       Log in
                     </Link>
-                  </Typography>
-                </Box>
-
-                <Box sx={{ mt: "clamp(0.4rem, 0.8vh, 0.75rem)", display: "flex", alignItems: "center", justifyContent: "center", gap: 1, opacity: 0.7 }}>
-                  <VerifiedUser sx={{ fontSize: 20, color: "text.secondary" }} />
-                  <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic", fontSize: "clamp(0.8rem, 1.2vh, 0.9rem)" }}>
-                    Login required to protect farmers and buyers
                   </Typography>
                 </Box>
               </>
