@@ -36,6 +36,7 @@ const FarmersHub = lazy(() => import("./pages/FarmersHub"));
 const InputsFeeds = lazy(() => import("./pages/InputsFeeds"));
 const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices"));
 const TrainingOpportunities = lazy(() => import("./pages/TrainingOpportunities"));
+const MarketplaceProfilePage = lazy(() => import("./pages/MarketplaceProfilePage"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -67,6 +68,18 @@ function AppLayout() {
       <ScrollToTop />
       {!hideHeader && showPrivateHeader && <PrivateHeader />}
       {!hideHeader && !showPrivateHeader && <PublicHeader />}
+      <Box
+        component="main"
+        sx={{
+          ...(hideHeader && {
+            minHeight: "100vh",
+            minHeight: "100dvh",
+            width: "100%",
+            bgcolor: "#f6f8f6",
+            flex: 1,
+          }),
+        }}
+      >
         <Suspense
           fallback={
             <Box
@@ -342,6 +355,14 @@ function AppLayout() {
               }
             />
             <Route
+              path="/marketplace/profile"
+              element={
+                <MarketplaceGate>
+                  <MarketplaceProfilePage />
+                </MarketplaceGate>
+              }
+            />
+            <Route
               path="/marketplace/*"
               element={
                 <MarketplaceGate>
@@ -355,6 +376,7 @@ function AppLayout() {
             <Route path="/profile/complete" element={<ProfileComplete />} />
           </Routes>
         </Suspense>
+      </Box>
         <Chatbot />
     </>
   );

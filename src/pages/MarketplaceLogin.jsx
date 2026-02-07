@@ -56,6 +56,7 @@ export default function MarketplaceLogin() {
   const [regTerms, setRegTerms] = useState(false);
   const [regPrivacy, setRegPrivacy] = useState(false);
   const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
 
   const handleTabChange = (_, newValue) => {
     setTab(newValue);
@@ -83,7 +84,12 @@ export default function MarketplaceLogin() {
       localStorage.setItem("marketplace_token", token);
       localStorage.setItem("marketplace_user", JSON.stringify(user));
       Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false });
-      navigate("/marketplace/dashboard");
+      const profileCompleted = user.profileCompleted === true;
+      if (!profileCompleted) {
+        navigate("/marketplace/profile", { state: { from: "/marketplace/dashboard" }, replace: true });
+      } else {
+        navigate("/marketplace/dashboard");
+      }
     } catch (err) {
       Swal.fire({ icon: "error", title: "Login failed", text: err.message || "Login failed." });
     } finally {
@@ -528,7 +534,7 @@ export default function MarketplaceLogin() {
                   Join the marketplace. You’ll complete your profile after signing up.
                 </Typography>
 
-                <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 0.4 }}>
+                <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <TextField
                     fullWidth
                     size="small"
@@ -614,21 +620,38 @@ export default function MarketplaceLogin() {
                     }}
                     sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
                   />
-                  <TextField
-                    fullWidth
-                    size="small"
-                    required
-                    type={showRegPassword ? "text" : "password"}
-                    label="Confirm password"
-                    placeholder="Repeat password"
-                    value={regConfirmPassword}
-                    onChange={(e) => setRegConfirmPassword(e.target.value)}
-                    error={regPassword !== regConfirmPassword && regConfirmPassword.length > 0}
-                    helperText={regPassword !== regConfirmPassword && regConfirmPassword.length > 0 ? "Passwords do not match" : ""}
-                    InputProps={{
+                  <Box sx={{ position: "relative" }}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      required
+                      type={showRegConfirmPassword ? "text" : "password"}
+                      label="Confirm password"
+                      placeholder="Repeat password"
+                      value={regConfirmPassword}
+                      onChange={(e) => setRegConfirmPassword(e.target.value)}
+                      error={regPassword !== regConfirmPassword && regConfirmPassword.length > 0}
+                      InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
                           <Lock sx={{ color: "action.active", fontSize: 24 }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
+                            edge="end"
+                            size="small"
+                            disableRipple
+                            sx={{
+                              outline: "none",
+                              "&:focus": { outline: "none" },
+                              "&:focus-visible": { outline: "none", boxShadow: "none" },
+                            }}
+                          >
+                            {showRegConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
                         </InputAdornment>
                       ),
                       sx: {
@@ -637,36 +660,55 @@ export default function MarketplaceLogin() {
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
                       },
                     }}
-                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox size="small" checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
-                    }
-                    label={
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
-                        I accept the{" "}
-                        <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
-                          Terms of Use
-                        </Link>
+                      sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                    />
+                    {regPassword !== regConfirmPassword && regConfirmPassword.length > 0 && (
+                      <Typography
+                        component="span"
+                        sx={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 14,
+                          mt: 0.25,
+                          fontSize: "0.75rem",
+                          color: "error.main",
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        Passwords do not match
                       </Typography>
-                    }
-                    sx={{ mt: 0, mb: 0 }}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox size="small" checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
-                    }
-                    label={
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
-                        I accept the{" "}
-                        <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
-                          Privacy Policy
-                        </Link>
-                      </Typography>
-                    }
-                    sx={{ mt: 0, mb: 0 }}
-                  />
+                    )}
+                  </Box>
+                  <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", gap: 1.5, alignItems: "center", mt: -0.25 }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox size="small" checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                      }
+                      label={
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+                          I accept the{" "}
+                          <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
+                            Terms of Use
+                          </Link>
+                        </Typography>
+                      }
+                      sx={{ mt: 0, mb: 0 }}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox size="small" checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
+                      }
+                      label={
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+                          I accept the{" "}
+                          <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
+                            Privacy Policy
+                          </Link>
+                        </Typography>
+                      }
+                      sx={{ mt: 0, mb: 0 }}
+                    />
+                  </Box>
                   <Button
                     type="submit"
                     fullWidth

@@ -83,9 +83,9 @@ export default function PrivateHeader() {
     navigate("/marketplace");
   };
 
-  const handleNav = (path) => {
+  const handleNav = (path, options = {}) => {
     setMobileMenuOpen(false);
-    navigate(path);
+    navigate(path, options);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -265,7 +265,7 @@ export default function PrivateHeader() {
             key={item.label}
             onClick={() => {
               handleCloseMenu();
-              navigate(item.path);
+              navigate(item.path, item.path === "/marketplace/profile" ? { state: { from: location.pathname } } : {});
             }}
             sx={{
               "&:focus": { outline: "none" },
@@ -344,7 +344,7 @@ export default function PrivateHeader() {
             variant="outlined"
             startIcon={<Person />}
             onClick={() => {
-              handleNav("/marketplace/profile");
+              handleNav("/marketplace/profile", { state: { from: location.pathname } });
             }}
             sx={{
               textTransform: "none",

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -91,6 +91,9 @@ const quickActions = [
 
 export default function MarketplaceDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const goToProfile = () => navigate("/marketplace/profile", { state: { from: location.pathname } });
 
   return (
     <Box
@@ -142,7 +145,7 @@ export default function MarketplaceDashboard() {
           <Button
             variant="contained"
             startIcon={<Person />}
-            onClick={() => navigate("/marketplace/profile")}
+            onClick={goToProfile}
             disableRipple
             sx={{
               bgcolor: PRIMARY,
@@ -254,7 +257,7 @@ export default function MarketplaceDashboard() {
               <Box
                 key={action.path}
                 component="button"
-                onClick={() => navigate(action.path)}
+                onClick={() => action.path === "/marketplace/profile" ? goToProfile() : navigate(action.path)}
                 sx={{
                   display: "flex",
                   alignItems: "center",
