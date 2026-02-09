@@ -100,8 +100,8 @@ export default function TrainingOpportunities() {
   const [filterActive, setFilterActive] = useState("all");
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 5, px: { xs: 2, sm: 3 } }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 5, px: 1 }}>
+      <Box sx={{ width: "100%" }}>
         {/* Header */}
         <Box component="header" sx={{ mb: 5 }}>
           <Typography
@@ -177,6 +177,8 @@ export default function TrainingOpportunities() {
                 color: filterActive === "all" ? "#fff" : "text.primary",
                 boxShadow: filterActive === "all" ? 1 : 0,
                 "&:hover": { bgcolor: filterActive === "all" ? PRIMARY : "action.hover" },
+                "&:focus": { outline: "none" },
+                "&:focus-visible": { outline: "none" },
               }}
             >
               All Categories
@@ -197,6 +199,8 @@ export default function TrainingOpportunities() {
                   px: 2.5,
                   py: 1.25,
                   "&:hover": { borderColor: PRIMARY, bgcolor: "action.hover" },
+                  "&:focus": { outline: "none" },
+                  "&:focus-visible": { outline: "none" },
                 }}
               >
                 {label}
@@ -215,6 +219,8 @@ export default function TrainingOpportunities() {
                 px: 2.5,
                 py: 1.25,
                 "&:hover": { borderColor: PRIMARY },
+                "&:focus": { outline: "none" },
+                "&:focus-visible": { outline: "none" },
               }}
             >
               Location
@@ -232,6 +238,8 @@ export default function TrainingOpportunities() {
                 px: 2.5,
                 py: 1.25,
                 "&:hover": { borderColor: PRIMARY },
+                "&:focus": { outline: "none" },
+                "&:focus-visible": { outline: "none" },
               }}
             >
               Date
@@ -339,6 +347,7 @@ export default function TrainingOpportunities() {
                         bgcolor: PRIMARY,
                         "&:hover": { bgcolor: `${PRIMARY}E6` },
                         "&:focus": { outline: "none" },
+                        "&:focus-visible": { outline: "none" },
                       }}
                     >
                       Register Now
@@ -458,6 +467,7 @@ export default function TrainingOpportunities() {
                         color: PRIMARY,
                         "&:hover": { borderWidth: 2, borderColor: PRIMARY, bgcolor: PRIMARY, color: "#fff" },
                         "&:focus": { outline: "none" },
+                        "&:focus-visible": { outline: "none" },
                       }}
                     >
                       Apply for Funding
