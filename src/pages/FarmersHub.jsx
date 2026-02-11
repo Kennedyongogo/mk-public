@@ -102,8 +102,8 @@ export default function FarmersHub() {
   const [verifiedOnly, setVerifiedOnly] = useState(true);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 4, px: { xs: 2, sm: 3 } }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 5, px: 1, width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
+      <Box sx={{ width: "100%" }}>
         {/* Page Heading */}
         <Box sx={{ mb: 3 }}>
           <Typography

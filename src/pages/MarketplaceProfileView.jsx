@@ -21,8 +21,14 @@ import {
   Grass,
   Badge,
   CalendarToday,
+  LocationOn,
+  Verified,
+  MedicalServices,
+  School,
+  ShoppingCart,
 } from "@mui/icons-material";
 import Footer from "../components/Footer/Footer";
+import LocationMap from "../components/LocationMap/LocationMap";
 
 const PRIMARY = "#17cf54";
 const BG_LIGHT = "#f6f8f6";
@@ -52,13 +58,21 @@ const SCALE_LABELS = {
   industrial: "Industrial",
 };
 
+const AVAILABILITY_LABELS = {
+  available: "Available",
+  pre_order_only: "Pre-order Only",
+  unavailable: "Unavailable",
+};
+
 function getBaseUrl() {
   const env = typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL;
   return env ? String(env).replace(/\/$/, "") : "";
 }
 
-function InfoRow({ icon, label, value }) {
-  if (value == null || value === "") return null;
+function InfoRow({ icon, label, value, showIfZero = false }) {
+  // For coordinates, we want to show even if value is 0
+  if (!showIfZero && (value == null || value === "")) return null;
+  if (showIfZero && (value == null || value === "" || value === undefined)) return null;
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1.5 }}>
       <Box sx={{ color: PRIMARY, mt: 0.25 }}>{icon}</Box>
@@ -141,6 +155,13 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
   const farmOrBusinessName = getProfileValue(profile, "farmOrBusinessName");
   const bio = getProfileValue(profile, "bio");
   const preferredLanguage = getProfileValue(profile, "preferredLanguage");
+  const latitudeRaw = getProfileValue(profile, "latitude");
+  const longitudeRaw = getProfileValue(profile, "longitude");
+  // Convert to numbers, handling string or number inputs
+  const latitude = latitudeRaw != null && latitudeRaw !== "" ? parseFloat(latitudeRaw) : null;
+  const longitude = longitudeRaw != null && longitudeRaw !== "" ? parseFloat(longitudeRaw) : null;
+  const availability = getProfileValue(profile, "availability");
+  const isVerified = user.isVerified || user.is_verified || false;
 
   return (
     <Box
@@ -158,7 +179,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
         flexDirection: "column",
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", px: 0.75, pt: 1.5, pb: 0.75, minWidth: 0, flex: 1 }}>
+      <Box sx={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", pt: 1.5, pb: 0.75, minWidth: 0, flex: 1 }}>
         <Button
           startIcon={<ArrowBack />}
           onClick={() => navigate(from)}
@@ -184,6 +205,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
             borderColor: "divider",
             overflow: "hidden",
             mb: 3,
+            mx: 0.75,
           }}
         >
           <Box
@@ -236,11 +258,21 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                 </Typography>
               </Box>
             </Box>
-            <Chip
-              label={ROLE_LABELS[user.role] || user.role || "—"}
-              size="medium"
-              sx={{ bgcolor: PRIMARY, color: "#fff", fontWeight: 600, mb: 1 }}
-            />
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "center", mb: 1 }}>
+              <Chip
+                label={ROLE_LABELS[user.role] || user.role || "—"}
+                size="medium"
+                sx={{ bgcolor: PRIMARY, color: "#fff", fontWeight: 600 }}
+              />
+              {isVerified && (
+                <Chip
+                  icon={<Verified sx={{ color: "#fff !important" }} />}
+                  label="MK Verified"
+                  size="medium"
+                  sx={{ bgcolor: PRIMARY, color: "#fff", fontWeight: 600 }}
+                />
+              )}
+            </Box>
             <Typography variant="h4" fontWeight={800} sx={{ color: "text.primary", mb: 0.5 }}>
               {user.fullName || "—"}
             </Typography>
@@ -277,12 +309,28 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
           </Box>
         </Paper>
 
-        <Grid container spacing={2} sx={{ minWidth: 0 }}>
+        <Grid container spacing={2} sx={{ minWidth: 0, px: 0.75 }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <SectionCard title="Contact & location" icon={<Person />}>
               <InfoRow icon={<Email fontSize="small" />} label="Email" value={user.email} />
               <InfoRow icon={<Phone fontSize="small" />} label="Phone" value={user.phone} />
               <InfoRow icon={<Public fontSize="small" />} label="Location" value={locationStr} />
+              {(latitude != null || longitude != null) && (
+                <InfoRow
+                  icon={<LocationOn fontSize="small" />}
+                  label="Coordinates (Latitude, Longitude)"
+                  value={
+                    latitude != null && longitude != null
+                      ? `${Number(latitude).toFixed(6)}, ${Number(longitude).toFixed(6)}`
+                      : latitude != null
+                        ? `Lat: ${Number(latitude).toFixed(6)}`
+                        : longitude != null
+                          ? `Lng: ${Number(longitude).toFixed(6)}`
+                          : null
+                  }
+                  showIfZero={true}
+                />
+              )}
               <InfoRow icon={<Translate fontSize="small" />} label="Preferred language" value={preferredLanguage} />
             </SectionCard>
           </Grid>
@@ -300,6 +348,13 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                     label="Scale of operation"
                     value={scaleOfOperation ? SCALE_LABELS[scaleOfOperation] || scaleOfOperation : null}
                   />
+                  {availability && (
+                    <InfoRow
+                      icon={<CalendarToday fontSize="small" />}
+                      label="Availability"
+                      value={AVAILABILITY_LABELS[availability] || availability}
+                    />
+                  )}
                   {producesArr.length > 0 && (
                     <Box sx={{ mb: 1.5 }}>
                       <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
@@ -319,15 +374,129 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                   />
                 </>
               )}
-              {Object.keys(roleSpecific).length > 0 && (
-                <Box sx={{ mt: 1 }}>
-                  <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
-                    Additional details
-                  </Typography>
-                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                    {JSON.stringify(roleSpecific, null, 2).replace(/[{}"]/g, "").trim() || "—"}
-                  </Typography>
-                </Box>
+              {user.role === "veterinarian" && (
+                <>
+                  {roleSpecific.businessName && (
+                    <InfoRow
+                      icon={<Business fontSize="small" />}
+                      label="Practice/Business Name"
+                      value={roleSpecific.businessName}
+                    />
+                  )}
+                  {roleSpecific.specialization && (
+                    <InfoRow
+                      icon={<MedicalServices fontSize="small" />}
+                      label="Specialization"
+                      value={roleSpecific.specialization}
+                    />
+                  )}
+                  {roleSpecific.servicesOffered && (
+                    <InfoRow
+                      icon={<MedicalServices fontSize="small" />}
+                      label="Services Offered"
+                      value={roleSpecific.servicesOffered}
+                    />
+                  )}
+                  {roleSpecific.coverageArea && (
+                    <InfoRow
+                      icon={<Public fontSize="small" />}
+                      label="Coverage Area"
+                      value={roleSpecific.coverageArea}
+                    />
+                  )}
+                </>
+              )}
+              {user.role === "buyer" && (
+                <>
+                  {roleSpecific.businessName && (
+                    <InfoRow
+                      icon={<Business fontSize="small" />}
+                      label="Business Name"
+                      value={roleSpecific.businessName}
+                    />
+                  )}
+                  {roleSpecific.whatTheyBuy && Array.isArray(roleSpecific.whatTheyBuy) && roleSpecific.whatTheyBuy.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+                        What You Buy
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                        {roleSpecific.whatTheyBuy.map((item, i) => (
+                          <Chip key={i} label={item} size="small" sx={{ bgcolor: `${PRIMARY}14`, color: "text.primary" }} />
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                  {roleSpecific.coverageArea && (
+                    <InfoRow
+                      icon={<Public fontSize="small" />}
+                      label="Coverage Area"
+                      value={roleSpecific.coverageArea}
+                    />
+                  )}
+                </>
+              )}
+              {user.role === "input_supplier" && (
+                <>
+                  {roleSpecific.businessName && (
+                    <InfoRow
+                      icon={<Business fontSize="small" />}
+                      label="Business Name"
+                      value={roleSpecific.businessName}
+                    />
+                  )}
+                  {roleSpecific.productsSupplied && Array.isArray(roleSpecific.productsSupplied) && roleSpecific.productsSupplied.length > 0 && (
+                    <Box sx={{ mb: 1.5 }}>
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+                        Products Supplied
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                        {roleSpecific.productsSupplied.map((item, i) => (
+                          <Chip key={i} label={item} size="small" sx={{ bgcolor: `${PRIMARY}14`, color: "text.primary" }} />
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
+                  {roleSpecific.coverageArea && (
+                    <InfoRow
+                      icon={<Public fontSize="small" />}
+                      label="Coverage Area"
+                      value={roleSpecific.coverageArea}
+                    />
+                  )}
+                </>
+              )}
+              {user.role === "consultant" && (
+                <>
+                  {roleSpecific.businessName && (
+                    <InfoRow
+                      icon={<Business fontSize="small" />}
+                      label="Business Name"
+                      value={roleSpecific.businessName}
+                    />
+                  )}
+                  {roleSpecific.specialization && (
+                    <InfoRow
+                      icon={<School fontSize="small" />}
+                      label="Specialization"
+                      value={roleSpecific.specialization}
+                    />
+                  )}
+                  {roleSpecific.servicesOffered && (
+                    <InfoRow
+                      icon={<School fontSize="small" />}
+                      label="Services Offered"
+                      value={roleSpecific.servicesOffered}
+                    />
+                  )}
+                  {roleSpecific.coverageArea && (
+                    <InfoRow
+                      icon={<Public fontSize="small" />}
+                      label="Coverage Area"
+                      value={roleSpecific.coverageArea}
+                    />
+                  )}
+                </>
               )}
             </SectionCard>
           </Grid>
@@ -348,6 +517,13 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
             </Grid>
           )}
         </Grid>
+
+        {/* Full-width map section */}
+        {latitude != null && longitude != null && (
+          <Box sx={{ width: "100%", maxWidth: "100vw", mt: 3, px: 0, mx: 0 }}>
+            <LocationMap latitude={latitude} longitude={longitude} height="400px" />
+          </Box>
+        )}
       </Box>
       <Footer />
     </Box>

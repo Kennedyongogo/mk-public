@@ -18,6 +18,7 @@ import { ArrowBack, PersonPin, Public, Translate, Business, Grass, ShoppingCart,
 import Swal from "sweetalert2";
 import { completeMarketplaceProfile, uploadMarketplaceProfilePhoto, getMarketplaceMe } from "../api";
 import Footer from "../components/Footer/Footer";
+import LocationMapPicker from "../components/LocationMapPicker/LocationMapPicker";
 
 function getBaseUrl() {
   const env = typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL;
@@ -72,12 +73,15 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
   const [district, setDistrict] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [preferredLanguage, setPreferredLanguage] = useState("");
   const [primaryActivity, setPrimaryActivity] = useState("");
   const [produces, setProduces] = useState("");
   const [scaleOfOperation, setScaleOfOperation] = useState("");
   const [farmOrBusinessName, setFarmOrBusinessName] = useState("");
   const [bio, setBio] = useState("");
+  const [availability, setAvailability] = useState("");
   const [roleSpecificData, setRoleSpecificData] = useState({});
   const [profilePhotoUrl, setProfilePhotoUrl] = useState("");
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(null);
@@ -122,6 +126,8 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         setCountry(p.country ?? "");
         setRegion(p.region ?? "");
         setDistrict(p.district ?? "");
+        setLatitude(p.latitude?.toString() ?? "");
+        setLongitude(p.longitude?.toString() ?? "");
         setPreferredLanguage(p.preferredLanguage ?? p.preferred_language ?? "");
         if (photoUrl) {
           setProfilePhotoUrl(photoUrl);
@@ -132,6 +138,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         setScaleOfOperation(p.scaleOfOperation ?? p.scale_of_operation ?? "");
         setFarmOrBusinessName(p.farmOrBusinessName ?? p.farm_or_business_name ?? "");
         setBio(p.bio ?? "");
+        setAvailability(p.availability ?? "");
         const rsd = p.roleSpecificData ?? p.role_specific_data;
         if (rsd && typeof rsd === "object") {
           const parsed = { ...rsd };
@@ -215,6 +222,8 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         country: country.trim() || undefined,
         region: region.trim() || undefined,
         district: district.trim() || undefined,
+        latitude: latitude.trim() || undefined,
+        longitude: longitude.trim() || undefined,
         preferredLanguage: preferredLanguage.trim() || undefined,
       };
       if (newPassword.trim()) {
@@ -227,6 +236,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         body.scaleOfOperation = scaleOfOperation || undefined;
         body.farmOrBusinessName = farmOrBusinessName.trim() || undefined;
         body.bio = bio.trim() || undefined;
+        body.availability = availability || undefined;
       } else if (["buyer", "input_supplier", "veterinarian", "consultant"].includes(role)) {
         const data = { ...roleSpecificData };
         if (data.whatTheyBuy && typeof data.whatTheyBuy === "string") {
@@ -481,6 +491,63 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
             onChange={(e) => setDistrict(e.target.value)}
             sx={{ "& label.Mui-focused": { color: PRIMARY } }}
           />
+
+          {/* Location Map Picker */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+              Set your location on the map (optional)
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Click on the map or search for your location to set your coordinates. This helps us connect you with nearby opportunities.
+            </Typography>
+            <LocationMapPicker
+              latitude={latitude}
+              longitude={longitude}
+              onLocationChange={(lat, lng) => {
+                setLatitude(lat);
+                setLongitude(lng);
+              }}
+            />
+            <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Latitude (X)"
+                value={latitude || ""}
+                placeholder="Click on map to set"
+                InputProps={{ readOnly: true }}
+                helperText={latitude ? "Location set ✓" : "Set via map"}
+                sx={{
+                  "& label.Mui-focused": { color: PRIMARY },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: latitude ? "rgba(17, 212, 82, 0.05)" : "transparent",
+                    "& fieldset": {
+                      borderColor: latitude ? PRIMARY : undefined,
+                    },
+                  },
+                }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Longitude (Y)"
+                value={longitude || ""}
+                placeholder="Click on map to set"
+                InputProps={{ readOnly: true }}
+                helperText={longitude ? "Location set ✓" : "Set via map"}
+                sx={{
+                  "& label.Mui-focused": { color: PRIMARY },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: longitude ? "rgba(17, 212, 82, 0.05)" : "transparent",
+                    "& fieldset": {
+                      borderColor: longitude ? PRIMARY : undefined,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
           <TextField
             fullWidth
             label="Preferred language"
@@ -576,6 +643,20 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                       {s.label}
                     </MenuItem>
                   ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Availability</InputLabel>
+                <Select
+                  label="Availability"
+                  value={availability}
+                  onChange={(e) => setAvailability(e.target.value)}
+                  sx={{ "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
+                >
+                  <MenuItem value="">—</MenuItem>
+                  <MenuItem value="available">Available</MenuItem>
+                  <MenuItem value="pre_order_only">Pre-order Only</MenuItem>
+                  <MenuItem value="unavailable">Unavailable</MenuItem>
                 </Select>
               </FormControl>
               <TextField

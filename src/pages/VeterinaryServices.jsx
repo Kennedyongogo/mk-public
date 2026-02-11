@@ -102,7 +102,7 @@ export default function VeterinaryServices() {
   const [verifiedOnly, setVerifiedOnly] = useState(true);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
       {/* Header section */}
       <Box
         sx={{
@@ -110,10 +110,10 @@ export default function VeterinaryServices() {
           borderBottom: "1px solid",
           borderColor: "divider",
           py: 5,
-          px: { xs: 2, sm: 3 },
+          px: 1,
         }}
       >
-        <Box sx={{ maxWidth: 1024, mx: "auto", width: "100%" }}>
+        <Box sx={{ width: "100%" }}>
           <Typography
             variant="h3"
             sx={{
@@ -133,8 +133,8 @@ export default function VeterinaryServices() {
       </Box>
 
       {/* Search and filters */}
-      <Box sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
-        <Box sx={{ maxWidth: 1024, mx: "auto", width: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{ py: 4, px: 1 }}>
+        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
           <TextField
             fullWidth
             placeholder="Search veterinarians by specialization, location, or service type"
@@ -232,8 +232,8 @@ export default function VeterinaryServices() {
       </Box>
 
       {/* Directory grid */}
-      <Box sx={{ px: { xs: 2, sm: 3 }, pb: 4 }}>
-        <Box sx={{ maxWidth: 1024, mx: "auto", width: "100%" }}>
+      <Box sx={{ px: 1, pb: 4 }}>
+        <Box sx={{ width: "100%" }}>
           <Grid container spacing={3}>
             {veterinarians.map((vet) => {
               const SpecIcon = specializationIcons[vet.specializationKey] || MedicalServices;
