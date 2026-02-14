@@ -36,6 +36,11 @@ const FarmersHub = lazy(() => import("./pages/FarmersHub"));
 const InputsFeeds = lazy(() => import("./pages/InputsFeeds"));
 const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices"));
 const TrainingOpportunities = lazy(() => import("./pages/TrainingOpportunities"));
+const TrainingOpportunitiesMapPage = lazy(() => import("./pages/TrainingOpportunitiesMapPage"));
+const ViewAllTrainings = lazy(() => import("./pages/ViewAllTrainings"));
+const ViewAllGrants = lazy(() => import("./pages/ViewAllGrants"));
+const RegisterEventPage = lazy(() => import("./pages/RegisterEventPage"));
+const ApplyGrantPage = lazy(() => import("./pages/ApplyGrantPage"));
 const MarketplaceProfilePage = lazy(() => import("./pages/MarketplaceProfilePage"));
 
 function ScrollToTop() {
@@ -349,6 +354,61 @@ function AppLayout() {
                 <MarketplaceGate>
                   <>
                     <TrainingOpportunities />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities/map"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <TrainingOpportunitiesMapPage />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities/trainings"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <ViewAllTrainings />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities/register/:eventId"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <RegisterEventPage />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities/grants"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <ViewAllGrants />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/training-opportunities/grants/apply/:grantId"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <ApplyGrantPage />
                     <Footer />
                   </>
                 </MarketplaceGate>

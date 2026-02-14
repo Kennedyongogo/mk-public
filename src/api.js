@@ -216,3 +216,50 @@ export async function completeMarketplaceProfile(body) {
   }
   return data;
 }
+
+/**
+ * Apply for a grant (requires marketplace auth).
+ * Sends POST /api/grant-applications with body: { grantId, applicationData }.
+ * @param {string} grantId - ID of the grant
+ * @param {object} [applicationData] - Optional application form data (default {})
+ * @returns {Promise<{ success: boolean, message?: string, data?: object }>}
+ */
+export async function applyForGrant(grantId, applicationData = {}) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/grant-applications`, {
+    method: "POST",
+    headers: getMarketplaceAuthHeaders(),
+    body: JSON.stringify({ grantId, applicationData }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Application failed");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Register for a training event (requires marketplace auth).
+ * Sends POST /api/training-registrations with body: { trainingEventId }.
+ * @param {string} trainingEventId - ID of the training event
+ * @returns {Promise<{ success: boolean, message?: string, data?: object }>}
+ */
+export async function registerForTrainingEvent(trainingEventId) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/training-registrations`, {
+    method: "POST",
+    headers: getMarketplaceAuthHeaders(),
+    body: JSON.stringify({ trainingEventId }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Registration failed");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -11,10 +12,10 @@ import {
   InputAdornment,
   Chip,
   Link,
+  CircularProgress,
 } from "@mui/material";
 import {
   Search,
-  ExpandMore,
   LocationOn,
   CalendarToday,
   Payment,
@@ -27,77 +28,119 @@ const BORDER_LIGHT = "#d0e7d7";
 const TEXT_MUTED = "#4e9767";
 const AMBER = "#f59e0b";
 
-const workshops = [
-  {
-    id: 1,
-    title: "Climate-Resilient Maize Farming",
-    description:
-      "Learn advanced techniques for sustainable yield in changing climates and pest management strategies.",
-    date: "Oct 12, 2023",
-    location: "Nakuru, Kenya",
-    type: "Workshop",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCIzy7nIH1r-S6QWc10jHymZCd593ESXbyg5_70diF9sp33bK5s3ySLpaxjPqlHuBqh6Qvx8wPpQiMBW3m0K8xfdy9VOpyCXy9TyE25pE93EYLBAQ9ZTPpJCbkXK8lPEQbyObu86AfkeeUq90YaCLFSWGV6Tf-G2neBU32SN1izuiUclG7LU6bzZfOAZd4dNVWDmnqpgPIoNm390FFNhbor0JOjdOZd3SGSFCmoA0Bf6r4rMFVyBY5QjQoD6eYjfwvW407mLJjgI68k",
-  },
-  {
-    id: 2,
-    title: "Hydroponic Systems Setup",
-    description:
-      "A hands-on professional guide to building soil-less systems for urban commercial vegetable production.",
-    date: "Oct 15, 2023",
-    location: "Nairobi, Kenya",
-    type: "Training",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBtbniDTZgcXbxKOxioHhMpoqYpIy-omFRbDE60b90w3ay4wt6IerY0LLdhsSUgpxUzYOYT0zs70deUKGvyIIEUoWengNbEenLniX3YNK6wxD4kPm8MjE3an_sCUWIx9b5Cbqe02H8OOndavmqqExUvVRdY2XQUp2FgoYFcmnSUozJSfRzH_qBOdVakgYEiRMFHW9SPD2N7z1Ib1QB-QYJrfQNmoniMpPCMo5ZGXmGpB06RS2hTqGGPMo13pKaCKTfsUvgs5paGrAx6",
-  },
-  {
-    id: 3,
-    title: "Post-Harvest Management",
-    description:
-      "Minimize losses and maximize profit margins by learning modern storage and cold-chain logistics.",
-    date: "Oct 20, 2023",
-    location: "Eldoret, Kenya",
-    type: "Workshop",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAqqc7CRMlhFi1XFRb0O00nge-xu3_xPjjoVmbCDtGEMBYDuqqy_Z1Dfg-iDJuXkjPYLy2P2tuOmBjyfsPPnehZATo-aDI8U_IVjq0zqTl-cNDDn5RDpOBdPU-WBAipD6W-Ek72AtE8XtfY8niph9UM4cix47rVP3dzHeESDASCLGAdU9epYuenoYTGXWEE3YCGGfuEhKnO1ywc7u3rCC3E7f0vkMm7JouqpXu5Mn907NFGT1PL1_xmaoQsk1-aGsKSjHwrHlqIuDYy",
-  },
-];
+const getBaseUrl = () => {
+  const env = typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL;
+  return env ? String(env).replace(/\/$/, "") : "";
+};
 
-const grants = [
-  {
-    id: 1,
-    title: "Smallholder Innovation Grant",
-    badge: "Funding",
-    description:
-      "Direct financial support for farmers implementing solar-powered irrigation or sustainable tech solutions.",
-    amount: "Up to $10,000",
-    deadline: "Deadline: Dec 1, 2023",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAoOGKXdBSQZag3UTOCktlg8rpMF3Y5bP33GkqbQR416Dijr4CM0Nvmsak_uZ8AGCg6ioBoEijWAmd83TnsV1KqSktPZk28-lRHwOQj9OtdXV2jNq0kR9jQ9ZGfRdbLuDC7kAD-qN1tecw-BapCOB_ku1t0RUC8etato7tLgAxgG49mdiYnemyF6j2RizqEkpc5gB03mG9qyzNSg5F1PVrMy1Vig-Qpa94sSEPGRLUQEm4InH1xhoGLM4zF9YF4AGTkKaUmeYu4C04x",
-  },
-  {
-    id: 2,
-    title: "Women in Agribusiness Fund",
-    badge: "Grant",
-    description:
-      "Equity-free funding for women-led agribusinesses focusing on value addition and regional exports.",
-    amount: "Flexible Grants",
-    deadline: "Open Rolling Basis",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCsaNUDjMwQhoeQhQb1suShZgGVwOT83GJ8BQMQcMM9WFrk57qsNyYXdOv08Y1iOWosvPvFx8F3Uz7NLjIN8gsvyaHxOEdmQuympVzfSbqBJ1ZvhztX8OKhEu8qfQybH23_HhqqCMYScbDyj-ZHcPNqOYxqVamlmL5pwO_-57HiliUYsbGS9l1tJGkTiVzKbJe8nXSL6CT2V178rE_oGTcERxYbYw68UaxH8-4umW64EylXa8bapRmr3p6fHPfyULBZLsaNfcV5EaOh",
-  },
-];
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
 
-const partners = [
-  { initial: "K", name: "KALRO" },
-  { initial: "I", name: "ILRI" },
-  { initial: "F", name: "FAO" },
-  { initial: "M", name: "MoALF" },
-];
+const resolveImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return path.startsWith("/") ? path : `/${path}`;
+};
+
+const TRAINING_PLACEHOLDER = "https://placehold.co/400x250/f6f8f6/4e9767?text=Training";
+const GRANT_PLACEHOLDER = "https://placehold.co/400x250/f6f8f6/4e9767?text=Funding";
 
 export default function TrainingOpportunities() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [filterActive, setFilterActive] = useState("all");
+  const [trainings, setTrainings] = useState([]);
+  const [grants, setGrants] = useState([]);
+  const [partners, setPartners] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const base = getBaseUrl();
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    const isAll = filterActive === "all";
+    const isFunding = filterActive === "funding";
+    const isTraining = filterActive === "training";
+    const isWorkshop = filterActive === "workshop";
+
+    if (isAll) {
+      Promise.all([
+        fetch(`${base}/api/training-events/public?limit=3`).then((r) => r.json()),
+        fetch(`${base}/api/grants/public?limit=2`).then((r) => r.json()),
+      ])
+        .then(([trainRes, grantRes]) => {
+          if (cancelled) return;
+          if (trainRes.success && trainRes.data) setTrainings(Array.isArray(trainRes.data) ? trainRes.data : []);
+          if (grantRes.success && grantRes.data) setGrants(Array.isArray(grantRes.data) ? grantRes.data : []);
+        })
+        .catch((err) => { if (!cancelled) setError(err.message || "Failed to load content"); })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else if (isFunding) {
+      fetch(`${base}/api/grants/public?limit=2`)
+        .then((r) => r.json())
+        .then((grantRes) => {
+          if (cancelled) return;
+          setTrainings([]);
+          if (grantRes.success && grantRes.data) setGrants(Array.isArray(grantRes.data) ? grantRes.data : []);
+          else setGrants([]);
+        })
+        .catch((err) => { if (!cancelled) setError(err.message || "Failed to load content"); })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else if (isTraining || isWorkshop) {
+      const type = isTraining ? "Training" : "Workshop";
+      fetch(`${base}/api/training-events/public?type=${encodeURIComponent(type)}&limit=3`)
+        .then((r) => r.json())
+        .then((trainRes) => {
+          if (cancelled) return;
+          if (trainRes.success && trainRes.data) setTrainings(Array.isArray(trainRes.data) ? trainRes.data : []);
+          else setTrainings([]);
+          setGrants([]);
+        })
+        .catch((err) => { if (!cancelled) setError(err.message || "Failed to load content"); })
+        .finally(() => { if (!cancelled) setLoading(false); });
+    } else {
+      setLoading(false);
+    }
+    return () => { cancelled = true; };
+  }, [filterActive]);
+
+  const searchLower = (search || "").trim().toLowerCase();
+  const filteredTrainings =
+    searchLower === ""
+      ? trainings
+      : trainings.filter(
+          (t) =>
+            (t.title && t.title.toLowerCase().includes(searchLower)) ||
+            (t.description && t.description.toLowerCase().includes(searchLower)) ||
+            (t.location && t.location.toLowerCase().includes(searchLower))
+        );
+  const filteredGrants =
+    searchLower === ""
+      ? grants
+      : grants.filter(
+          (g) =>
+            (g.title && g.title.toLowerCase().includes(searchLower)) ||
+            (g.description && g.description.toLowerCase().includes(searchLower))
+        );
+
+  useEffect(() => {
+    const base = getBaseUrl();
+    let cancelled = false;
+    fetch(`${base}/api/partners/public`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (cancelled) return;
+        if (res.success && Array.isArray(res.data)) setPartners(res.data);
+        else setPartners([]);
+      })
+      .catch(() => { if (!cancelled) setPartners([]); });
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 5, px: 1 }}>
@@ -164,41 +207,31 @@ export default function TrainingOpportunities() {
             >
               Filter by:
             </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => setFilterActive("all")}
-              sx={{
-                borderRadius: "9999px",
-                px: 2.5,
-                py: 1.25,
-                fontWeight: 500,
-                bgcolor: filterActive === "all" ? PRIMARY : "transparent",
-                color: filterActive === "all" ? "#fff" : "text.primary",
-                boxShadow: filterActive === "all" ? 1 : 0,
-                "&:hover": { bgcolor: filterActive === "all" ? PRIMARY : "action.hover" },
-                "&:focus": { outline: "none" },
-                "&:focus-visible": { outline: "none" },
-              }}
-            >
-              All Categories
-            </Button>
-            {["Training", "Workshop", "Funding"].map((label) => (
+            {[
+              { key: "all", label: "All Categories" },
+              { key: "training", label: "Training" },
+              { key: "workshop", label: "Workshop" },
+              { key: "funding", label: "Funding" },
+            ].map(({ key, label }) => (
               <Button
-                key={label}
-                variant="outlined"
+                key={key}
+                variant={filterActive === key ? "contained" : "outlined"}
                 size="small"
-                endIcon={<ExpandMore sx={{ color: "grey.400" }} />}
-                onClick={() => setFilterActive(label.toLowerCase())}
+                onClick={() => setFilterActive(key)}
                 sx={{
                   borderRadius: "9999px",
-                  borderColor: "divider",
-                  color: "text.primary",
-                  textTransform: "none",
-                  fontWeight: 500,
                   px: 2.5,
                   py: 1.25,
-                  "&:hover": { borderColor: PRIMARY, bgcolor: "action.hover" },
+                  fontWeight: 500,
+                  bgcolor: filterActive === key ? PRIMARY : "transparent",
+                  color: filterActive === key ? "#fff" : "text.primary",
+                  borderColor: filterActive === key ? PRIMARY : "divider",
+                  boxShadow: filterActive === key ? 1 : 0,
+                  textTransform: "none",
+                  "&:hover": {
+                    bgcolor: filterActive === key ? PRIMARY : "action.hover",
+                    borderColor: PRIMARY,
+                  },
                   "&:focus": { outline: "none" },
                   "&:focus-visible": { outline: "none" },
                 }}
@@ -210,6 +243,7 @@ export default function TrainingOpportunities() {
               variant="outlined"
               size="small"
               startIcon={<LocationOn sx={{ color: "grey.400" }} />}
+              onClick={() => navigate("/marketplace/training-opportunities/map")}
               sx={{
                 borderRadius: "9999px",
                 borderColor: "divider",
@@ -223,31 +257,13 @@ export default function TrainingOpportunities() {
                 "&:focus-visible": { outline: "none" },
               }}
             >
-              Location
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<CalendarToday sx={{ color: "grey.400" }} />}
-              sx={{
-                borderRadius: "9999px",
-                borderColor: "divider",
-                color: "text.primary",
-                textTransform: "none",
-                fontWeight: 500,
-                px: 2.5,
-                py: 1.25,
-                "&:hover": { borderColor: PRIMARY },
-                "&:focus": { outline: "none" },
-                "&:focus-visible": { outline: "none" },
-              }}
-            >
-              Date
+              View in map
             </Button>
           </Box>
         </Box>
 
-        {/* Upcoming Workshops & Training */}
+        {/* Upcoming Workshops & Training – shown for All, Training, Workshop */}
+        {(filterActive === "all" || filterActive === "training" || filterActive === "workshop") && (
         <Box component="section" sx={{ mb: 6 }}>
           <Box
             sx={{
@@ -261,14 +277,30 @@ export default function TrainingOpportunities() {
             }}
           >
             <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em" }}>
-              Upcoming Workshops & Training
+              {filterActive === "training" ? "Training" : filterActive === "workshop" ? "Workshops" : "Upcoming Workshops & Training"}
             </Typography>
-            <Link href="#" underline="hover" sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem" }}>
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => navigate("/marketplace/training-opportunities/trainings")}
+              sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+            >
               View all
             </Link>
           </Box>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+              <CircularProgress sx={{ color: PRIMARY }} />
+            </Box>
+          ) : error ? (
+            <Typography color="text.secondary" sx={{ py: 3 }}>{error}</Typography>
+          ) : filteredTrainings.length === 0 ? (
+            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
+              {searchLower ? "No matching training or workshop events." : `No ${filterActive === "training" ? "training" : filterActive === "workshop" ? "workshop" : "training or workshop"} events at the moment.`}
+            </Typography>
+          ) : (
           <Grid container spacing={3}>
-            {workshops.map((item) => (
+            {filteredTrainings.slice(0, 3).map((item) => (
               <Grid size={{ xs: 12, md: 6, lg: 4 }} key={item.id}>
                 <Card
                   elevation={0}
@@ -287,11 +319,11 @@ export default function TrainingOpportunities() {
                   <Box sx={{ position: "relative", aspectRatio: "16/10" }}>
                     <CardMedia
                       component="div"
-                      image={item.image}
+                      image={resolveImageUrl(item.image) || TRAINING_PLACEHOLDER}
                       sx={{ height: "100%", backgroundSize: "cover", backgroundPosition: "center" }}
                     />
                     <Chip
-                      label={item.type}
+                      label={item.type || "Event"}
                       size="small"
                       sx={{
                         position: "absolute",
@@ -328,18 +360,23 @@ export default function TrainingOpportunities() {
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <CalendarToday sx={{ fontSize: 16, color: PRIMARY }} />
-                        <span>{item.date}</span>
+                        <span>{formatDate(item.date)}</span>
                       </Box>
-                      <span>•</span>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                        <LocationOn sx={{ fontSize: 16, color: PRIMARY }} />
-                        <span>{item.location}</span>
-                      </Box>
+                      {item.location && (
+                        <>
+                          <span>•</span>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <LocationOn sx={{ fontSize: 16, color: PRIMARY }} />
+                            <span>{item.location}</span>
+                          </Box>
+                        </>
+                      )}
                     </Box>
                     <Button
                       fullWidth
                       variant="contained"
                       disableRipple
+                      onClick={() => navigate(`/marketplace/training-opportunities/register/${item.id}`, { state: { event: item } })}
                       sx={{
                         mt: "auto",
                         py: 1.5,
@@ -357,9 +394,12 @@ export default function TrainingOpportunities() {
               </Grid>
             ))}
           </Grid>
+          )}
         </Box>
+        )}
 
-        {/* Funding & Grants */}
+        {/* Funding & Grants – shown for All, Funding */}
+        {(filterActive === "all" || filterActive === "funding") && (
         <Box component="section" sx={{ mb: 6 }}>
           <Box
             sx={{
@@ -375,12 +415,28 @@ export default function TrainingOpportunities() {
             <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em" }}>
               Funding & Grants
             </Typography>
-            <Link href="#" underline="hover" sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem" }}>
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => navigate("/marketplace/training-opportunities/grants")}
+              sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+            >
               View all
             </Link>
           </Box>
+          {loading && filterActive === "funding" ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+              <CircularProgress sx={{ color: PRIMARY }} />
+            </Box>
+          ) : (
           <Grid container spacing={3}>
-            {grants.map((item) => (
+            {filteredGrants.length === 0 ? (
+              <Grid size={12}>
+                <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
+                  {searchLower ? "No matching grants." : "No funding or grants available at the moment."}
+                </Typography>
+              </Grid>
+            ) : filteredGrants.slice(0, 2).map((item) => (
               <Grid size={{ xs: 12, md: 6 }} key={item.id}>
                 <Card
                   elevation={0}
@@ -404,7 +460,7 @@ export default function TrainingOpportunities() {
                   >
                     <CardMedia
                       component="div"
-                      image={item.image}
+                      image={resolveImageUrl(item.image) || GRANT_PLACEHOLDER}
                       sx={{
                         height: { xs: 160, sm: "100%" },
                         minHeight: { sm: 200 },
@@ -419,7 +475,7 @@ export default function TrainingOpportunities() {
                         {item.title}
                       </Typography>
                       <Chip
-                        label={item.badge}
+                        label={item.badge || "Funding"}
                         size="small"
                         sx={{
                           bgcolor: AMBER,
@@ -445,19 +501,22 @@ export default function TrainingOpportunities() {
                         mb: 2,
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                        <Payment sx={{ fontSize: 18, color: AMBER }} />
-                        <span>{item.amount}</span>
-                      </Box>
+                      {(item.amount || item.currency) && (
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                          <Payment sx={{ fontSize: 18, color: AMBER }} />
+                          <span>{item.amount || "See details"}</span>
+                        </Box>
+                      )}
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         <EventIcon sx={{ fontSize: 18, color: AMBER }} />
-                        <span>{item.deadline}</span>
+                        <span>{item.deadlineText || formatDate(item.deadline) || "Open"}</span>
                       </Box>
                     </Box>
                     <Button
                       fullWidth
                       variant="outlined"
                       disableRipple
+                      onClick={() => navigate("/marketplace/training-opportunities/grants/apply/" + item.id, { state: { grant: item } })}
                       sx={{
                         mt: "auto",
                         py: 1.25,
@@ -477,9 +536,12 @@ export default function TrainingOpportunities() {
               </Grid>
             ))}
           </Grid>
+          )}
         </Box>
+        )}
 
-        {/* Partners */}
+        {/* Partners (from backend) */}
+        {partners.length > 0 && (
         <Box
           component="section"
           sx={{
@@ -515,28 +577,50 @@ export default function TrainingOpportunities() {
           >
             {partners.map((p) => (
               <Box
-                key={p.name}
+                key={p.id}
+                component={p.websiteUrl ? "a" : "div"}
+                href={p.websiteUrl || undefined}
+                target={p.websiteUrl ? "_blank" : undefined}
+                rel={p.websiteUrl ? "noopener noreferrer" : undefined}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
+                  textDecoration: "none",
+                  color: "inherit",
+                  "&:hover": p.websiteUrl ? { opacity: 0.85 } : {},
                 }}
               >
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    bgcolor: "grey.300",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 700,
-                    color: "grey.600",
-                  }}
-                >
-                  {p.initial}
-                </Box>
+                {p.logo ? (
+                  <Box
+                    component="img"
+                    src={resolveImageUrl(p.logo)}
+                    alt={p.logoAltText || p.name}
+                    sx={{
+                      maxHeight: 40,
+                      maxWidth: 120,
+                      height: "auto",
+                      width: "auto",
+                      objectFit: "contain",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      bgcolor: "grey.300",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      color: "grey.600",
+                    }}
+                  >
+                    {p.initial || (p.name && p.name.charAt(0)) || "?"}
+                  </Box>
+                )}
                 <Typography variant="h6" fontWeight={700} sx={{ color: "text.secondary" }}>
                   {p.name}
                 </Typography>
@@ -544,6 +628,7 @@ export default function TrainingOpportunities() {
             ))}
           </Box>
         </Box>
+        )}
       </Box>
     </Box>
   );
