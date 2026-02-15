@@ -1,11 +1,9 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Container,
   Grid,
   Typography,
-  Link,
   IconButton,
   Chip,
   Divider,
@@ -481,35 +479,6 @@ export default function Footer() {
                       pb: 0.05,
                     }}
                   >
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, justifyContent: "center", mb: 0.5 }}>
-                      <Link
-                        component={RouterLink}
-                        to="/privacy-policy"
-                        variant="body2"
-                        sx={{
-                          color: "rgba(255, 255, 255, 0.85)",
-                          fontWeight: 500,
-                          fontSize: "0.85rem",
-                          "&:hover": { color: "#13ec13" },
-                        }}
-                      >
-                        Privacy Policy
-                      </Link>
-                      <Typography component="span" sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.85rem" }}>•</Typography>
-                      <Link
-                        component={RouterLink}
-                        to="/terms-of-use"
-                        variant="body2"
-                        sx={{
-                          color: "rgba(255, 255, 255, 0.85)",
-                          fontWeight: 500,
-                          fontSize: "0.85rem",
-                          "&:hover": { color: "#13ec13" },
-                        }}
-                      >
-                        Terms of Use
-                      </Link>
-                    </Box>
                     <Typography
                       variant="body1"
                       sx={{

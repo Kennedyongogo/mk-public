@@ -319,15 +319,21 @@ export async function getListingById(id) {
 }
 
 /**
- * Create a new listing (requires marketplace auth).
- * @param {{ title: string, description?: string, category?: string, price?: number, priceUnit?: string, quantity?: number, quantityUnit?: string, location?: string, imageUrl?: string }} body
+ * Create a new listing (requires marketplace auth). Use formData when uploading an image file.
+ * @param {FormData|{ title: string, description?: string, category?: string, price?: number, priceUnit?: string, quantity?: number, quantityUnit?: string, location?: string }} bodyOrFormData - FormData (with listing_image file) or JSON body
  */
-export async function createListing(body) {
+export async function createListing(bodyOrFormData) {
   const base = getBaseUrl();
+  const isFormData = bodyOrFormData instanceof FormData;
+  const headers = { Accept: "application/json" };
+  if (typeof localStorage !== "undefined" && localStorage.getItem("marketplace_token")) {
+    headers.Authorization = `Bearer ${localStorage.getItem("marketplace_token")}`;
+  }
+  if (!isFormData) headers["Content-Type"] = "application/json";
   const res = await fetch(`${base}/api/marketplace/listings`, {
     method: "POST",
-    headers: getMarketplaceAuthHeaders(),
-    body: JSON.stringify(body),
+    headers,
+    body: isFormData ? bodyOrFormData : JSON.stringify(bodyOrFormData),
   });
   const data = await res.json();
   if (!res.ok) {
@@ -340,14 +346,22 @@ export async function createListing(body) {
 }
 
 /**
- * Update a listing (requires marketplace auth, owner only).
+ * Update a listing (requires marketplace auth, owner only). Use formData when uploading an image file.
+ * @param {string} id - Listing ID
+ * @param {FormData|{ title?: string, description?: string, category?: string, price?: number, priceUnit?: string, quantity?: number, quantityUnit?: string, location?: string, delete_image?: string }} bodyOrFormData - FormData (with listing_image file) or JSON body
  */
-export async function updateListing(id, body) {
+export async function updateListing(id, bodyOrFormData) {
   const base = getBaseUrl();
+  const isFormData = bodyOrFormData instanceof FormData;
+  const headers = { Accept: "application/json" };
+  if (typeof localStorage !== "undefined" && localStorage.getItem("marketplace_token")) {
+    headers.Authorization = `Bearer ${localStorage.getItem("marketplace_token")}`;
+  }
+  if (!isFormData) headers["Content-Type"] = "application/json";
   const res = await fetch(`${base}/api/marketplace/listings/${id}`, {
     method: "PATCH",
-    headers: getMarketplaceAuthHeaders(),
-    body: JSON.stringify(body),
+    headers,
+    body: isFormData ? bodyOrFormData : JSON.stringify(bodyOrFormData),
   });
   const data = await res.json();
   if (!res.ok) {

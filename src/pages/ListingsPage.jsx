@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  Paper,
 } from "@mui/material";
 import {
   ListAlt,
@@ -170,7 +171,13 @@ export default function ListingsPage() {
       await deleteListing(listing.id);
       setMyListings((prev) => prev.filter((l) => l.id !== listing.id));
       closeDetail();
-      Swal.fire({ title: "Deleted", text: "Listing has been removed.", icon: "success", timer: 2000 });
+      Swal.fire({
+        icon: "success",
+        title: "Listing deleted",
+        text: "Your listing has been removed.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (err) {
       setError(err.message || "Failed to delete listing");
     } finally {
@@ -186,159 +193,244 @@ export default function ListingsPage() {
     (listing.status === "pending_approval" || listing.status === "rejected");
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", pt: 2, pb: 4 }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, sm: 3 } }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        bgcolor: BG_LIGHT,
+        color: "#000",
+        pt: 2,
+        pb: 4,
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box",
+          px: { xs: 0.5, sm: 0.75 },
+          mb: { xs: 0.5, sm: 0.75 },
+        }}
+      >
         <Button
           startIcon={<ArrowBack />}
           onClick={() => navigate("/marketplace/dashboard")}
-          sx={{ mb: 2, color: TEXT_MUTED }}
+          sx={{
+            mt: { xs: 0.5, sm: 0.75 },
+            mb: { xs: 0.5, sm: 0.75 },
+            color: "#000",
+            "&:focus": { outline: "none", boxShadow: "none" },
+            "&:focus-visible": { outline: "none", boxShadow: "none" },
+          }}
         >
           Dashboard
         </Button>
 
-        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2, mb: 2 }}>
-          <Typography variant="h4" sx={{ fontWeight: 800 }}>
-            Marketplace Listings
-          </Typography>
-          {tab === 0 && (
-            <Button
-              variant="contained"
-              startIcon={<AddCircle />}
-              onClick={() => navigate("/marketplace/add-listing")}
-              sx={{ bgcolor: PRIMARY, "&:hover": { bgcolor: "#12a842" } }}
-            >
-              Add listing
-            </Button>
-          )}
-        </Box>
-
-        <Tabs
-          value={tab}
-          onChange={(_, v) => {
-            setTab(v);
-            navigate(v === 0 ? "/marketplace/my-listings" : "/marketplace/listings", { replace: true });
-          }}
+        <Paper
+          elevation={0}
           sx={{
-            borderBottom: 1,
+            borderRadius: 2,
+            border: "1px solid",
             borderColor: BORDER_LIGHT,
-            mb: 2,
-            "& .MuiTab-root": { textTransform: "none", fontWeight: 600 },
+            overflow: "hidden",
+            p: { xs: "5px", sm: "9px" },
+            boxSizing: "border-box",
+            width: "calc(100% - 1px)",
+            mx: "0.5px",
+            mb: "2px",
           }}
         >
-          <Tab icon={<ListAlt />} iconPosition="start" label="My listings" />
-          <Tab icon={<ViewList />} iconPosition="start" label="All listings" />
-        </Tabs>
-
-        {successMessage && (
-          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccessMessage(null)}>
-            {successMessage}
-          </Alert>
-        )}
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
-
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-            <CircularProgress sx={{ color: PRIMARY }} />
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 2,
+              mb: 2,
+              width: "100%",
+              minWidth: 0,
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h4" sx={{ fontWeight: 800, color: "#000", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
+              Marketplace Listings
+            </Typography>
+            {tab === 0 && (
+              <Button
+                variant="contained"
+                startIcon={<AddCircle />}
+                onClick={() => navigate("/marketplace/add-listing")}
+                sx={{
+                  bgcolor: PRIMARY,
+                  color: "#000",
+                  fontWeight: 700,
+                  ml: "auto",
+                  mr: 1,
+                  flexShrink: 0,
+                  minWidth: "fit-content",
+                  "&:hover": { bgcolor: "#12a842", color: "#000" },
+                  "&:focus": { outline: "none", boxShadow: "none" },
+                  "&:focus-visible": { outline: "none", boxShadow: "none" },
+                }}
+              >
+                Add listing
+              </Button>
+            )}
           </Box>
-        ) : listings.length === 0 ? (
-          <Typography color="text.secondary" sx={{ py: 4 }}>
-            {tab === 0
-              ? "You have no listings yet. Add one to get started."
-              : "No approved listings at the moment."}
-          </Typography>
-        ) : (
-          <Grid container spacing={2}>
-            {listings.map((item) => (
-              <Grid item xs={12} sm={6} md={4} key={item.id}>
-                <Card
-                  sx={{
-                    borderRadius: 2,
-                    border: "1px solid",
-                    borderColor: BORDER_LIGHT,
-                    overflow: "hidden",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="160"
-                    image={resolveImageUrl(item.imageUrl) || PLACEHOLDER_IMG}
-                    alt={item.title}
-                    sx={{ objectFit: "cover", bgcolor: "#e8f5e9" }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700} noWrap>
-                      {item.title || "Untitled"}
-                    </Typography>
-                    {item.category && (
-                      <Typography variant="caption" color="text.secondary" display="block">
-                        {item.category}
+
+          <Tabs
+            value={tab}
+            onChange={(_, v) => {
+              setTab(v);
+              navigate(v === 0 ? "/marketplace/my-listings" : "/marketplace/listings", { replace: true });
+            }}
+            sx={{
+              borderBottom: 1,
+              borderColor: BORDER_LIGHT,
+              mb: 2,
+              "& .MuiTab-root": { textTransform: "none", fontWeight: 600, color: "#000" },
+            }}
+          >
+            <Tab icon={<ListAlt />} iconPosition="start" label="My listings" />
+            <Tab icon={<ViewList />} iconPosition="start" label="All listings" />
+          </Tabs>
+
+          {successMessage && (
+            <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccessMessage(null)}>
+              {successMessage}
+            </Alert>
+          )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          )}
+
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+              <CircularProgress sx={{ color: PRIMARY }} />
+            </Box>
+          ) : listings.length === 0 ? (
+            <Typography sx={{ py: 4, color: "#000" }}>
+              {tab === 0
+                ? "You have no listings yet. Add one to get started."
+                : "No approved listings at the moment."}
+            </Typography>
+          ) : (
+            <Grid container spacing={2}>
+              {listings.map((item) => (
+                <Grid item xs={12} sm={6} md={4} key={item.id}>
+                  <Card
+                    sx={{
+                      borderRadius: 2,
+                      border: "1px solid",
+                      borderColor: BORDER_LIGHT,
+                      overflow: "hidden",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="160"
+                      image={resolveImageUrl(item.imageUrl) || PLACEHOLDER_IMG}
+                      alt={item.title}
+                      sx={{ objectFit: "cover", bgcolor: "#e8f5e9" }}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography variant="subtitle1" fontWeight={700} noWrap sx={{ color: "#000" }}>
+                        {item.title || "Untitled"}
                       </Typography>
-                    )}
-                    {formatPrice(item.price, item.priceUnit) && (
-                      <Typography variant="body2" sx={{ color: PRIMARY, fontWeight: 600, mt: 0.5 }}>
-                        {formatPrice(item.price, item.priceUnit)}
-                      </Typography>
-                    )}
-                    {tab === 0 && item.status && (
-                      <Chip
-                        label={statusLabel(item.status)}
-                        size="small"
-                        color={
-                          item.status === "approved"
-                            ? "success"
-                            : item.status === "rejected"
-                              ? "default"
-                              : "warning"
-                        }
-                        sx={{ mt: 1 }}
-                      />
-                    )}
-                  </CardContent>
-                  <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 1 }}>
-                    <Button
-                      size="small"
-                      startIcon={<Visibility />}
-                      onClick={() => openDetail(item.id)}
-                      sx={{ color: PRIMARY }}
-                    >
-                      View
-                    </Button>
-                    {canEditDelete(item) && (
-                      <Box>
-                        <IconButton size="small" onClick={() => handleEdit(item)} title="Edit">
-                          <Edit fontSize="small" />
-                        </IconButton>
-                        <IconButton
+                      {item.category && (
+                        <Typography variant="caption" display="block" sx={{ color: "#000" }}>
+                          {item.category}
+                        </Typography>
+                      )}
+                      {formatPrice(item.price, item.priceUnit) && (
+                        <Typography variant="body2" sx={{ color: "#000", fontWeight: 600, mt: 0.5 }}>
+                          {formatPrice(item.price, item.priceUnit)}
+                        </Typography>
+                      )}
+                      {tab === 0 && item.status && (
+                        <Chip
+                          label={statusLabel(item.status)}
                           size="small"
-                          onClick={() => handleDelete(item)}
-                          disabled={deletingId === item.id}
-                          color="error"
-                          title="Delete"
-                        >
-                          {deletingId === item.id ? (
-                            <CircularProgress size={20} color="error" />
-                          ) : (
-                            <Delete fontSize="small" />
-                          )}
-                        </IconButton>
-                      </Box>
-                    )}
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+                          color={
+                            item.status === "approved"
+                              ? "success"
+                              : item.status === "rejected"
+                                ? "default"
+                                : "warning"
+                          }
+                          sx={{ mt: 1 }}
+                        />
+                      )}
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 1 }}>
+                      <Button
+                        size="small"
+                        startIcon={<Visibility />}
+                        onClick={() => openDetail(item.id)}
+                        sx={{
+                          color: "#000",
+                          "&:focus": { outline: "none" },
+                          "&:focus-visible": { outline: "none", boxShadow: "none" },
+                        }}
+                      >
+                        View
+                      </Button>
+                      {canEditDelete(item) && (
+                        <Box>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEdit(item)}
+                            title="Edit"
+                            sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+                          >
+                            <Edit fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDelete(item)}
+                            disabled={deletingId === item.id}
+                            color="error"
+                            title="Delete"
+                            sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+                          >
+                            {deletingId === item.id ? (
+                              <CircularProgress size={20} color="error" />
+                            ) : (
+                              <Delete fontSize="small" />
+                            )}
+                          </IconButton>
+                        </Box>
+                      )}
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Paper>
       </Box>
 
-      <Dialog open={!!detailId} onClose={closeDetail} maxWidth="sm" fullWidth>
+      <Dialog
+        open={!!detailId}
+        onClose={closeDetail}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            "& .MuiDialogTitle-root, .MuiDialogContent-root": { color: "#000" },
+            "& .MuiDialogActions-root .MuiButton-root:focus": { outline: "none", boxShadow: "none" },
+            "& .MuiDialogActions-root .MuiButton-root:focus-visible": { outline: "none", boxShadow: "none" },
+          },
+        }}
+      >
         <DialogTitle>Listing details</DialogTitle>
         <DialogContent dividers>
           {detailLoading ? (
@@ -425,7 +517,11 @@ export default function ListingsPage() {
         <DialogActions>
           {detailListing && canEditDelete(detailListing) && (
             <>
-              <Button startIcon={<Edit />} onClick={() => handleEdit(detailListing)}>
+              <Button
+                startIcon={<Edit />}
+                onClick={() => handleEdit(detailListing)}
+                sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+              >
                 Edit
               </Button>
               <Button
@@ -433,12 +529,18 @@ export default function ListingsPage() {
                 startIcon={<Delete />}
                 onClick={() => handleDelete(detailListing)}
                 disabled={deletingId === detailListing.id}
+                sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
               >
                 Delete
               </Button>
             </>
           )}
-          <Button onClick={closeDetail}>Close</Button>
+          <Button
+            onClick={closeDetail}
+            sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
 
