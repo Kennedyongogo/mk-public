@@ -55,7 +55,7 @@ export default function ViewAllGrants() {
   }, []);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 2, px: 1 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 2, px: 1 }}>
       <Box sx={{ maxWidth: 1200, mx: "auto" }}>
         <Box
           sx={{
@@ -74,7 +74,7 @@ export default function ViewAllGrants() {
             <IconButton
               onClick={() => navigate("/marketplace/training-opportunities")}
               sx={{
-                color: "text.primary",
+                color: "#000000",
                 "&:hover": { bgcolor: "action.hover" },
                 "&:focus": { outline: "none" },
                 "&:focus-visible": { outline: "none" },
@@ -83,7 +83,7 @@ export default function ViewAllGrants() {
             >
               <ArrowBack />
             </IconButton>
-            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "text.primary" }}>
+            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
               All funding & grants
             </Typography>
           </Box>
@@ -94,15 +94,15 @@ export default function ViewAllGrants() {
             <CircularProgress sx={{ color: PRIMARY }} />
           </Box>
         ) : error ? (
-          <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>{error}</Typography>
+          <Typography sx={{ py: 4, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>{error}</Typography>
         ) : grants.length === 0 ? (
-          <Typography color="text.secondary" sx={{ py: 6, textAlign: "center" }}>
+          <Typography sx={{ py: 6, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
             No funding or grants available at the moment.
           </Typography>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={3} sx={{ alignItems: "stretch" }}>
             {grants.map((item) => (
-              <Grid size={{ xs: 12, md: 6 }} key={item.id}>
+              <Grid size={{ xs: 12, md: 6 }} key={item.id} sx={{ display: "flex" }}>
                 <Card
                   elevation={0}
                   sx={{
@@ -114,12 +114,15 @@ export default function ViewAllGrants() {
                     borderColor: "divider",
                     "&:hover": { boxShadow: 4 },
                     transition: "box-shadow 0.2s ease",
+                    width: "100%",
+                    height: "100%",
                   }}
                 >
                   <Box
                     sx={{
                       width: { xs: "100%", sm: "33.333%" },
                       minHeight: { xs: 160, sm: "auto" },
+                      flexShrink: 0,
                     }}
                   >
                     <CardMedia
@@ -133,9 +136,9 @@ export default function ViewAllGrants() {
                       }}
                     />
                   </Box>
-                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.3 }}>
+                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5, minWidth: 0 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1, flexShrink: 0 }}>
+                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                         {item.title}
                       </Typography>
                       <Chip
@@ -151,7 +154,22 @@ export default function ViewAllGrants() {
                         }}
                       />
                     </Box>
-                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 2, lineHeight: 1.6 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
+                        fontSize: "1.05rem",
+                        mb: 2,
+                        lineHeight: 1.6,
+                        flex: 1,
+                        minHeight: 0,
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
                       {item.description}
                     </Typography>
                     <Box
@@ -160,9 +178,11 @@ export default function ViewAllGrants() {
                         alignItems: "center",
                         gap: 2,
                         flexWrap: "wrap",
-                        color: "text.secondary",
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
                         fontSize: "0.75rem",
                         mb: 2,
+                        flexShrink: 0,
                       }}
                     >
                       {(item.amount || item.currency) && (

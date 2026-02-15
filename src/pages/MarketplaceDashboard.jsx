@@ -20,6 +20,7 @@ import {
   ListAlt,
   AddCircle,
   AccountCircle,
+  ViewList,
 } from "@mui/icons-material";
 
 const PRIMARY = "#17cf54";
@@ -85,6 +86,7 @@ const cards = [
 
 const quickActions = [
   { label: "My Listings", icon: <ListAlt />, path: "/marketplace/my-listings" },
+  { label: "All Listings", icon: <ViewList />, path: "/marketplace/listings" },
   { label: "Add New Listing", icon: <AddCircle />, path: "/marketplace/add-listing" },
   { label: "View Profile", icon: <AccountCircle />, path: "/marketplace/profile" },
 ];
@@ -101,7 +103,7 @@ export default function MarketplaceDashboard() {
         minHeight: "100vh",
         bgcolor: BG_LIGHT,
         color: "#0e1b12",
-        pt: 3,
+        pt: 1.5,
         pb: 0,
       }}
     >
@@ -109,7 +111,7 @@ export default function MarketplaceDashboard() {
         {/* Hero */}
         <Box
           sx={{
-            py: 4,
+            py: 2,
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             justifyContent: "space-between",
@@ -136,32 +138,13 @@ export default function MarketplaceDashboard() {
                 fontSize: "1.125rem",
                 fontWeight: 500,
                 mt: 1,
-                maxWidth: 540,
+                maxWidth: { xs: 540, md: "none" },
+                whiteSpace: { xs: "normal", md: "nowrap" },
               }}
             >
               Empowering Farmers, Transforming Agribusiness. Professional digital marketplace for agriculture professionals.
             </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<Person />}
-            onClick={goToProfile}
-            disableRipple
-            sx={{
-              bgcolor: PRIMARY,
-              color: "#fff",
-              fontWeight: 700,
-              px: 3,
-              py: 1.5,
-              borderRadius: 2,
-              boxShadow: 2,
-              "&:hover": { bgcolor: "#14b84a", boxShadow: 4 },
-              "&:focus": { outline: "none" },
-              "&:focus-visible": { outline: "none" },
-            }}
-          >
-            View Profile
-          </Button>
         </Box>
 
         {/* Cards grid: first row 3 cards, second row 2 cards */}
@@ -203,8 +186,14 @@ export default function MarketplaceDashboard() {
                   </Box>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{ flex: 1, mb: 2, lineHeight: 1.6 }}
+                    sx={{
+                      flex: 1,
+                      mb: 2,
+                      lineHeight: 1.6,
+                      fontSize: "1rem",
+                      color: "#000000",
+                      fontFamily: '"Calibri", "Calibri Light", sans-serif',
+                    }}
                   >
                     {item.description}
                   </Typography>

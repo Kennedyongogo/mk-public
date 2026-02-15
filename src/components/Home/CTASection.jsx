@@ -126,7 +126,7 @@ export default function CTASection() {
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Container
@@ -188,6 +188,7 @@ export default function CTASection() {
                     fontSize: { xs: "1.875rem", md: "3rem" },
                     fontWeight: 900,
                     color: "white",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     textAlign: "center",
                   }}
                 >
@@ -197,6 +198,7 @@ export default function CTASection() {
                   sx={{
                     fontSize: "1.125rem",
                     color: "rgba(255, 255, 255, 0.7)",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     lineHeight: 1.6,
                     textAlign: "center",
                   }}
@@ -269,6 +271,7 @@ export default function CTASection() {
             sx={{
               fontWeight: 700,
               fontSize: { xs: "1.25rem", sm: "1.5rem" },
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
             }}
           >
             Contact Us
@@ -472,7 +475,8 @@ export default function CTASection() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               textTransform: "none",
               fontWeight: 600,
               outline: "none",
@@ -503,6 +507,7 @@ export default function CTASection() {
               backgroundColor: "#13ec13",
               color: "#0d1b0d",
               fontWeight: 700,
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               textTransform: "none",
               borderRadius: 2,
               boxShadow: "0 4px 12px rgba(19, 236, 19, 0.3)",

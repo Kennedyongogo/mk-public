@@ -263,3 +263,117 @@ export async function registerForTrainingEvent(trainingEventId) {
   }
   return data;
 }
+
+// ——— Marketplace Listings ———
+
+/**
+ * Get current user's listings (requires marketplace auth).
+ */
+export async function getMyListings() {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings/my`, {
+    headers: getMarketplaceAuthHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to fetch your listings");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Get public (approved) listings. No auth required.
+ */
+export async function getPublicListings() {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings/public`);
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to fetch listings");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Get a single listing by id (optional auth for owner visibility).
+ */
+export async function getListingById(id) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings/${id}`, {
+    headers: getMarketplaceAuthHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to fetch listing");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Create a new listing (requires marketplace auth).
+ * @param {{ title: string, description?: string, category?: string, price?: number, priceUnit?: string, quantity?: number, quantityUnit?: string, location?: string, imageUrl?: string }} body
+ */
+export async function createListing(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings`, {
+    method: "POST",
+    headers: getMarketplaceAuthHeaders(),
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to create listing");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Update a listing (requires marketplace auth, owner only).
+ */
+export async function updateListing(id, body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings/${id}`, {
+    method: "PATCH",
+    headers: getMarketplaceAuthHeaders(),
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to update listing");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
+ * Delete a listing (requires marketplace auth, owner only).
+ */
+export async function deleteListing(id) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/marketplace/listings/${id}`, {
+    method: "DELETE",
+    headers: getMarketplaceAuthHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to delete listing");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}

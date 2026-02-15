@@ -54,7 +54,7 @@ export default function ViewAllTrainings() {
   }, []);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 2, px: 1 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 2, px: 1 }}>
       <Box sx={{ maxWidth: 1200, mx: "auto" }}>
         <Box
           sx={{
@@ -73,7 +73,7 @@ export default function ViewAllTrainings() {
             <IconButton
               onClick={() => navigate("/marketplace/training-opportunities")}
               sx={{
-                color: "text.primary",
+                color: "#000000",
                 "&:hover": { bgcolor: "action.hover" },
                 "&:focus": { outline: "none" },
                 "&:focus-visible": { outline: "none" },
@@ -82,7 +82,7 @@ export default function ViewAllTrainings() {
             >
               <ArrowBack />
             </IconButton>
-            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "text.primary" }}>
+            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
               All workshops & training
             </Typography>
           </Box>
@@ -93,9 +93,9 @@ export default function ViewAllTrainings() {
             <CircularProgress sx={{ color: PRIMARY }} />
           </Box>
         ) : error ? (
-          <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>{error}</Typography>
+          <Typography sx={{ py: 4, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>{error}</Typography>
         ) : trainings.length === 0 ? (
-          <Typography color="text.secondary" sx={{ py: 6, textAlign: "center" }}>
+          <Typography sx={{ py: 6, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
             No training or workshop events at the moment.
           </Typography>
         ) : (
@@ -138,10 +138,10 @@ export default function ViewAllTrainings() {
                     />
                   </Box>
                   <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3 }}>
+                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                       {item.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 2, lineHeight: 1.6 }}>
+                    <Typography variant="body2" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem", mb: 2, lineHeight: 1.6 }}>
                       {item.description}
                     </Typography>
                     <Box
@@ -150,7 +150,8 @@ export default function ViewAllTrainings() {
                         alignItems: "center",
                         gap: 1,
                         flexWrap: "wrap",
-                        color: "text.secondary",
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
                         fontSize: "0.75rem",
                         mb: 2,
                       }}

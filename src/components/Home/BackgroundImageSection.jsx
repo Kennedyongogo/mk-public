@@ -135,7 +135,7 @@ export default function BackgroundImageSection() {
         position: "relative",
         zIndex: 1,
         backgroundColor: "#f6f8f6", // Light green-tinted background
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -228,7 +228,7 @@ export default function BackgroundImageSection() {
             >
               <Typography
                 sx={{
-                  fontFamily: '"Open Sans", sans-serif',
+                  fontFamily: '"Calibri Light", Calibri, sans-serif',
                   fontSize: {
                     xs: "1.5rem",
                     sm: "2rem",
@@ -236,7 +236,7 @@ export default function BackgroundImageSection() {
                     lg: "3rem",
                   },
                   fontWeight: 900,
-                  color: "#1a1a1a", // Primary Black
+                  color: "#000000",
                   letterSpacing: "0.03em",
                   lineHeight: 1.1,
                   display: "inline-block",
@@ -324,6 +324,8 @@ export default function BackgroundImageSection() {
                                 fontWeight: 600,
                                 fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
                                 mb: 0.5,
+                                color: "#000000",
+                                fontFamily: '"Calibri Light", Calibri, sans-serif',
                               }}
                             >
                               {review.name}
@@ -347,7 +349,8 @@ export default function BackgroundImageSection() {
                         <Typography
                           variant="body1"
                           sx={{
-                            color: "#666666",
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             mb: { xs: 1.5, sm: 2, md: 2.5 },
                             fontSize: { xs: "0.875rem", sm: "1rem", md: "1.4rem" },
                             lineHeight: { xs: 1.5, sm: 1.6, md: 1.7 },
@@ -378,14 +381,15 @@ export default function BackgroundImageSection() {
                               <LocationOn
                                 sx={{
                                   fontSize: { xs: 16, sm: 18, md: 20 },
-                                  color: "primary.main",
+                                  color: "#000000",
                                 }}
                               />
                               <Typography
                                 variant="body2"
                                 sx={{
                                   fontSize: { xs: "0.75rem", sm: "0.8125rem", md: "0.875rem" },
-                                  color: "#666666",
+                                  color: "#000000",
+                                  fontFamily: '"Calibri Light", Calibri, sans-serif',
                                   fontWeight: 500,
                                 }}
                               >
@@ -403,18 +407,19 @@ export default function BackgroundImageSection() {
                             <CalendarToday
                               sx={{
                                 fontSize: { xs: 16, sm: 18, md: 20 },
-                                color: "#666666",
+                                color: "#000000",
                               }}
                             />
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontSize: { xs: "0.75rem", sm: "0.8125rem", md: "0.875rem" },
-                                color: "#666666",
-                              }}
-                            >
-                              {formatDate(review.createdAt)}
-                            </Typography>
+<Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: { xs: "0.75rem", sm: "0.8125rem", md: "0.875rem" },
+                              color: "#000000",
+                              fontFamily: '"Calibri Light", Calibri, sans-serif',
+                            }}
+                          >
+                            {formatDate(review.createdAt)}
+                          </Typography>
                           </Box>
                         </Box>
                       </CardContent>

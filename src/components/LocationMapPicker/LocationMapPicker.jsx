@@ -207,8 +207,8 @@ const LocationMapPicker = ({
   }, []);
 
   return (
-    <Box sx={{ width: "100%", mt: 2 }}>
-      <Typography variant="subtitle2" sx={{ mb: 2, color: "#666" }}>
+    <Box sx={{ width: "100%", mt: 2, fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
+      <Typography variant="subtitle2" sx={{ mb: 2, color: "#000000", fontSize: "1.1rem" }}>
         Search any place worldwide (cities, addresses, landmarks) or click on the map to set your location
       </Typography>
 
@@ -246,6 +246,8 @@ const LocationMapPicker = ({
                 ),
               }}
               sx={{
+                "& .MuiInputLabel-root": { color: "#000000", fontSize: "1.05rem" },
+                "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" },
                 "& .MuiOutlinedInput-root": {
                   backgroundColor: "transparent",
                 },
@@ -261,11 +263,11 @@ const LocationMapPicker = ({
               <Box component="li" {...props} key={`${option.lat}-${option.lon}-${label}`} sx={{ py: 1.25, px: 2 }}>
                 <LocationOn sx={{ mr: 1.5, color: "action.active", fontSize: 20 }} />
                 <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: "#000000", fontSize: "1.05rem" }}>
                     {label}
                   </Typography>
                   {sub && (
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{ color: "#000000", fontSize: "0.95rem" }}>
                       {sub}
                     </Typography>
                   )}
@@ -281,6 +283,7 @@ const LocationMapPicker = ({
               "&:hover": { backgroundColor: "rgba(17, 212, 82, 0.08)" },
               "&[aria-selected='true']": { backgroundColor: "rgba(17, 212, 82, 0.12)" },
             },
+            "& .MuiAutocomplete-noOptions": { color: "#000000", fontSize: "1.05rem" },
           }}
         />
       </Box>
@@ -360,7 +363,7 @@ const LocationMapPicker = ({
             size="small"
             sx={{
               backgroundColor: mapView === "osm" ? "rgba(17, 212, 82, 0.1)" : "transparent",
-              color: mapView === "osm" ? "#11d452" : "#666",
+              color: mapView === "osm" ? "#11d452" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -377,7 +380,7 @@ const LocationMapPicker = ({
             size="small"
             sx={{
               backgroundColor: mapView === "satellite" ? "rgba(17, 212, 82, 0.1)" : "transparent",
-              color: mapView === "satellite" ? "#11d452" : "#666",
+              color: mapView === "satellite" ? "#11d452" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -394,7 +397,7 @@ const LocationMapPicker = ({
             size="small"
             sx={{
               backgroundColor: mapView === "terrain" ? "rgba(17, 212, 82, 0.1)" : "transparent",
-              color: mapView === "terrain" ? "#11d452" : "#666",
+              color: mapView === "terrain" ? "#11d452" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -411,7 +414,7 @@ const LocationMapPicker = ({
       </Paper>
 
       {/* Instructions */}
-      <Typography variant="caption" sx={{ mt: 1, color: "#999", display: "block" }}>
+      <Typography variant="body2" sx={{ mt: 1.5, color: "#000000", display: "block", fontSize: "1.05rem", lineHeight: 1.6 }}>
         💡 Tip: Search for any location worldwide (cities, landmarks, addresses) or click directly on the map to set coordinates. The location will be marked with a pin.
       </Typography>
     </Box>

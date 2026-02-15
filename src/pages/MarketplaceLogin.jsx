@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -293,6 +293,7 @@ export default function MarketplaceLogin() {
           bgcolor: BG_LIGHT,
           overflow: "hidden",
           position: "relative",
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         {/* Back to Home button */}
@@ -304,7 +305,7 @@ export default function MarketplaceLogin() {
             position: "absolute",
             top: { xs: 12, sm: 16 },
             left: { xs: 12, sm: 16 },
-            color: "text.secondary",
+            color: "#000000",
             fontSize: "0.95rem",
             textTransform: "none",
             fontWeight: 600,
@@ -341,7 +342,7 @@ export default function MarketplaceLogin() {
           >
             <Agriculture sx={{ color: "white", fontSize: "clamp(24px, 3vh, 32px)" }} />
           </Box>
-          <Typography variant="h6" sx={{ fontWeight: 700, color: BG_DARK, fontSize: "clamp(0.9rem, 2vh, 1.25rem)" }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: "#000000", fontSize: "clamp(0.9rem, 2vh, 1.25rem)" }}>
             MK Agribusiness
           </Typography>
         </Box>
@@ -382,6 +383,7 @@ export default function MarketplaceLogin() {
                 "&:focus-visible": { outline: "none", boxShadow: "none" },
                 "&.Mui-focusVisible": { outline: "none", boxShadow: "none", backgroundColor: "transparent" },
               },
+              "& .MuiTab-root": { color: "#000000" },
               "& .Mui-selected": { color: PRIMARY },
               "& .MuiTabs-indicator": { backgroundColor: PRIMARY, height: 3 },
               "& .MuiTab-root:hover": { color: PRIMARY, opacity: 0.9 },
@@ -394,10 +396,10 @@ export default function MarketplaceLogin() {
           <Box sx={{ p: "clamp(0.75rem, 1.5vh, 1.5rem)", flex: 1, minHeight: 0, overflow: "hidden" }}>
             {tab === 0 && (
               <>
-                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: "clamp(1.25rem, 2.5vh, 1.75rem)" }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.25, fontSize: "clamp(1.25rem, 2.5vh, 1.75rem)", color: "#000000" }}>
                   Welcome Back
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)" }}>
+                <Typography variant="body2" sx={{ mb: "clamp(0.5rem, 1.5vh, 1rem)", fontSize: "clamp(0.95rem, 1.8vh, 1.05rem)", color: "#000000" }}>
                   Access your agribusiness dashboard and marketplace operations.
                 </Typography>
 
@@ -422,9 +424,9 @@ export default function MarketplaceLogin() {
                       },
                     }}
                     sx={{
-                      "& label": { fontSize: "1rem" },
+                      "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' },
                       "& label.Mui-focused": { color: PRIMARY },
-                      "& .MuiInputBase-input": { fontSize: "1rem" },
+                      "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' },
                     }}
                   />
                   <TextField
@@ -464,9 +466,9 @@ export default function MarketplaceLogin() {
                       },
                     }}
                     sx={{
-                      "& label": { fontSize: "1rem" },
+                      "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' },
                       "& label.Mui-focused": { color: PRIMARY },
-                      "& .MuiInputBase-input": { fontSize: "1rem" },
+                      "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' },
                     }}
                   />
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -500,7 +502,7 @@ export default function MarketplaceLogin() {
                 </Box>
 
                 <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", pt: 1, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
+                  <Typography variant="body2" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)", color: "#000000" }}>
                     Don&apos;t have an account yet?{" "}
                     <Link
                       component="button"
@@ -527,10 +529,10 @@ export default function MarketplaceLogin() {
 
             {tab === 1 && (
               <>
-                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0, fontSize: "clamp(1.15rem, 2.2vh, 1.6rem)" }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0, fontSize: "clamp(1.15rem, 2.2vh, 1.6rem)", color: "#000000" }}>
                   Create Account
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5, fontSize: "clamp(0.85rem, 1.5vh, 0.95rem)" }}>
+                <Typography variant="body2" sx={{ mb: 0.5, fontSize: "clamp(0.85rem, 1.5vh, 0.95rem)", color: "#000000" }}>
                   Join the marketplace. You’ll complete your profile after signing up.
                 </Typography>
 
@@ -556,7 +558,7 @@ export default function MarketplaceLogin() {
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
                       },
                     }}
-                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                    sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' } }}
                   />
                   <TextField
                     fullWidth
@@ -578,7 +580,7 @@ export default function MarketplaceLogin() {
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
                       },
                     }}
-                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                    sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' } }}
                   />
                   <TextField
                     fullWidth
@@ -618,7 +620,7 @@ export default function MarketplaceLogin() {
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
                       },
                     }}
-                    sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                    sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' } }}
                   />
                   <Box sx={{ position: "relative" }}>
                     <TextField
@@ -660,7 +662,7 @@ export default function MarketplaceLogin() {
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY, borderWidth: 2 },
                       },
                     }}
-                      sx={{ "& label": { fontSize: "1rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem" } }}
+                      sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiInputBase-input": { fontSize: "1rem", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' } }}
                     />
                     {regPassword !== regConfirmPassword && regConfirmPassword.length > 0 && (
                       <Typography
@@ -685,9 +687,9 @@ export default function MarketplaceLogin() {
                         <Checkbox size="small" checked={regTerms} onChange={(e) => setRegTerms(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
                       }
                       label={
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+                        <Typography variant="body2" sx={{ fontSize: "0.8rem", color: "#000000" }}>
                           I accept the{" "}
-                          <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
+                          <Link component={RouterLink} to="/terms-of-use" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
                             Terms of Use
                           </Link>
                         </Typography>
@@ -699,9 +701,9 @@ export default function MarketplaceLogin() {
                         <Checkbox size="small" checked={regPrivacy} onChange={(e) => setRegPrivacy(e.target.checked)} sx={{ "&.Mui-checked": { color: PRIMARY } }} />
                       }
                       label={
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+                        <Typography variant="body2" sx={{ fontSize: "0.8rem", color: "#000000" }}>
                           I accept the{" "}
-                          <Link href="#" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
+                          <Link component={RouterLink} to="/privacy-policy" variant="body2" sx={{ color: PRIMARY, fontSize: "inherit" }}>
                             Privacy Policy
                           </Link>
                         </Typography>
@@ -735,7 +737,7 @@ export default function MarketplaceLogin() {
                 </Box>
 
                 <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", pt: 1, borderTop: 1, borderColor: "divider", textAlign: "center" }}>
-                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)" }}>
+                  <Typography variant="body2" sx={{ fontSize: "clamp(0.9rem, 1.6vh, 1rem)", color: "#000000" }}>
                     Already have an account?{" "}
                     <Link
                       component="button"
@@ -763,13 +765,13 @@ export default function MarketplaceLogin() {
 
         {/* Footer links */}
         <Box sx={{ mt: "clamp(0.4rem, 1vh, 0.75rem)", mb: 1, display: "flex", gap: 2, flexShrink: 0 }}>
-          <Link href="#" variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
+          <Link component={RouterLink} to="/privacy-policy" variant="body2" sx={{ color: "#000000", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
             Privacy Policy
           </Link>
-          <Link href="#" variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
+          <Link component={RouterLink} to="/terms-of-use" variant="body2" sx={{ color: "#000000", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
             Terms of Service
           </Link>
-          <Link href="#" variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
+          <Link component={RouterLink} to="/book-consultation" variant="body2" sx={{ color: "#000000", fontWeight: 500, fontSize: "0.9rem", "&:hover": { color: PRIMARY } }}>
             Help Center
           </Link>
         </Box>

@@ -405,7 +405,7 @@ export default function PublicHeader() {
                   <Typography
                     component="span"
                     sx={{
-                      fontFamily: "inherit",
+                      fontFamily: '"Calibri Light", Calibri, sans-serif',
                       fontWeight: 700,
                       fontSize: "clamp(0.5rem, 0.65vw + 0.5rem, 1.05rem)",
                       color:

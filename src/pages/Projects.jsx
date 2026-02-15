@@ -237,7 +237,7 @@ export default function Projects() {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f6f8f6", minHeight: "100vh", pt: { xs: 1, md: 2 }, pb: 1, fontFamily: '"Open Sans", sans-serif' }}>
+    <Box sx={{ bgcolor: "#f6f8f6", minHeight: "100vh", pt: { xs: 1, md: 2 }, pb: 1, fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
       <Card
         sx={{
           mt: 0.3,
@@ -276,7 +276,7 @@ export default function Projects() {
                 sx={{
                   fontSize: { xs: "2.5rem", md: "4rem" },
                   fontWeight: 900,
-                  color: "#0d1b0d",
+                  color: "#000000",
                   mb: 3,
                   lineHeight: 1.1,
                 }}
@@ -285,8 +285,8 @@ export default function Projects() {
               </Typography>
               <Typography
                 sx={{
-                  fontSize: "1.125rem",
-                  color: "rgba(0,0,0,0.6)",
+                  fontSize: "1.25rem",
+                  color: "#000000",
                   maxWidth: "800px",
                   lineHeight: 1.6,
                 }}
@@ -332,7 +332,7 @@ export default function Projects() {
                       }}
                     >
                       <CircularProgress size={28} sx={{ color: "#0fbd0f" }} />
-                      <Typography variant="body2" sx={{ mt: 1.5, color: "rgba(0,0,0,0.5)" }}>Loading…</Typography>
+                      <Typography variant="body2" sx={{ mt: 1.5, color: "#000000" }}>Loading…</Typography>
                     </CardContent>
                   </Card>
                 </Box>
@@ -378,7 +378,7 @@ export default function Projects() {
                       <Typography
                         variant="subtitle2"
                         sx={{
-                          color: "rgba(0,0,0,0.5)",
+                          color: "#000000",
                           fontWeight: 700,
                           mb: { xs: 0.5, md: 1 },
                           textTransform: "uppercase",
@@ -436,7 +436,7 @@ export default function Projects() {
                 onClick={() => setActiveCategory(category)}
                 sx={{
                   bgcolor: activeCategory === category ? "#0fbd0f" : "white",
-                  color: activeCategory === category ? "white" : "rgba(0,0,0,0.6)",
+                  color: activeCategory === category ? "white" : "#000000",
                   px: 3,
                   py: 1,
                   borderRadius: "9999px",
@@ -464,7 +464,7 @@ export default function Projects() {
                 onClick={() => setViewMode("grid")}
                 sx={{
                   bgcolor: viewMode === "grid" ? "#0fbd0f" : "white",
-                  color: viewMode === "grid" ? "white" : "rgba(0,0,0,0.6)",
+                  color: viewMode === "grid" ? "white" : "#000000",
                   fontWeight: 700,
                   cursor: "pointer",
                   border: viewMode === "grid" ? "none" : "1px solid rgba(0,0,0,0.1)",
@@ -474,7 +474,7 @@ export default function Projects() {
                     borderColor: "#0fbd0f",
                   },
                   "& .MuiChip-icon": {
-                    color: viewMode === "grid" ? "white" : "rgba(0,0,0,0.6)",
+                    color: viewMode === "grid" ? "white" : "#000000",
                   },
                 }}
               />
@@ -484,7 +484,7 @@ export default function Projects() {
                 onClick={() => setViewMode("map")}
                 sx={{
                   bgcolor: viewMode === "map" ? "#0fbd0f" : "white",
-                  color: viewMode === "map" ? "white" : "rgba(0,0,0,0.6)",
+                  color: viewMode === "map" ? "white" : "#000000",
                   fontWeight: 700,
                   cursor: "pointer",
                   border: viewMode === "map" ? "none" : "1px solid rgba(0,0,0,0.1)",
@@ -494,7 +494,7 @@ export default function Projects() {
                     borderColor: "#0fbd0f",
                   },
                   "& .MuiChip-icon": {
-                    color: viewMode === "map" ? "white" : "rgba(0,0,0,0.6)",
+                    color: viewMode === "map" ? "white" : "#000000",
                   },
                 }}
               />
@@ -517,7 +517,7 @@ export default function Projects() {
                 </Box>
               ) : filteredProjects.length === 0 ? (
                 <Box sx={{ width: "100%", textAlign: "center", py: 8 }}>
-                  <Typography sx={{ color: "rgba(0,0,0,0.6)", fontSize: "1.125rem" }}>
+                  <Typography sx={{ color: "#000000", fontSize: "1.125rem" }}>
                     No projects to display{activeCategory !== "All Projects" ? " in this category." : "."}
                   </Typography>
                 </Box>
@@ -569,10 +569,10 @@ export default function Projects() {
                             {project.location}
                           </Typography>
                         </Box>
-                        <Typography variant="h5" sx={{ fontWeight: 800, mb: 2, color: "#0d1b0d" }}>
+                        <Typography variant="h5" sx={{ fontWeight: 800, mb: 2, color: "#000000" }}>
                           {project.title}
                         </Typography>
-                        <Typography sx={{ color: "rgba(0,0,0,0.6)", mb: 4, fontSize: "0.95rem", lineHeight: 1.6, flex: 1 }}>
+                        <Typography sx={{ color: "#000000", mb: 4, fontSize: "1.0625rem", lineHeight: 1.6, flex: 1 }}>
                           {project.shortDescription || project.description}
                         </Typography>
                         <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ pt: 3, borderTop: "1px solid rgba(0,0,0,0.05)" }}>
@@ -939,7 +939,7 @@ export default function Projects() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",
@@ -1084,9 +1084,9 @@ export default function Projects() {
 
               <Typography
                 sx={{
-                  color: "rgba(0,0,0,0.7)",
+                  color: "#000000",
                   mb: 4,
-                  fontSize: "1.125rem",
+                  fontSize: "1.1875rem",
                   lineHeight: 1.8,
                 }}
               >
@@ -1148,7 +1148,7 @@ export default function Projects() {
                 </Typography>
                 <Typography
                   sx={{
-                    color: "rgba(0,0,0,0.6)",
+                    color: "#000000",
                     mb: 3,
                     fontSize: "0.95rem",
                     lineHeight: 1.6,

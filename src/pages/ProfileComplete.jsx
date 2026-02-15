@@ -7,6 +7,7 @@ import {
   TextField,
   Button,
   InputAdornment,
+  IconButton,
   FormControl,
   InputLabel,
   Select,
@@ -14,7 +15,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { ArrowBack, PersonPin, Public, Translate, Business, Grass, ShoppingCart, Build, Pets, School, AddPhotoAlternate, Phone as PhoneIcon } from "@mui/icons-material";
+import { ArrowBack, PersonPin, Public, Translate, Business, Grass, ShoppingCart, Build, Pets, School, AddPhotoAlternate, Phone as PhoneIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { completeMarketplaceProfile, uploadMarketplaceProfilePhoto, getMarketplaceMe } from "../api";
 import Footer from "../components/Footer/Footer";
@@ -55,6 +56,51 @@ const SCALES = [
   { value: "industrial", label: "Industrial" },
 ];
 
+// Country codes for phone (saved value will be e.g. "+254 700 123 456")
+const PHONE_COUNTRY_CODES = [
+  { code: "+254", label: "+254 (KE)" },
+  { code: "+255", label: "+255 (TZ)" },
+  { code: "+256", label: "+256 (UG)" },
+  { code: "+250", label: "+250 (RW)" },
+  { code: "+257", label: "+257 (BI)" },
+  { code: "+251", label: "+251 (ET)" },
+  { code: "+252", label: "+252 (SO)" },
+  { code: "+253", label: "+253 (DJ)" },
+  { code: "+258", label: "+258 (MZ)" },
+  { code: "+260", label: "+260 (ZM)" },
+  { code: "+263", label: "+263 (ZW)" },
+  { code: "+234", label: "+234 (NG)" },
+  { code: "+27", label: "+27 (ZA)" },
+  { code: "+1", label: "+1" },
+  { code: "+44", label: "+44 (UK)" },
+  { code: "+91", label: "+91 (IN)" },
+  { code: "+86", label: "+86 (CN)" },
+  { code: "+33", label: "+33 (FR)" },
+  { code: "+49", label: "+49 (DE)" },
+  { code: "+61", label: "+61 (AU)" },
+];
+
+function parsePhoneWithCountryCode(phoneStr) {
+  if (!phoneStr || typeof phoneStr !== "string") return { code: "+254", number: "" };
+  const trimmed = phoneStr.trim();
+  if (!trimmed) return { code: "+254", number: "" };
+  // Match longest code from start (e.g. +254 before +25)
+  const sorted = [...PHONE_COUNTRY_CODES].sort((a, b) => b.code.length - a.code.length);
+  for (const { code } of sorted) {
+    if (trimmed.startsWith(code)) {
+      let rest = trimmed.slice(code.length).trim().replace(/^0+/, "");
+      return { code, number: rest };
+    }
+  }
+  return { code: "+254", number: trimmed.replace(/^0+/, "") };
+}
+
+// Strip leading zero from national number so we save e.g. "+254 798757460" not "+254 0798757460"
+function normalizePhoneNumberForSave(countryCode, number) {
+  const num = (number || "").trim().replace(/^0+/, "") || "";
+  return num ? `${countryCode} ${num}` : undefined;
+}
+
 const DEFAULT_BACK = "/marketplace/dashboard";
 
 export default function ProfileComplete({ onProfileCompleted } = {}) {
@@ -68,8 +114,12 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [role, setRole] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState("+254");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
   const [district, setDistrict] = useState("");
@@ -122,7 +172,9 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         setFullName(u.fullName ?? u.full_name ?? "");
         setEmail(u.email ?? "");
         setRole(u.role || "");
-        setPhone(u.phone || "");
+        const { code, number } = parsePhoneWithCountryCode(u.phone || "");
+        setPhoneCountryCode(code);
+        setPhoneNumber(number);
         setCountry(p.country ?? "");
         setRegion(p.region ?? "");
         setDistrict(p.district ?? "");
@@ -218,7 +270,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         profilePhotoUrl,
         ...(fullName.trim() && { fullName: fullName.trim() }),
         ...(email.trim() && { email: email.trim().toLowerCase() }),
-        phone: phone.trim() || undefined,
+        phone: normalizePhoneNumberForSave(phoneCountryCode, phoneNumber),
         country: country.trim() || undefined,
         region: region.trim() || undefined,
         district: district.trim() || undefined,
@@ -289,6 +341,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         maxWidth: "100vw",
         boxSizing: "border-box",
         overflowX: "hidden",
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Button
@@ -298,9 +351,10 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
         sx={{
           alignSelf: "flex-start",
           mb: 0.75,
-          color: "text.secondary",
+          color: "#000000",
           textTransform: "none",
           fontWeight: 600,
+          fontSize: "1.05rem",
           "&:hover": { color: PRIMARY },
           "&:focus": { outline: "none" },
           "&:focus-visible": { outline: "none" },
@@ -324,10 +378,10 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
           minWidth: 0,
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5, color: "#000000", fontSize: "1.5rem" }}>
           Complete your profile
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" sx={{ mb: 2, color: "#000000", fontSize: "1.05rem" }}>
           Choose your role and add a few details so we can tailor your experience.
         </Typography>
 
@@ -337,13 +391,25 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+            "& .MuiOutlinedInput-input": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+            "& .MuiSelect-select": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+            "& .MuiFormHelperText-root": { color: "#000000", fontSize: "0.95rem" },
+          }}
+        >
           {/* 1. Profile picture first, centered in card */}
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", mb: 1 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#000000", fontSize: "1.1rem" }}>
               Profile picture <Typography component="span" color="error">*</Typography>
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ mb: 1, color: "#000000", fontSize: "1.05rem" }}>
               Required for identity verification.
             </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
@@ -369,7 +435,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 ) : uploadingPhoto ? (
                   <CircularProgress size={32} sx={{ color: PRIMARY }} />
                 ) : (
-                  <AddPhotoAlternate sx={{ fontSize: 40, color: "text.secondary" }} />
+                  <AddPhotoAlternate sx={{ fontSize: 40, color: "#000000" }} />
                 )}
               </Box>
               <input
@@ -385,12 +451,19 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 size="small"
                 disabled={uploadingPhoto}
                 onClick={() => profilePhotoInputRef.current?.click()}
-                sx={{ textTransform: "none", borderColor: PRIMARY, color: PRIMARY, "&:hover": { borderColor: PRIMARY_DARK, bgcolor: "rgba(17, 212, 82, 0.08)" } }}
+                sx={{
+                textTransform: "none",
+                borderColor: PRIMARY,
+                color: PRIMARY,
+                "&:hover": { borderColor: PRIMARY_DARK, bgcolor: "rgba(17, 212, 82, 0.08)" },
+                "&:focus": { outline: "none", boxShadow: "none" },
+                "&:focus-visible": { outline: "none", boxShadow: "none" },
+              }}
               >
                 {profilePhotoUrl ? "Change photo" : "Upload photo"}
               </Button>
               {profilePhotoUrl && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{ color: "#000000", fontSize: "0.95rem" }}>
                   Photo added
                 </Typography>
               )}
@@ -398,7 +471,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
           </Box>
 
           {/* 2. Role input below */}
-          <FormControl fullWidth required>
+          <FormControl fullWidth required sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiSelect-select": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" } }}>
             <InputLabel id="role-label">User role</InputLabel>
             <Select
               labelId="role-label"
@@ -432,7 +505,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
             placeholder="Your full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            sx={{ "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
           />
           <TextField
             fullWidth
@@ -441,24 +514,51 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
             placeholder="e.g. you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{ "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
           />
 
-          <TextField
-            fullWidth
-            label="Phone"
-            placeholder="e.g. +255 700 000 000"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PhoneIcon sx={{ color: "action.active" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{ "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
-          />
+          <Box sx={{ display: "flex", gap: 1, alignItems: "stretch", flexWrap: "wrap" }}>
+            <FormControl sx={{ minWidth: 130 }} size="medium">
+              <InputLabel id="phone-code-label">Country code</InputLabel>
+              <Select
+                labelId="phone-code-label"
+                label="Country code"
+                value={phoneCountryCode}
+                onChange={(e) => setPhoneCountryCode(e.target.value)}
+                sx={{
+                  "& .MuiSelect-select": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY },
+                }}
+              >
+                {PHONE_COUNTRY_CODES.map(({ code, label }) => (
+                  <MenuItem key={code} value={code}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Phone"
+              placeholder="e.g. 700 123 456"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneIcon sx={{ color: "action.active" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                flex: 1,
+                minWidth: 180,
+                "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+                "& .MuiOutlinedInput-input": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" },
+                "& label.Mui-focused": { color: PRIMARY },
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY },
+              }}
+            />
+          </Box>
 
           <TextField
             fullWidth
@@ -473,7 +573,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 </InputAdornment>
               ),
             }}
-            sx={{ "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY }, "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: PRIMARY } }}
           />
           <TextField
             fullWidth
@@ -481,7 +581,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
             placeholder="e.g. Arusha"
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
           />
           <TextField
             fullWidth
@@ -489,15 +589,15 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
             placeholder="District"
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
-            sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
           />
 
           {/* Location Map Picker */}
           <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: "#000000", fontSize: "1.1rem" }}>
               Set your location on the map (optional)
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 2, color: "#000000", fontSize: "1.05rem" }}>
               Click on the map or search for your location to set your coordinates. This helps us connect you with nearby opportunities.
             </Typography>
             <LocationMapPicker
@@ -518,6 +618,9 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 InputProps={{ readOnly: true }}
                 helperText={latitude ? "Location set ✓" : "Set via map"}
                 sx={{
+                  "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" },
+                  "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1rem" },
+                  "& .MuiFormHelperText-root": { color: "#000000", fontSize: "0.95rem" },
                   "& label.Mui-focused": { color: PRIMARY },
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: latitude ? "rgba(17, 212, 82, 0.05)" : "transparent",
@@ -536,6 +639,9 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 InputProps={{ readOnly: true }}
                 helperText={longitude ? "Location set ✓" : "Set via map"}
                 sx={{
+                  "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" },
+                  "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1rem" },
+                  "& .MuiFormHelperText-root": { color: "#000000", fontSize: "0.95rem" },
                   "& label.Mui-focused": { color: PRIMARY },
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: longitude ? "rgba(17, 212, 82, 0.05)" : "transparent",
@@ -561,50 +667,98 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
                 </InputAdornment>
               ),
             }}
-            sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+            sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
           />
 
           {location.state?.edit && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Change password (optional)
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              <Typography variant="body2" sx={{ mb: 1, color: "#000000", fontSize: "1.05rem" }}>
                 Leave blank to keep your current password.
               </Typography>
               <TextField
                 fullWidth
                 label="Current password"
-                type="password"
+                type={showCurrentPassword ? "text" : "password"}
                 placeholder="Enter current password to set a new one"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        edge="end"
+                        size="small"
+                        disableRipple
+                        aria-label={showCurrentPassword ? "Hide password" : "Show password"}
+                        sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+                      >
+                        {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
               />
               <TextField
                 fullWidth
                 label="New password"
-                type="password"
+                type={showNewPassword ? "text" : "password"}
                 placeholder="At least 6 characters"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        edge="end"
+                        size="small"
+                        disableRipple
+                        aria-label={showNewPassword ? "Hide password" : "Show password"}
+                        sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+                      >
+                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
               />
               <TextField
                 fullWidth
                 label="Confirm new password"
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Repeat new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                sx={{ "& label.Mui-focused": { color: PRIMARY } }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        edge="end"
+                        size="small"
+                        disableRipple
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none", boxShadow: "none" } }}
+                      >
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ "& .MuiInputLabel-root": { color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem" }, "& .MuiOutlinedInput-input": { color: "#000000", fontSize: "1.05rem" }, "& label.Mui-focused": { color: PRIMARY } }}
               />
             </>
           )}
 
           {role === "farmer" && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Farming details (optional)
               </Typography>
               <FormControl fullWidth>
@@ -689,7 +843,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
 
           {role === "buyer" && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Buyer details (optional)
               </Typography>
               <TextField
@@ -728,7 +882,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
 
           {role === "input_supplier" && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Supplier details (optional)
               </Typography>
               <TextField
@@ -767,7 +921,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
 
           {role === "veterinarian" && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Veterinary details (optional)
               </Typography>
               <TextField
@@ -816,7 +970,7 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
 
           {role === "consultant" && (
             <>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mt: 1, color: "#000000", fontSize: "1.1rem" }}>
                 Consultant details (optional)
               </Typography>
               <TextField
@@ -874,7 +1028,8 @@ export default function ProfileComplete({ onProfileCompleted } = {}) {
               mt: 2,
               py: 1.5,
               fontWeight: 700,
-              fontSize: "1.05rem",
+              fontSize: "1.1rem",
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               bgcolor: PRIMARY,
               color: BG_DARK,
               textTransform: "none",

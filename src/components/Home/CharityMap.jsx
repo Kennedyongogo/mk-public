@@ -103,7 +103,7 @@ const CharityMap = ({ projects = [] }) => {
         position: "relative",
         zIndex: 1,
         background: "#FFFFFF",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -133,6 +133,7 @@ const CharityMap = ({ projects = [] }) => {
                 fontWeight: 900,
                 mb: { xs: 0.5, md: 0.75 },
                 color: "#0d1b0d",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
                 fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.5rem" },
               }}
             >
@@ -142,7 +143,8 @@ const CharityMap = ({ projects = [] }) => {
               variant="body1"
               sx={{
                 mb: { xs: 0.5, md: 0.75 },
-                color: "rgba(0,0,0,0.6)",
+                color: "#000000",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
                 fontSize: { xs: "1rem", md: "1.125rem" },
                 lineHeight: 1.7,
                 maxWidth: "800px",
@@ -186,14 +188,14 @@ const CharityMap = ({ projects = [] }) => {
                     <Box sx={{ minWidth: "200px", maxWidth: "300px" }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1 }}>
                         <LocationOn sx={{ fontSize: 16, color: "#0fbd0f" }} />
-                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0fbd0f", textTransform: "uppercase", fontSize: "0.75rem" }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#0fbd0f", fontFamily: '"Calibri Light", Calibri, sans-serif', textTransform: "uppercase", fontSize: "0.75rem" }}>
                           {marker.location}
                         </Typography>
                       </Box>
-                      <Typography variant="h6" sx={{ fontWeight: 800, mb: 1, color: "#0d1b0d", fontSize: "1rem" }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, mb: 1, color: "#0d1b0d", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" }}>
                         {marker.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: "rgba(0,0,0,0.7)", mb: 1.5, fontSize: "0.875rem", lineHeight: 1.6 }}>
+                      <Typography variant="body2" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', mb: 1.5, fontSize: "0.875rem", lineHeight: 1.6 }}>
                         {marker.description}
                       </Typography>
                       {marker.tags && marker.tags.length > 0 && (

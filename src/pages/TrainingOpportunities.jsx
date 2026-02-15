@@ -143,7 +143,7 @@ export default function TrainingOpportunities() {
   }, []);
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 5, px: 1 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 5, px: 1 }}>
       <Box sx={{ width: "100%" }}>
         {/* Header */}
         <Box component="header" sx={{ mb: 5 }}>
@@ -153,7 +153,8 @@ export default function TrainingOpportunities() {
               fontWeight: 900,
               lineHeight: 1.2,
               letterSpacing: "-0.033em",
-              color: "text.primary",
+              color: "#000000",
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               fontSize: { xs: "2rem", md: "2.75rem" },
             }}
           >
@@ -161,7 +162,8 @@ export default function TrainingOpportunities() {
           </Typography>
           <Typography
             sx={{
-              color: TEXT_MUTED,
+              color: "#000000",
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               fontSize: "1.125rem",
               mt: 1.5,
               maxWidth: 672,
@@ -199,7 +201,8 @@ export default function TrainingOpportunities() {
               variant="body2"
               sx={{
                 fontWeight: 600,
-                color: "text.secondary",
+                color: "#000000",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
                 mr: 0.5,
@@ -224,7 +227,7 @@ export default function TrainingOpportunities() {
                   py: 1.25,
                   fontWeight: 500,
                   bgcolor: filterActive === key ? PRIMARY : "transparent",
-                  color: filterActive === key ? "#fff" : "text.primary",
+                  color: filterActive === key ? "#fff" : "#000000",
                   borderColor: filterActive === key ? PRIMARY : "divider",
                   boxShadow: filterActive === key ? 1 : 0,
                   textTransform: "none",
@@ -247,7 +250,8 @@ export default function TrainingOpportunities() {
               sx={{
                 borderRadius: "9999px",
                 borderColor: "divider",
-                color: "text.primary",
+                color: "#000000",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
                 textTransform: "none",
                 fontWeight: 500,
                 px: 2.5,
@@ -276,7 +280,7 @@ export default function TrainingOpportunities() {
               mb: 3,
             }}
           >
-            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em" }}>
+            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
               {filterActive === "training" ? "Training" : filterActive === "workshop" ? "Workshops" : "Upcoming Workshops & Training"}
             </Typography>
             <Link
@@ -293,9 +297,9 @@ export default function TrainingOpportunities() {
               <CircularProgress sx={{ color: PRIMARY }} />
             </Box>
           ) : error ? (
-            <Typography color="text.secondary" sx={{ py: 3 }}>{error}</Typography>
+            <Typography sx={{ py: 3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>{error}</Typography>
           ) : filteredTrainings.length === 0 ? (
-            <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
+            <Typography sx={{ py: 4, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
               {searchLower ? "No matching training or workshop events." : `No ${filterActive === "training" ? "training" : filterActive === "workshop" ? "workshop" : "training or workshop"} events at the moment.`}
             </Typography>
           ) : (
@@ -338,12 +342,12 @@ export default function TrainingOpportunities() {
                     />
                   </Box>
                   <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3 }}>
+                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                       {item.title}
                     </Typography>
                     <Typography
                       variant="body2"
-                      sx={{ color: "text.secondary", mb: 2, lineHeight: 1.6 }}
+                      sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem", mb: 2, lineHeight: 1.6 }}
                     >
                       {item.description}
                     </Typography>
@@ -353,7 +357,8 @@ export default function TrainingOpportunities() {
                         alignItems: "center",
                         gap: 1,
                         flexWrap: "wrap",
-                        color: "text.secondary",
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
                         fontSize: "0.75rem",
                         mb: 2,
                       }}
@@ -412,7 +417,7 @@ export default function TrainingOpportunities() {
               mb: 3,
             }}
           >
-            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em" }}>
+            <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
               Funding & Grants
             </Typography>
             <Link
@@ -429,15 +434,15 @@ export default function TrainingOpportunities() {
               <CircularProgress sx={{ color: PRIMARY }} />
             </Box>
           ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={3} sx={{ alignItems: "stretch" }}>
             {filteredGrants.length === 0 ? (
               <Grid size={12}>
-                <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
+                <Typography sx={{ py: 4, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                   {searchLower ? "No matching grants." : "No funding or grants available at the moment."}
                 </Typography>
               </Grid>
             ) : filteredGrants.slice(0, 2).map((item) => (
-              <Grid size={{ xs: 12, md: 6 }} key={item.id}>
+              <Grid size={{ xs: 12, md: 6 }} key={item.id} sx={{ display: "flex" }}>
                 <Card
                   elevation={0}
                   sx={{
@@ -449,13 +454,15 @@ export default function TrainingOpportunities() {
                     borderColor: "divider",
                     "&:hover": { boxShadow: 4 },
                     transition: "box-shadow 0.2s ease",
+                    width: "100%",
+                    height: "100%",
                   }}
                 >
                   <Box
                     sx={{
                       width: { xs: "100%", sm: "33.333%" },
                       minHeight: { xs: 160, sm: "auto" },
-                      display: { xs: "block", sm: "block" },
+                      flexShrink: 0,
                     }}
                   >
                     <CardMedia
@@ -469,9 +476,9 @@ export default function TrainingOpportunities() {
                       }}
                     />
                   </Box>
-                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.3 }}>
+                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5, minWidth: 0 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1, flexShrink: 0 }}>
+                      <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                         {item.title}
                       </Typography>
                       <Chip
@@ -487,7 +494,22 @@ export default function TrainingOpportunities() {
                         }}
                       />
                     </Box>
-                    <Typography variant="body2" sx={{ color: "text.secondary", mb: 2, lineHeight: 1.6 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
+                        fontSize: "1.05rem",
+                        mb: 2,
+                        lineHeight: 1.6,
+                        flex: 1,
+                        minHeight: 0,
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
                       {item.description}
                     </Typography>
                     <Box
@@ -496,9 +518,11 @@ export default function TrainingOpportunities() {
                         alignItems: "center",
                         gap: 2,
                         flexWrap: "wrap",
-                        color: "text.secondary",
+                        color: "#000000",
+                        fontFamily: '"Calibri Light", Calibri, sans-serif',
                         fontSize: "0.75rem",
                         mb: 2,
+                        flexShrink: 0,
                       }}
                     >
                       {(item.amount || item.currency) && (
@@ -554,7 +578,8 @@ export default function TrainingOpportunities() {
             variant="body2"
             sx={{
               textAlign: "center",
-              color: "text.secondary",
+              color: "#000000",
+              fontFamily: '"Calibri Light", Calibri, sans-serif',
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "0.2em",
@@ -621,7 +646,7 @@ export default function TrainingOpportunities() {
                     {p.initial || (p.name && p.name.charAt(0)) || "?"}
                   </Box>
                 )}
-                <Typography variant="h6" fontWeight={700} sx={{ color: "text.secondary" }}>
+                <Typography variant="h6" fontWeight={700} sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                   {p.name}
                 </Typography>
               </Box>

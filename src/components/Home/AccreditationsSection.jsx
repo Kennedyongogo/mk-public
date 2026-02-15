@@ -59,7 +59,7 @@ export default function AccreditationsSection() {
         position: "relative",
         zIndex: 1,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -96,6 +96,7 @@ export default function AccreditationsSection() {
                   textTransform: "uppercase",
                   letterSpacing: "0.15em",
                   color: "#13ec13",
+                  fontFamily: '"Calibri Light", Calibri, sans-serif',
                   mb: 1.5,
                 }}
               >
@@ -107,6 +108,7 @@ export default function AccreditationsSection() {
                   fontWeight: 900,
                   mb: 2,
                   color: "#0d1b0d",
+                  fontFamily: '"Calibri Light", Calibri, sans-serif',
                   fontSize: { xs: "2.25rem", md: "3rem" },
                 }}
               >
@@ -131,13 +133,13 @@ export default function AccreditationsSection() {
                 </Box>
               ) : error ? (
                 <Box sx={{ textAlign: "center", py: 4, px: 2 }}>
-                  <Typography sx={{ color: "#4c664c", fontSize: "1rem" }}>
+                  <Typography sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" }}>
                     Unable to load FAQs. Please try again later.
                   </Typography>
                 </Box>
               ) : faqs.length === 0 ? (
                 <Box sx={{ textAlign: "center", py: 4, px: 2 }}>
-                  <Typography sx={{ color: "#4c664c", fontSize: "1rem" }}>
+                  <Typography sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" }}>
                     No FAQs at the moment.
                   </Typography>
                 </Box>
@@ -177,7 +179,7 @@ export default function AccreditationsSection() {
                       expandIcon={
                         <ExpandMoreIcon
                           sx={{
-                            color: expanded === `panel${index}` ? "#13ec13" : "#4c664c",
+                            color: expanded === `panel${index}` ? "#13ec13" : "#000000",
                           }}
                         />
                       }
@@ -212,7 +214,8 @@ export default function AccreditationsSection() {
                         sx={{
                           fontWeight: 700,
                           fontSize: { xs: "1rem", md: "1.125rem" },
-                          color: expanded === `panel${index}` ? "#0d1b0d" : "#4c664c",
+                          color: expanded === `panel${index}` ? "#0d1b0d" : "#000000",
+                          fontFamily: '"Calibri Light", Calibri, sans-serif',
                           transition: "color 0.3s ease",
                         }}
                       >
@@ -231,7 +234,8 @@ export default function AccreditationsSection() {
                     >
                       <Typography
                         sx={{
-                          color: "#4c664c",
+                          color: "#000000",
+                          fontFamily: '"Calibri Light", Calibri, sans-serif',
                           fontSize: "1.05rem",
                           lineHeight: 1.7,
                         }}

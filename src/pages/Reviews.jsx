@@ -159,7 +159,7 @@ export default function Reviews() {
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Container
@@ -228,8 +228,8 @@ export default function Reviews() {
                   mb: 1,
                   fontWeight: 800,
                   fontSize: { xs: "1.5rem", sm: "1.8rem", md: "2.2rem" },
-                  color: "#1a1a1a", // Primary Black
-                  fontWeight: 800,
+                  color: "#000000",
+                  fontFamily: '"Calibri Light", Calibri, sans-serif',
                   position: "relative",
                   "&::after": {
                     content: '""',
@@ -256,7 +256,7 @@ export default function Reviews() {
                   fontWeight: 500,
                   fontSize: { xs: "0.85rem", sm: "0.95rem", md: "1rem" },
                   lineHeight: 1.6,
-                  color: "#666666", // Secondary text color
+                  color: "#000000",
                 }}
               >
                 Read what our clients have to say about their agribusiness experiences
@@ -295,7 +295,7 @@ export default function Reviews() {
                   >
                     <Typography
                       variant="h6"
-                      sx={{ color: "text.secondary", fontWeight: 600 }}
+                      sx={{ color: "#000000", fontWeight: 600 }}
                     >
                       No reviews available yet.
                     </Typography>
@@ -353,6 +353,7 @@ export default function Reviews() {
                               fontWeight: 600,
                               fontSize: { xs: "1rem", md: "1.125rem" },
                               mb: 0.5,
+                              color: "#000000",
                             }}
                           >
                             {review.name}
@@ -374,7 +375,7 @@ export default function Reviews() {
                         <Typography
                           variant="body2"
                           sx={{
-                            color: "text.secondary",
+                            color: "#000000",
                             mb: 2,
                             fontSize: { xs: "0.95rem", md: "1rem" },
                             lineHeight: 1.6,
@@ -417,7 +418,7 @@ export default function Reviews() {
                               variant="caption"
                               sx={{
                                 fontSize: { xs: "0.85rem", md: "0.95rem" },
-                                color: "text.secondary",
+                                color: "#000000",
                                 fontWeight: 600,
                               }}
                             >
@@ -434,14 +435,14 @@ export default function Reviews() {
                             <CalendarToday
                               sx={{
                                 fontSize: { xs: 16, md: 18 },
-                                color: "text.secondary",
+                                color: "#000000",
                               }}
                             />
                             <Typography
                               variant="caption"
                               sx={{
                                 fontSize: { xs: "0.85rem", md: "0.95rem" },
-                                color: "text.secondary",
+                                color: "#000000",
                                 fontWeight: 600,
                               }}
                             >
@@ -473,7 +474,8 @@ export default function Reviews() {
                     mb: 1,
                     fontWeight: 700,
                     fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2rem" },
-                    color: "#1a1a1a", // Primary Black
+                    color: "#000000",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     textAlign: "center",
                   }}
                 >
@@ -483,7 +485,8 @@ export default function Reviews() {
                   variant="body1"
                   sx={{
                     mb: 3,
-                    color: "text.secondary",
+                    color: "#000000",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     fontSize: { xs: "0.875rem", md: "1rem" },
                     textAlign: "center",
                   }}
@@ -502,6 +505,14 @@ export default function Reviews() {
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                         sx={{
+                          "& .MuiInputLabel-root": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
@@ -529,6 +540,14 @@ export default function Reviews() {
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         sx={{
+                          "& .MuiInputLabel-root": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
@@ -555,6 +574,14 @@ export default function Reviews() {
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
                         sx={{
+                          "& .MuiInputLabel-root": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
@@ -586,6 +613,18 @@ export default function Reviews() {
                             label="County"
                             placeholder="Search or select county..."
                             sx={{
+                              "& .MuiInputLabel-root": {
+                                color: "#000000",
+                                fontFamily: '"Calibri Light", Calibri, sans-serif',
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                color: "#000000",
+                                fontFamily: '"Calibri Light", Calibri, sans-serif',
+                              },
+                              "& .MuiOutlinedInput-input::placeholder": {
+                                color: "#000000",
+                                opacity: 0.85,
+                              },
                               "& .MuiOutlinedInput-root": {
                                 backgroundColor: "white",
                                 borderRadius: 2,
@@ -632,7 +671,8 @@ export default function Reviews() {
                           sx={{
                             mb: 1,
                             fontWeight: 500,
-                            color: "text.primary",
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                           }}
                         >
                           Your Rating *
@@ -645,7 +685,11 @@ export default function Reviews() {
                           size="large"
                           sx={{
                             "& .MuiRating-iconFilled": {
-                                color: "#13ec13", // Primary Green
+                              color: "#13ec13", // Primary Green
+                            },
+                            "& .MuiRating-label": {
+                              color: "#000000",
+                              fontFamily: '"Calibri Light", Calibri, sans-serif',
                             },
                           }}
                         />
@@ -664,6 +708,18 @@ export default function Reviews() {
                         onChange={(e) => handleInputChange("comment", e.target.value)}
                         placeholder="Share your experience with MK Agribusiness Consultants..."
                         sx={{
+                          "& .MuiInputLabel-root": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
+                          },
+                          "& .MuiOutlinedInput-input::placeholder": {
+                            color: "#000000",
+                            opacity: 0.85,
+                          },
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "white",
                             borderRadius: 2,
@@ -701,7 +757,8 @@ export default function Reviews() {
                             variant="body1"
                             sx={{
                               fontWeight: 500,
-                              color: "text.primary",
+                              color: "#000000",
+                              fontFamily: '"Calibri Light", Calibri, sans-serif',
                             }}
                           >
                             Would you recommend us to your friends?

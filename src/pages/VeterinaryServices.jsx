@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -7,14 +7,16 @@ import {
   CardContent,
   CardMedia,
   Grid,
-  Paper,
   InputAdornment,
   TextField,
   Switch,
+  Tabs,
+  Tab,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import {
   Search,
-  ExpandMore,
   Verified,
   LocationOn,
   Chat,
@@ -25,11 +27,26 @@ import {
   MedicalServices,
   Pets,
 } from "@mui/icons-material";
+import VeterinariansMap from "../components/VeterinariansMap/VeterinariansMap";
 
 const PRIMARY = "#17cf54";
 const BG_LIGHT = "#f6f8f6";
 const BORDER_LIGHT = "#d0e7d7";
 const TEXT_MUTED = "#4e9767";
+
+const VET_PLACEHOLDER = "https://placehold.co/400x300/f6f8f6/4e9767?text=Vet";
+
+const getBaseUrl = () => {
+  const env = typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL;
+  return env ? String(env).replace(/\/$/, "") : "";
+};
+
+const resolveImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const base = getBaseUrl();
+  return path.startsWith("/") ? `${base}${path}` : `${base}/${path}`;
+};
 
 const specializationIcons = {
   dairy: WaterDrop,
@@ -40,66 +57,55 @@ const specializationIcons = {
   general: MedicalServices,
 };
 
-const veterinarians = [
-  {
-    id: 1,
-    name: "Dr. Sarah Chen",
-    specialization: "Dairy Specialist",
-    specializationKey: "dairy",
-    location: "Nairobi, Kenya",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAPzi_RauC6Bp06banKQ0cj0ZBMfyiuCTxtJDNyZhTmltkFoCp5Omu9RIQbDUkQbj6hZZ0kTAG8n7wiYO_iAq95xKhyricYw8Q9oPq5QTPUmGYcPmYnmvn52D7jIxTbT3MWHHgS1qHBvMKT57AhRfksSFdGHRJnbwvP8q2aVcy_bwgRDIubPa-p2GUAJrMoPs6p2Nl_2Rf4IKwZ4hggUhGS_UyA6nPKc6-p5hKYshYS4Jz1_1dmlJuTeauXA3kFAI__NTp08x87tj7O",
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "Dr. John Mutua",
-    specialization: "Poultry Expert",
-    specializationKey: "poultry",
-    location: "Kiambu County",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC6CsvAn_Ny7JBtXFma0kgJFVut-VugQ9tSXQBPzA-If2cb5EOVABuCjBGFMLQ4BqoX20Yy2EOHO5LxH0hCqi_0HT_r366GKUnyk8vc6CLknPZcBruBn6M5ZFTuyTK9Lc6MpaGjqGQ8XLt2_JjFVNtg9my_at-Leacs98G6XDIhrwLoOiKfsh4oCpbKtj8Ez12ltLugGlFGzC3ty5wvVQjrnZEi6Wv5rzA53tNobrhzNH5bEibpTnqDiMYXpkk0Ja4_7xq-wusofGRN",
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "Dr. Elena Rodriguez",
-    specialization: "Swine Specialist",
-    specializationKey: "swine",
-    location: "Nakuru, Rift Valley",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtbxAP7FitRI6YaMxV8oVbZl0j-9o0wRmqAQmhEJLcQMDjDmlwTj8b24gBzA8j8L-SyR0gTBZnMNvwvLLo8WmgXYI7j-YdPNNkqWmJwDUnfp0SH--GQxxFWe6rlGyG4Acj6e5f3j8rMs6aA-qgmFi3QkA9Fo0N_Jrtg61qfLI3A62udSxCzU7APcnfY2MLA6dwvcSWbIZb4QxDmjAzwEAZbQI_wpYgEY2_B0MS6MhTEOo9ZzCeTewdFN8H6lMpHT87ykUuWcTecRUy",
-    verified: true,
-  },
-  {
-    id: 4,
-    name: "Dr. Samuel Okoro",
-    specialization: "Aquaculture Vet",
-    specializationKey: "aquaculture",
-    location: "Kisumu, Lake Region",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAhLvSu4TnqiZWzSQGE-fZApegIt4QEkq6lNXNIGdF_yxJT9O_kCjRKotA5rdY37BxtEAAuy8YVIFJAbLMDjXaBUsz5ke6W8A5qlzRhsxBY62zzM6f2njjbTRtxKi3dx6kVytZXFJyUc96lrB0VTxhI7617M8RDtA7uYU3ECmgj9vfsIcjQgd7juHys9rOQH2x6JWEgCXBCvpih3G3hPipiAItNf6TwcelPmlfXLw32bUch1bMUiUYbz0_2Eg8XBc4Y_FFph5pMdT1Q",
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "Dr. Lisa Wang",
-    specialization: "Livestock Consultant",
-    specializationKey: "livestock",
-    location: "Machakos County",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuALqxuB8q4GBK000-gEwoNYy_tgZ_-ydSln6rLuNwReen7WIPsCxWc-q8AvLD3k3DJiI1-HIfa67Re_gYhaGIbRygfDPmfwrBn1ylu0cOve-LigFjLPCdDyt2C8nyCcYKeIfcDRIy3FDOWPxg6sHV8Wc5sKs_stDcxXYSzDi0_0b9Qwlr986tTRKfijPgRE30Wc1Sw0C9HRVBArpYDxKbytJh9dUZX0OZiYbCs0GnMQn8AeiI6I3gl7AFng_hy4I4QQqHWxb9n26Hv6",
-    verified: true,
-  },
-  {
-    id: 6,
-    name: "Dr. David Smith",
-    specialization: "General Practice",
-    specializationKey: "general",
-    location: "Eldoret, Uasin Gishu",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCyGNaBH_TTTjL84PU42fQgfgn3QpRgoPQ8axmUuLbgPtR-hkZI4zAWQCx4ugBYcTw8XkEcvEG8mRji0HnztNpveHX9XOwZ0448cmDNB8IKZcBqzPrxA6YgOBi5_HN9PmYyZ5lWSscjeijXQnipxL0PY3FHMTteCxABrC-cinY9jtLXgNkwgUMKzzlJS78BCkPS3mXV4gyjABATaB4QoXnUH66KgZonIZAkdW9LaPnNK62uu3P8KnzGj28QQPdNwKzYApv1xl9nVctc",
-    verified: true,
-  },
-];
-
 export default function VeterinaryServices() {
   const [search, setSearch] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(true);
+  const [tabValue, setTabValue] = useState(0);
+  const [veterinarians, setVeterinarians] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const currentUserId = useMemo(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("marketplace_user") || "{}");
+      return u.id || null;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const base = getBaseUrl();
+    setLoading(true);
+    setError(null);
+    fetch(`${base}/api/marketplace/public/veterinarians`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.success && Array.isArray(data.data)) setVeterinarians(data.data);
+        else setVeterinarians([]);
+      })
+      .catch((err) => { if (!cancelled) setError(err.message || "Failed to load veterinarians"); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const searchLower = (search || "").trim().toLowerCase();
+  const filteredVets = searchLower === ""
+    ? veterinarians
+    : veterinarians.filter(
+        (v) =>
+          (v.fullName && v.fullName.toLowerCase().includes(searchLower)) ||
+          (v.profile?.farmOrBusinessName && v.profile.farmOrBusinessName.toLowerCase().includes(searchLower)) ||
+          (v.profile?.country && v.profile.country.toLowerCase().includes(searchLower)) ||
+          (v.profile?.region && v.profile.region.toLowerCase().includes(searchLower)) ||
+          (v.profile?.roleSpecificData?.specialization && String(v.profile.roleSpecificData.specialization).toLowerCase().includes(searchLower))
+      );
+
+  const filteredByVerified = verifiedOnly
+    ? filteredVets.filter((v) => v.isVerified === true || v.is_verified === true)
+    : filteredVets;
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
@@ -109,7 +115,7 @@ export default function VeterinaryServices() {
           bgcolor: "background.paper",
           borderBottom: "1px solid",
           borderColor: "divider",
-          py: 5,
+          py: 2.5,
           px: 1,
         }}
       >
@@ -133,7 +139,7 @@ export default function VeterinaryServices() {
       </Box>
 
       {/* Search and filters */}
-      <Box sx={{ py: 4, px: 1 }}>
+      <Box sx={{ py: 2, px: 1 }}>
         <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
           <TextField
             fullWidth
@@ -165,42 +171,19 @@ export default function VeterinaryServices() {
               gap: 2,
             }}
           >
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-              {["Poultry", "Dairy", "Pigs", "Fish"].map((label) => (
-                <Button
-                  key={label}
-                  variant="outlined"
-                  size="small"
-                  endIcon={<ExpandMore sx={{ color: "grey.400" }} />}
-                  sx={{
-                    borderRadius: "9999px",
-                    borderColor: "divider",
-                    color: "text.primary",
-                    textTransform: "none",
-                    fontWeight: 500,
-                    "&:hover": { borderColor: PRIMARY, "& .MuiButton-endIcon": { color: PRIMARY } },
-                  }}
-                >
-                  {label}
-                </Button>
-              ))}
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<LocationOn />}
-                endIcon={<ExpandMore sx={{ color: "grey.400" }} />}
-                sx={{
-                  borderRadius: "9999px",
-                  borderColor: "divider",
-                  color: "text.primary",
-                  textTransform: "none",
-                  fontWeight: 500,
-                  "&:hover": { borderColor: PRIMARY, "& .MuiButton-endIcon": { color: PRIMARY } },
-                }}
-              >
-                Location
-              </Button>
-            </Box>
+            <Tabs
+              value={tabValue}
+              onChange={(_, v) => setTabValue(v)}
+              sx={{
+                minHeight: 40,
+                "& .MuiTab-root": { textTransform: "none", fontWeight: 600 },
+                "& .Mui-selected": { color: PRIMARY },
+                "& .MuiTabs-indicator": { bgcolor: PRIMARY },
+              }}
+            >
+              <Tab label="List" icon={<Search />} iconPosition="start" />
+              <Tab label="Location" icon={<LocationOn />} iconPosition="start" />
+            </Tabs>
             <Box
               sx={{
                 display: "flex",
@@ -212,6 +195,7 @@ export default function VeterinaryServices() {
                 border: "1px solid",
                 borderColor: `${PRIMARY}33`,
                 bgcolor: `${PRIMARY}1A`,
+                marginLeft: "auto",
               }}
             >
               <Typography variant="body2" fontWeight={600}>
@@ -231,12 +215,45 @@ export default function VeterinaryServices() {
         </Box>
       </Box>
 
-      {/* Directory grid */}
-      <Box sx={{ px: 1, pb: 4 }}>
-        <Box sx={{ width: "100%" }}>
-          <Grid container spacing={3}>
-            {veterinarians.map((vet) => {
-              const SpecIcon = specializationIcons[vet.specializationKey] || MedicalServices;
+      {error && (
+        <Alert severity="error" sx={{ mx: 1, mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {tabValue === 1 ? (
+        <Box sx={{ px: 1, pb: 4 }}>
+          <VeterinariansMap veterinarians={filteredByVerified} />
+        </Box>
+      ) : (
+        <Box sx={{ px: 1, pb: 4 }}>
+          <Box sx={{ width: "100%" }}>
+            <Grid container spacing={3}>
+            {loading ? (
+              <Grid size={12} sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+                <CircularProgress sx={{ color: PRIMARY }} />
+              </Grid>
+            ) : filteredByVerified.length === 0 ? (
+              <Grid size={12} sx={{ py: 6, textAlign: "center" }}>
+                <Typography color="text.secondary">
+                  {searchLower ? "No matching veterinarians." : "No veterinarians found."}
+                </Typography>
+              </Grid>
+            ) : filteredByVerified.map((vet) => {
+              const p = vet.profile || {};
+              const locationParts = [p.district, p.region, p.country].filter(Boolean);
+              const locationStr = locationParts.length ? locationParts.join(", ") : "—";
+              const rsd = p.roleSpecificData && typeof p.roleSpecificData === "object" ? p.roleSpecificData : {};
+              const specialization = rsd.specialization || "—";
+              const specKey = (specialization !== "—" && String(specialization).toLowerCase().split(/\s+/)[0]) || "general";
+              const SpecIcon = specializationIcons[specKey] || MedicalServices;
+              const name = p.farmOrBusinessName || vet.fullName || "—";
+              const imageUrl = resolveImageUrl(p.profilePhotoUrl) || VET_PLACEHOLDER;
+              const verified = vet.isVerified === true || vet.is_verified === true;
+              const phone = vet.phone || "";
+              const phoneDigits = phone.replace(/\D/g, "");
+              const isOwnCard = currentUserId && vet.id === currentUserId;
+              const whatsappUrl = !isOwnCard && phoneDigits ? `https://wa.me/${phoneDigits}` : null;
               return (
                 <Grid size={{ xs: 12, md: 6, lg: 4 }} key={vet.id}>
                   <Card
@@ -256,10 +273,10 @@ export default function VeterinaryServices() {
                     <Box sx={{ position: "relative", aspectRatio: "4/3" }}>
                       <CardMedia
                         component="div"
-                        image={vet.image}
+                        image={imageUrl}
                         sx={{ height: "100%", backgroundSize: "cover", backgroundPosition: "center" }}
                       />
-                      {vet.verified && (
+                      {verified && (
                         <Box
                           sx={{
                             position: "absolute",
@@ -286,18 +303,18 @@ export default function VeterinaryServices() {
                     <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2, p: 2.5 }}>
                       <Box>
                         <Typography variant="h6" fontWeight={700}>
-                          {vet.name}
+                          {name}
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
                           <SpecIcon sx={{ fontSize: 18, color: TEXT_MUTED }} />
                           <Typography variant="body2" sx={{ color: TEXT_MUTED, fontWeight: 500 }}>
-                            {vet.specialization}
+                            {specialization}
                           </Typography>
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
                           <LocationOn sx={{ fontSize: 18, color: "grey.500" }} />
                           <Typography variant="body2" color="text.secondary">
-                            {vet.location}
+                            {locationStr}
                           </Typography>
                         </Box>
                       </Box>
@@ -306,6 +323,11 @@ export default function VeterinaryServices() {
                         variant="contained"
                         startIcon={<Chat />}
                         disableRipple
+                        component={whatsappUrl ? "a" : "button"}
+                        href={whatsappUrl || undefined}
+                        target={whatsappUrl ? "_blank" : undefined}
+                        rel={whatsappUrl ? "noopener noreferrer" : undefined}
+                        disabled={!whatsappUrl}
                         sx={{
                           mt: "auto",
                           py: 1.375,
@@ -323,27 +345,11 @@ export default function VeterinaryServices() {
                 </Grid>
               );
             })}
-          </Grid>
-
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                px: 4,
-                py: 1.5,
-                borderRadius: 2,
-                borderColor: "divider",
-                color: "text.secondary",
-                fontWeight: 700,
-                fontSize: "0.875rem",
-                "&:hover": { borderColor: "grey.400", bgcolor: "action.hover" },
-              }}
-            >
-              Load More Professionals
-            </Button>
+            </Grid>
           </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 }
+

@@ -140,7 +140,7 @@ export default function Team() {
         display: "flex",
         flexDirection: "column",
         py: { xs: 0.75, md: 0.75 },
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -246,7 +246,7 @@ export default function Team() {
                 </Typography>
                 <Typography
                   sx={{
-                    color: "rgba(13, 27, 13, 0.7)",
+                    color: "#000000",
                     fontSize: "1.25rem",
                     lineHeight: 1.75,
                   }}
@@ -259,7 +259,7 @@ export default function Team() {
                 </Typography>
                 <Typography
                   sx={{
-                    color: "rgba(13, 27, 13, 0.7)",
+                    color: "#000000",
                     fontSize: "1.25rem",
                     lineHeight: 1.75,
                   }}
@@ -550,7 +550,7 @@ export default function Team() {
             </Typography>
             <Typography
               sx={{
-                color: "rgba(13, 27, 13, 0.6)",
+                color: "#000000",
                 mt: 1,
                 fontSize: "2rem",
               }}
@@ -645,7 +645,7 @@ export default function Team() {
                 <Typography
                   sx={{
                     fontSize: "1.125rem",
-                    color: "rgba(13, 27, 13, 0.7)",
+                    color: "#000000",
                   }}
                 >
                   {value.description}
@@ -688,7 +688,7 @@ export default function Team() {
               <Typography
                 sx={{
                   fontSize: "1.25rem",
-                  color: "rgba(13, 27, 13, 0.8)",
+                  color: "#000000",
                   lineHeight: 1.75,
                   mb: 3,
                 }}
@@ -702,7 +702,7 @@ export default function Team() {
               <Typography
                 sx={{
                   fontSize: "1.25rem",
-                  color: "rgba(13, 27, 13, 0.7)",
+                  color: "#000000",
                   lineHeight: 1.75,
                   mb: 4,
                 }}
@@ -1206,7 +1206,7 @@ export default function Team() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",

@@ -12,9 +12,6 @@ import {
   ListItemText,
   Divider,
   Avatar,
-  Drawer,
-  List,
-  ListItem,
 } from "@mui/material";
 import {
   Storefront,
@@ -25,12 +22,8 @@ import {
   Person,
   List as ListIcon,
   AddCircleOutline,
-  Chat,
-  Settings,
-  HelpOutline,
   Logout,
   Menu as MenuIcon,
-  Close,
   NotificationsOutlined,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -53,7 +46,7 @@ export default function PrivateHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
 
   const user = useMemo(() => {
     try {
@@ -84,9 +77,12 @@ export default function PrivateHeader() {
   };
 
   const handleNav = (path, options = {}) => {
-    setMobileMenuOpen(false);
+    setMobileMenuAnchorEl(null);
     navigate(path, options);
   };
+
+  const openMobileMenu = (event) => setMobileMenuAnchorEl(event.currentTarget);
+  const closeMobileMenu = () => setMobileMenuAnchorEl(null);
 
   const isActive = (path) => location.pathname === path;
 
@@ -94,9 +90,6 @@ export default function PrivateHeader() {
     { label: "My Profile", path: "/marketplace/profile", icon: <Person />, subtitle: "View & edit personal / business details" },
     { label: "My Listings", path: "/marketplace/my-listings", icon: <ListIcon />, subtitle: "Farmers: produce · Suppliers: inputs · Vets: services" },
     ...(showAddListing ? [{ label: "Add Listing", path: "/marketplace/add-listing", icon: <AddCircleOutline />, subtitle: "Quick action" }] : []),
-    { label: "Messages / WhatsApp", path: "/marketplace/messages", icon: <Chat /> },
-    { label: "Account Settings", path: "/marketplace/settings", icon: <Settings />, subtitle: "Password, privacy, notifications" },
-    { label: "Help / Support", path: "/marketplace/help", icon: <HelpOutline /> },
   ];
 
   return (
@@ -178,12 +171,21 @@ export default function PrivateHeader() {
               ))}
             </Box>
 
-            {/* Right: Notifications (optional) + User avatar + name */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
+            {/* Right: Notifications + User avatar (desktop) + Mobile menu trigger */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                flexShrink: 0,
+                marginLeft: "auto",
+              }}
+            >
               <IconButton
                 size="small"
                 aria-label="Notifications"
                 sx={{
+                  display: { xs: "none", md: "flex" },
                   color: "text.secondary",
                   "&:focus": { outline: "none" },
                   "&:focus-visible": { outline: "none" },
@@ -206,6 +208,7 @@ export default function PrivateHeader() {
                 }
                 endIcon={<Typography component="span" sx={{ fontSize: "0.75em", opacity: 0.8 }}>▼</Typography>}
                 sx={{
+                  display: { xs: "none", md: "flex" },
                   color: "text.primary",
                   textTransform: "none",
                   fontSize: "0.875rem",
@@ -218,21 +221,23 @@ export default function PrivateHeader() {
               >
                 {userName.length > 18 ? userName.slice(0, 16) + "…" : userName}
               </Button>
-            </Box>
 
-            {/* Mobile menu trigger */}
-            <IconButton
-              sx={{
-                display: { xs: "flex", md: "none" },
-                ml: 0.5,
-                color: "text.primary",
-                "&:focus": { outline: "none" },
-                "&:focus-visible": { outline: "none" },
-              }}
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <MenuIcon />
-            </IconButton>
+              {/* Mobile menu trigger - far right on small screens */}
+              <IconButton
+                sx={{
+                  display: { xs: "flex", md: "none" },
+                  color: "text.primary",
+                  "&:focus": { outline: "none" },
+                  "&:focus-visible": { outline: "none" },
+                }}
+                onClick={openMobileMenu}
+                aria-controls={mobileMenuAnchorEl ? "hamburger-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={Boolean(mobileMenuAnchorEl)}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>
@@ -297,83 +302,76 @@ export default function PrivateHeader() {
         </MenuItem>
       </Menu>
 
-      {/* Mobile drawer: main nav */}
-      <Drawer
-        anchor="right"
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
+      {/* Hamburger menu: same size as profile dropdown, positioned below header */}
+      <Menu
+        id="hamburger-menu"
+        anchorEl={mobileMenuAnchorEl}
+        open={Boolean(mobileMenuAnchorEl)}
+        onClose={closeMobileMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
+          elevation: 8,
           sx: {
-            width: 280,
-            pt: 2,
-            px: 1,
+            minWidth: 280,
+            mt: 1.5,
+            borderRadius: 2,
+            border: "1px solid rgba(19, 236, 19, 0.2)",
+            "& .MuiMenuItem-root": { py: 1.25 },
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 1.5, mb: 1 }}>
-          <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+        <Box sx={{ px: 2, py: 1.5, borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+          <Typography variant="subtitle2" fontWeight={700} color="text.primary">
             Menu
           </Typography>
-          <IconButton size="small" onClick={() => setMobileMenuOpen(false)} sx={{ "&:focus": { outline: "none" } }}>
-            <Close />
-          </IconButton>
         </Box>
-        <List dense>
-          {mainNavItems.map((item) => (
-            <ListItem
-              key={item.path}
-              button
-              onClick={() => handleNav(item.path)}
-              sx={{
-                borderRadius: 1,
-                mb: 0.5,
-                backgroundColor: isActive(item.path) ? "rgba(19, 236, 19, 0.1)" : "transparent",
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 36, color: isActive(item.path) ? PRIMARY : "text.secondary" }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: isActive(item.path) ? 700 : 500 }} />
-            </ListItem>
-          ))}
-        </List>
+        {mainNavItems.map((item) => (
+          <MenuItem
+            key={item.path}
+            onClick={() => handleNav(item.path)}
+            sx={{
+              backgroundColor: isActive(item.path) ? "rgba(19, 236, 19, 0.1)" : "transparent",
+              "&:focus": { outline: "none" },
+              "&:focus-visible": { outline: "none" },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 36, color: isActive(item.path) ? PRIMARY : "text.secondary" }}>
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText
+              primary={item.label}
+              primaryTypographyProps={{ fontWeight: isActive(item.path) ? 700 : 600, fontSize: "0.9rem" }}
+            />
+          </MenuItem>
+        ))}
         <Divider sx={{ my: 1 }} />
-        <Box sx={{ px: 1.5 }}>
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<Person />}
-            onClick={() => {
-              handleNav("/marketplace/profile", { state: { from: location.pathname } });
-            }}
-            sx={{
-              textTransform: "none",
-              borderColor: PRIMARY,
-              color: PRIMARY,
-              "&:hover": { borderColor: PRIMARY_DARK, backgroundColor: "rgba(19, 236, 19, 0.08)" },
-            }}
-          >
-            My Profile
-          </Button>
-          <Button
-            fullWidth
-            variant="contained"
-            startIcon={<Logout />}
-            onClick={() => {
-              setMobileMenuOpen(false);
-              handleLogout();
-            }}
-            sx={{
-              mt: 1,
-              textTransform: "none",
-              backgroundColor: "error.main",
-              "&:hover": { backgroundColor: "error.dark" },
-            }}
-          >
-            Logout
-          </Button>
-        </Box>
-      </Drawer>
+        <MenuItem
+          onClick={() => handleNav("/marketplace/profile", { state: { from: location.pathname } })}
+          sx={{ "&:focus": { outline: "none" }, "&:focus-visible": { outline: "none" } }}
+        >
+          <ListItemIcon sx={{ minWidth: 36, color: PRIMARY }}>
+            <Person />
+          </ListItemIcon>
+          <ListItemText primary="My Profile" primaryTypographyProps={{ fontWeight: 600, fontSize: "0.9rem" }} />
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            closeMobileMenu();
+            handleLogout();
+          }}
+          sx={{
+            color: "error.main",
+            "&:focus": { outline: "none" },
+            "&:focus-visible": { outline: "none" },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 36, color: "error.main" }}>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 600 }} />
+        </MenuItem>
+      </Menu>
 
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }} />
     </>

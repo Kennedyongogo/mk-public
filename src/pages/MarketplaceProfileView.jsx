@@ -69,18 +69,30 @@ function getBaseUrl() {
   return env ? String(env).replace(/\/$/, "") : "";
 }
 
+// Show phone without leading zero in national number (e.g. "+254 0798757460" -> "+254 798757460")
+function normalizePhoneForDisplay(phone) {
+  if (phone == null || typeof phone !== "string") return phone;
+  const trimmed = phone.trim();
+  const spaceIdx = trimmed.indexOf(" ");
+  if (spaceIdx === -1) return trimmed.replace(/^0+/, "") || trimmed;
+  const code = trimmed.slice(0, spaceIdx);
+  const rest = trimmed.slice(spaceIdx + 1).replace(/^0+/, "");
+  return rest ? `${code} ${rest}` : code;
+}
+
 function InfoRow({ icon, label, value, showIfZero = false }) {
-  // For coordinates, we want to show even if value is 0
   if (!showIfZero && (value == null || value === "")) return null;
   if (showIfZero && (value == null || value === "" || value === undefined)) return null;
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1.5 }}>
       <Box sx={{ color: PRIMARY, mt: 0.25 }}>{icon}</Box>
       <Box>
-        <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+        <Typography variant="caption" display="block" sx={{ fontWeight: 600, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.125rem" }}>
           {label}
         </Typography>
-        <Typography variant="body2">{value}</Typography>
+        <Typography variant="body2" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.3125rem" }}>
+          {value}
+        </Typography>
       </Box>
     </Box>
   );
@@ -111,7 +123,7 @@ function SectionCard({ title, icon, children }) {
         }}
       >
         <Box sx={{ color: PRIMARY }}>{icon}</Box>
-        <Typography variant="subtitle1" fontWeight={700}>
+        <Typography variant="subtitle1" fontWeight={700} sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.5rem" }}>
           {title}
         </Typography>
       </Box>
@@ -168,7 +180,8 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
       sx={{
         minHeight: "100vh",
         bgcolor: BG_LIGHT,
-        color: "#0e1b12",
+        color: "#000000",
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
         pt: 1.5,
         pb: 1.5,
         width: "100%",
@@ -186,7 +199,8 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
           disableRipple
           sx={{
             mb: 0.75,
-            color: "text.secondary",
+            color: "#000000",
+            fontSize: "1.125rem",
             textTransform: "none",
             fontWeight: 600,
             "&:hover": { color: PRIMARY },
@@ -253,7 +267,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                   boxShadow: 2,
                 }}
               >
-                <Typography variant="h3" fontWeight={700}>
+                <Typography variant="h3" fontWeight={700} sx={{ fontSize: "2.25rem" }}>
                   {(user.fullName || "?").charAt(0).toUpperCase()}
                 </Typography>
               </Box>
@@ -273,7 +287,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                 />
               )}
             </Box>
-            <Typography variant="h4" fontWeight={800} sx={{ color: "text.primary", mb: 0.5 }}>
+            <Typography variant="h4" fontWeight={800} sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.875rem", mb: 0.5 }}>
               {user.fullName || "—"}
             </Typography>
             <Chip
@@ -284,7 +298,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
               sx={{ mb: 1 }}
             />
             {farmOrBusinessName && (
-              <Typography variant="body2" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "center" }}>
+              <Typography variant="body2" sx={{ display: "flex", alignItems: "center", gap: 0.5, justifyContent: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.3125rem" }}>
                 <Business fontSize="small" /> {farmOrBusinessName}
               </Typography>
             )}
@@ -298,6 +312,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                 borderColor: PRIMARY,
                 color: PRIMARY,
                 fontWeight: 600,
+                fontSize: "1.125rem",
                 textTransform: "none",
                 "&:hover": { borderColor: PRIMARY, bgcolor: `${PRIMARY}14` },
                 "&:focus": { outline: "none", boxShadow: "none" },
@@ -313,7 +328,7 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
           <Grid size={{ xs: 12, md: 6 }}>
             <SectionCard title="Contact & location" icon={<Person />}>
               <InfoRow icon={<Email fontSize="small" />} label="Email" value={user.email} />
-              <InfoRow icon={<Phone fontSize="small" />} label="Phone" value={user.phone} />
+              <InfoRow icon={<Phone fontSize="small" />} label="Phone" value={normalizePhoneForDisplay(user.phone)} />
               <InfoRow icon={<Public fontSize="small" />} label="Location" value={locationStr} />
               {(latitude != null || longitude != null) && (
                 <InfoRow
@@ -357,12 +372,12 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                   )}
                   {producesArr.length > 0 && (
                     <Box sx={{ mb: 1.5 }}>
-                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+                      <Typography variant="caption" display="block" sx={{ fontWeight: 600, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.125rem" }}>
                         Produces
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
                         {producesArr.map((p, i) => (
-                          <Chip key={i} label={p} size="small" sx={{ bgcolor: `${PRIMARY}14`, color: "text.primary" }} />
+                          <Chip key={i} label={p} size="medium" sx={{ bgcolor: `${PRIMARY}14`, color: "#000000", fontSize: "0.9375rem" }} />
                         ))}
                       </Box>
                     </Box>
@@ -417,12 +432,12 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                   )}
                   {roleSpecific.whatTheyBuy && Array.isArray(roleSpecific.whatTheyBuy) && roleSpecific.whatTheyBuy.length > 0 && (
                     <Box sx={{ mb: 1.5 }}>
-                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+                      <Typography variant="caption" display="block" sx={{ fontWeight: 600, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.125rem" }}>
                         What You Buy
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
                         {roleSpecific.whatTheyBuy.map((item, i) => (
-                          <Chip key={i} label={item} size="small" sx={{ bgcolor: `${PRIMARY}14`, color: "text.primary" }} />
+                          <Chip key={i} label={item} size="medium" sx={{ bgcolor: `${PRIMARY}14`, color: "#000000", fontSize: "0.9375rem" }} />
                         ))}
                       </Box>
                     </Box>
@@ -447,12 +462,12 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
                   )}
                   {roleSpecific.productsSupplied && Array.isArray(roleSpecific.productsSupplied) && roleSpecific.productsSupplied.length > 0 && (
                     <Box sx={{ mb: 1.5 }}>
-                      <Typography variant="caption" color="text.secondary" display="block" sx={{ fontWeight: 600 }}>
+                      <Typography variant="caption" display="block" sx={{ fontWeight: 600, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.125rem" }}>
                         Products Supplied
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
                         {roleSpecific.productsSupplied.map((item, i) => (
-                          <Chip key={i} label={item} size="small" sx={{ bgcolor: `${PRIMARY}14`, color: "text.primary" }} />
+                          <Chip key={i} label={item} size="medium" sx={{ bgcolor: `${PRIMARY}14`, color: "#000000", fontSize: "0.9375rem" }} />
                         ))}
                       </Box>
                     </Box>
@@ -504,12 +519,12 @@ export default function MarketplaceProfileView({ user: data, backTo = "/marketpl
             <Grid size={{ xs: 12 }}>
               <SectionCard title="About" icon={<CalendarToday />}>
                 {bio && (
-                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", mb: user.createdAt ? 2 : 0 }}>
+                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", mb: user.createdAt ? 2 : 0, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.3125rem" }}>
                     {bio}
                   </Typography>
                 )}
                 {user.createdAt && (
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.125rem" }}>
                     Member since {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                   </Typography>
                 )}

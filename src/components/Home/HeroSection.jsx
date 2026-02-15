@@ -104,7 +104,7 @@ export default function HeroSection() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 4,
-                fontFamily: '"Open Sans", sans-serif',
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
               }}
             >
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -114,6 +114,7 @@ export default function HeroSection() {
                     fontSize: { xs: "2.25rem", md: "3.75rem" },
                     fontWeight: 600,
                     color: "white",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     lineHeight: 1.2,
                   }}
                 >
@@ -124,6 +125,7 @@ export default function HeroSection() {
                     fontSize: { xs: "1.125rem", md: "1.25rem" },
                     fontWeight: 400,
                     color: "rgba(255, 255, 255, 0.9)",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     lineHeight: 1.6,
                   }}
                 >

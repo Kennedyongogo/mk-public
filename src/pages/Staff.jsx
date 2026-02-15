@@ -209,7 +209,7 @@ export default function Staff() {
             "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
           zIndex: 0,
         },
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Container
@@ -292,7 +292,7 @@ export default function Staff() {
             <Typography
               variant="body1"
               sx={{
-                color: "#4c664c",
+                color: "#000000",
                 fontSize: { xs: "1rem", md: "1.125rem" },
                 maxWidth: "800px",
                 mx: "auto",
@@ -484,7 +484,7 @@ export default function Staff() {
                       <Typography
                         variant="body2"
                         sx={{
-                          color: "#4c664c",
+                          color: "#000000",
                           fontSize: { xs: "0.75rem", md: "0.8rem" },
                           lineHeight: 1.5,
                           mb: 1.5,
@@ -518,7 +518,7 @@ export default function Staff() {
                             size="small"
                             sx={{
                               backgroundColor: "rgba(19, 236, 19, 0.05)",
-                              color: "#4c664c",
+                              color: "#000000",
                               fontSize: "0.7rem",
                               height: "22px",
                             }}

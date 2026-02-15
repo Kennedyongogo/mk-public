@@ -224,7 +224,7 @@ export default function Blog() {
           alignItems: "center",
           justifyContent: "center",
           bgcolor: "#f6f8f6",
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <CircularProgress sx={{ color: "#0fbd0f" }} />
@@ -234,7 +234,7 @@ export default function Blog() {
 
   if (error) {
     return (
-      <Box sx={{ p: 4, bgcolor: "#f6f8f6", minHeight: "40vh", fontFamily: '"Open Sans", sans-serif' }}>
+      <Box sx={{ p: 4, bgcolor: "#f6f8f6", minHeight: "40vh", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
         <Container maxWidth="md">
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
@@ -276,7 +276,7 @@ export default function Blog() {
             "radial-gradient(circle at 20% 80%, rgba(15, 189, 15, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
           zIndex: 0,
         },
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Container
@@ -462,7 +462,7 @@ export default function Blog() {
                       <Typography variant="h5" sx={{ fontWeight: 800, mb: 2 }}>
                         {post.title}
                       </Typography>
-                      <Typography sx={{ color: "rgba(0,0,0,0.6)", mb: 3, lineClamp: 3, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      <Typography sx={{ color: "#000000", mb: 3, fontSize: "1.0625rem", lineHeight: 1.6, lineClamp: 3, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {post.description}
                       </Typography>
                       <Button
@@ -657,7 +657,7 @@ export default function Blog() {
                         </Typography>
                         <Typography
                           variant="body2"
-                          sx={{ color: "rgba(0,0,0,0.6)", mb: 2, flex: 1 }}
+                          sx={{ color: "#000000", mb: 2, flex: 1, fontSize: "1rem" }}
                         >
                           {article.description || "—"}
                         </Typography>
@@ -675,7 +675,7 @@ export default function Blog() {
                               display: "flex",
                               alignItems: "center",
                               gap: 0.5,
-                              color: "rgba(0,0,0,0.5)",
+                              color: "#000000",
                             }}
                           >
                             <AccessTime sx={{ fontSize: 16 }} />

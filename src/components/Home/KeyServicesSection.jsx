@@ -69,7 +69,7 @@ export default function KeyServicesSection() {
         pt: 0,
         pb: 0,
         backgroundColor: "rgba(255, 255, 255, 0.5)",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -131,6 +131,7 @@ export default function KeyServicesSection() {
                       textTransform: "uppercase",
                       letterSpacing: "0.15em",
                       color: "#13ec13",
+                      fontFamily: '"Calibri Light", Calibri, sans-serif',
                       mb: 0,
                     }}
                   >
@@ -142,6 +143,7 @@ export default function KeyServicesSection() {
                       fontSize: { xs: "2rem", sm: "2.5rem", md: "3.5rem" },
                       fontWeight: 900,
                       color: "#0d1b0d",
+                      fontFamily: '"Calibri Light", Calibri, sans-serif',
                       lineHeight: 1.2,
                       mb: 0,
                     }}
@@ -151,7 +153,8 @@ export default function KeyServicesSection() {
                   <Typography
                     sx={{
                       fontSize: { xs: "1rem", md: "1.25rem" },
-                      color: "#4c664c",
+                      color: "#000000",
+                      fontFamily: '"Calibri Light", Calibri, sans-serif',
                       lineHeight: 1.7,
                       maxWidth: "700px",
                     }}
@@ -180,7 +183,7 @@ export default function KeyServicesSection() {
             </Box>
           ) : error ? (
             <Box sx={{ textAlign: "center", py: 4 }}>
-              <Typography sx={{ color: "#4c664c" }}>{error}</Typography>
+              <Typography sx={{ color: "#000000" }}>{error}</Typography>
             </Box>
           ) : (
             <Grid
@@ -188,7 +191,7 @@ export default function KeyServicesSection() {
               spacing={{ xs: 0.8, sm: 0.8, md: 0.8 }}
               justifyContent="center"
             >
-              {services.map((service, index) => (
+              {services.slice(0, 6).map((service, index) => (
                 <Grid
                   size={{
                     xs: 12,
@@ -263,7 +266,8 @@ export default function KeyServicesSection() {
                             fontSize: "1.25rem",
                             fontWeight: 700,
                             mb: 1.5,
-                            color: "#0d1b0d",
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                           }}
                         >
                           {service.title}
@@ -271,7 +275,8 @@ export default function KeyServicesSection() {
                         <Typography
                           sx={{
                             fontSize: "1rem",
-                            color: "#4c664c",
+                            color: "#000000",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             lineHeight: 1.75,
                           }}
                         >
@@ -286,7 +291,7 @@ export default function KeyServicesSection() {
           )}
           {!loading && !error && services.length === 0 && (
             <Box sx={{ textAlign: "center", py: 4 }}>
-              <Typography sx={{ color: "#4c664c" }}>No key services at the moment.</Typography>
+              <Typography sx={{ color: "#000000" }}>No key services at the moment.</Typography>
             </Box>
           )}
         </Container>

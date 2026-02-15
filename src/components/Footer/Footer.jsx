@@ -1,9 +1,9 @@
 import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Container,
   Grid,
-  
   Typography,
   Link,
   IconButton,
@@ -99,6 +99,7 @@ export default function Footer() {
         mt: "auto",
         position: "relative",
         overflow: "hidden",
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Container
@@ -170,6 +171,7 @@ export default function Footer() {
                           variant="h5"
                           sx={{
                             fontWeight: 700,
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             background:
                               "linear-gradient(45deg, #13ec13, #ffffff)", // Green to White
                             backgroundClip: "text",
@@ -189,6 +191,7 @@ export default function Footer() {
                             mb: { xs: 0.5, sm: 1 },
                             fontWeight: 600,
                             color: "#13ec13", // Green
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             fontSize: { xs: "1rem", sm: "1.25rem" },
                           }}
                         >
@@ -200,6 +203,7 @@ export default function Footer() {
                             mb: 0.5,
                             lineHeight: 1.6,
                             color: "rgba(255, 255, 255, 0.7)",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             fontSize: { xs: "1.1rem", sm: "1.2rem" },
                           }}
                         >
@@ -211,6 +215,7 @@ export default function Footer() {
                             mb: { xs: 1, sm: 1.5 },
                             lineHeight: 1.6,
                             color: "rgba(255, 255, 255, 0.7)",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             fontSize: { xs: "1.1rem", sm: "1.2rem" },
                           }}
                         >
@@ -282,6 +287,7 @@ export default function Footer() {
                             mb: { xs: 0.5, sm: 1 },
                             fontWeight: 600,
                             color: "white",
+                            fontFamily: '"Calibri Light", Calibri, sans-serif',
                             fontSize: { xs: "1rem", sm: "1.25rem" },
                           }}
                         >
@@ -475,6 +481,35 @@ export default function Footer() {
                       pb: 0.05,
                     }}
                   >
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, justifyContent: "center", mb: 0.5 }}>
+                      <Link
+                        component={RouterLink}
+                        to="/privacy-policy"
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.85)",
+                          fontWeight: 500,
+                          fontSize: "0.85rem",
+                          "&:hover": { color: "#13ec13" },
+                        }}
+                      >
+                        Privacy Policy
+                      </Link>
+                      <Typography component="span" sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.85rem" }}>•</Typography>
+                      <Link
+                        component={RouterLink}
+                        to="/terms-of-use"
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255, 255, 255, 0.85)",
+                          fontWeight: 500,
+                          fontSize: "0.85rem",
+                          "&:hover": { color: "#13ec13" },
+                        }}
+                      >
+                        Terms of Use
+                      </Link>
+                    </Box>
                     <Typography
                       variant="body1"
                       sx={{

@@ -448,9 +448,9 @@ export default function BlogDetail() {
                 component="li"
                 sx={{
                   mb: 0.5,
-                  color: "#666666",
+                  color: "#000000",
                   lineHeight: 1.8,
-                  fontSize: { xs: "1.05rem", md: "1.1rem" },
+                  fontSize: { xs: "1.1rem", md: "1.15rem" },
                   fontWeight: 500,
                 }}
               >
@@ -512,9 +512,9 @@ export default function BlogDetail() {
             variant="body1"
             sx={{
               mb: 1.5,
-              color: "#4c664c",
+              color: "#000000",
               lineHeight: 1.8,
-              fontSize: { xs: "1.05rem", md: "1.1rem" },
+              fontSize: { xs: "1.1rem", md: "1.15rem" },
               fontWeight: 500,
             }}
           >
@@ -552,7 +552,7 @@ export default function BlogDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Box sx={{ position: "relative", zIndex: 1 }}>
@@ -572,7 +572,7 @@ export default function BlogDetail() {
           bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
             "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Container maxWidth="md" sx={{ py: 8 }}>
@@ -705,7 +705,7 @@ export default function BlogDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
       <Container
@@ -854,7 +854,7 @@ export default function BlogDetail() {
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#4c664c",
+                            color: "#000000",
                             fontWeight: 600,
                             fontSize: "0.85rem",
                           }}
@@ -874,7 +874,7 @@ export default function BlogDetail() {
                         <Typography
                           variant="caption"
                           sx={{
-                            color: "#4c664c",
+                            color: "#000000",
                             fontWeight: 600,
                             fontSize: "0.85rem",
                           }}
@@ -892,7 +892,7 @@ export default function BlogDetail() {
                       sx={{
                         display: { xs: "none", sm: "flex" },
                         alignItems: "center",
-                        color: "#4c664c",
+                        color: "#000000",
                         fontWeight: 600,
                         mr: 1,
                       }}
@@ -994,9 +994,9 @@ export default function BlogDetail() {
                   mb: 4,
                   "& p": {
                     mb: 2,
-                    color: "#4c664c",
+                    color: "#000000",
                     lineHeight: 1.8,
-                    fontSize: { xs: "1.05rem", md: "1.1rem" },
+                    fontSize: { xs: "1.1rem", md: "1.15rem" },
                     fontWeight: 500,
                   },
                   "& h2": {
@@ -1012,7 +1012,7 @@ export default function BlogDetail() {
                   },
                   "& li": {
                     mb: 1,
-                    color: "#4c664c",
+                    color: "#000000",
                     lineHeight: 1.8,
                   },
                   "& strong": {
@@ -1022,7 +1022,7 @@ export default function BlogDetail() {
                 }}
               >
                 {post?.content ? formatMarkdown(post.content) : (
-                  <Typography variant="body1" sx={{ color: "#4c664c", fontStyle: "italic" }}>
+                  <Typography variant="body1" sx={{ color: "#000000", fontStyle: "italic" }}>
                     Loading content...
                   </Typography>
                 )}
@@ -1057,7 +1057,7 @@ export default function BlogDetail() {
                       }}
                     />
                   )) || (
-                    <Typography variant="body2" sx={{ color: "#4c664c", fontStyle: "italic" }}>
+                    <Typography variant="body2" sx={{ color: "#000000", fontStyle: "italic" }}>
                       Loading tags...
                     </Typography>
                   )}
@@ -1158,7 +1158,8 @@ export default function BlogDetail() {
                                 variant="body2"
                                 sx={{
                                   mb: 2,
-                                  color: "#4c664c",
+                                  color: "#000000",
+                                  fontSize: "1rem",
                                   lineHeight: 1.6,
                                   display: "-webkit-box",
                                   WebkitLineClamp: 2,
@@ -1488,7 +1489,7 @@ export default function BlogDetail() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",

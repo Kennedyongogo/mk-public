@@ -125,7 +125,7 @@ const LocationMap = ({ latitude, longitude, height = "300px" }) => {
             size="small"
             sx={{
               backgroundColor: mapView === "osm" ? "rgba(23, 207, 84, 0.1)" : "transparent",
-              color: mapView === "osm" ? "#17cf54" : "#666",
+              color: mapView === "osm" ? "#17cf54" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -142,7 +142,7 @@ const LocationMap = ({ latitude, longitude, height = "300px" }) => {
             size="small"
             sx={{
               backgroundColor: mapView === "satellite" ? "rgba(23, 207, 84, 0.1)" : "transparent",
-              color: mapView === "satellite" ? "#17cf54" : "#666",
+              color: mapView === "satellite" ? "#17cf54" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -159,7 +159,7 @@ const LocationMap = ({ latitude, longitude, height = "300px" }) => {
             size="small"
             sx={{
               backgroundColor: mapView === "terrain" ? "rgba(23, 207, 84, 0.1)" : "transparent",
-              color: mapView === "terrain" ? "#17cf54" : "#666",
+              color: mapView === "terrain" ? "#17cf54" : "#000000",
               "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },

@@ -19,7 +19,7 @@ export default function ContactSection() {
         pb: { xs: 0.5, sm: 0.75, md: 1 },
         px: 0,
         background: "rgba(255, 255, 255, 0.5)",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       <Card
@@ -61,6 +61,7 @@ export default function ContactSection() {
                   sx={{
                     letterSpacing: 2,
                     color: "#13ec13",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     fontWeight: 700,
                     fontSize: "0.875rem",
                   }}
@@ -72,6 +73,7 @@ export default function ContactSection() {
                   sx={{
                     fontWeight: 900,
                     color: "#0d1b0d",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     lineHeight: 1.2,
                     fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.75rem" },
                   }}
@@ -81,7 +83,8 @@ export default function ContactSection() {
                 <Typography
                   variant="body1"
                   sx={{
-                    color: "#4c664c",
+                    color: "#000000",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     lineHeight: 1.7,
                     maxWidth: 800,
                     fontSize: { xs: "1rem", md: "1.125rem" },
@@ -177,6 +180,7 @@ export default function ContactSection() {
                         sx={{
                           fontWeight: 800,
                           color: "#0d1b0d",
+                          fontFamily: '"Calibri Light", Calibri, sans-serif',
                           textTransform: "uppercase",
                           letterSpacing: 1,
                           fontSize: "0.75rem",
@@ -188,7 +192,8 @@ export default function ContactSection() {
                       <Typography
                         variant="body2"
                         sx={{
-                          color: "#4c664c",
+                          color: "#000000",
+                          fontFamily: '"Calibri Light", Calibri, sans-serif',
                           lineHeight: 1.4,
                           fontWeight: 600,
                           fontSize: "0.95rem",
@@ -312,7 +317,7 @@ export default function ContactSection() {
                         <Typography
                           variant="body2"
                           sx={{
-                            color: "#4c664c",
+                            color: "#000000",
                             lineHeight: 1.4,
                             fontWeight: 600,
                             fontSize: "0.95rem",

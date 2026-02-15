@@ -34,7 +34,7 @@ const MarketplaceArea = lazy(() => import("./pages/MarketplaceArea"));
 const MarketplaceDashboard = lazy(() => import("./pages/MarketplaceDashboard"));
 const FarmersHub = lazy(() => import("./pages/FarmersHub"));
 const InputsFeeds = lazy(() => import("./pages/InputsFeeds"));
-const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices"));
+const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices.jsx"));
 const TrainingOpportunities = lazy(() => import("./pages/TrainingOpportunities"));
 const TrainingOpportunitiesMapPage = lazy(() => import("./pages/TrainingOpportunitiesMapPage"));
 const ViewAllTrainings = lazy(() => import("./pages/ViewAllTrainings"));
@@ -42,6 +42,10 @@ const ViewAllGrants = lazy(() => import("./pages/ViewAllGrants"));
 const RegisterEventPage = lazy(() => import("./pages/RegisterEventPage"));
 const ApplyGrantPage = lazy(() => import("./pages/ApplyGrantPage"));
 const MarketplaceProfilePage = lazy(() => import("./pages/MarketplaceProfilePage"));
+const ListingsPage = lazy(() => import("./pages/ListingsPage"));
+const AddListingPage = lazy(() => import("./pages/AddListingPage"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -190,7 +194,7 @@ function AppLayout() {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#4c664c",
+                  color: "#000000",
                   textAlign: "center",
                   fontWeight: 400,
                   position: "relative",
@@ -299,6 +303,24 @@ function AppLayout() {
               element={
                 <>
                   <Projects />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/privacy-policy"
+              element={
+                <>
+                  <PrivacyPolicy />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/terms-of-use"
+              element={
+                <>
+                  <TermsOfUse />
                   <Footer />
                 </>
               }
@@ -419,6 +441,30 @@ function AppLayout() {
               element={
                 <MarketplaceGate>
                   <MarketplaceProfilePage />
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/my-listings"
+              element={
+                <MarketplaceGate>
+                  <ListingsPage />
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/listings"
+              element={
+                <MarketplaceGate>
+                  <ListingsPage />
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/add-listing"
+              element={
+                <MarketplaceGate>
+                  <AddListingPage />
                 </MarketplaceGate>
               }
             />

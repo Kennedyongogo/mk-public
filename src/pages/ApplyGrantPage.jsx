@@ -63,9 +63,9 @@ export default function ApplyGrantPage() {
 
   if (!grant) {
     return (
-      <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, py: 4, px: 2 }}>
+      <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 4, px: 2 }}>
         <Box sx={{ maxWidth: 800, mx: "auto" }}>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
+          <Typography sx={{ mb: 2, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
             Grant not found or link expired. Please choose a grant from the list.
           </Typography>
           <Button
@@ -81,13 +81,13 @@ export default function ApplyGrantPage() {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#0e1b12", py: 3, px: 2 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 3, px: 2 }}>
       <Box sx={{ width: "100%" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
           <IconButton
             onClick={() => navigate(-1)}
             sx={{
-              color: "text.primary",
+              color: "#000000",
               "&:hover": { bgcolor: "action.hover" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
@@ -95,7 +95,7 @@ export default function ApplyGrantPage() {
           >
             <ArrowBack />
           </IconButton>
-          <Typography variant="h5" fontWeight={700}>
+          <Typography variant="h5" fontWeight={700} sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
             Apply for funding
           </Typography>
         </Box>
@@ -144,12 +144,12 @@ export default function ApplyGrantPage() {
                 />
               </Box>
               <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3 }}>
+                <Typography variant="h6" fontWeight={700} sx={{ mb: 1, lineHeight: 1.3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                   {grant.title}
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: "text.secondary", mb: 2, lineHeight: 1.6 }}
+                  sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1.05rem", mb: 2, lineHeight: 1.6 }}
                 >
                   {grant.description}
                 </Typography>
@@ -159,7 +159,8 @@ export default function ApplyGrantPage() {
                     alignItems: "center",
                     gap: 2,
                     flexWrap: "wrap",
-                    color: "text.secondary",
+                    color: "#000000",
+                    fontFamily: '"Calibri Light", Calibri, sans-serif',
                     fontSize: "0.75rem",
                   }}
                 >
@@ -194,10 +195,10 @@ export default function ApplyGrantPage() {
                 bgcolor: "background.paper",
               }}
             >
-              <Typography variant="subtitle1" fontWeight={600}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                 Confirm application
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
                 You are applying for: <strong>{grant.title}</strong>
               </Typography>
               {error && (

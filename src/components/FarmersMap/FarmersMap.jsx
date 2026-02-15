@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Box, Typography } from "@mui/material";
-import { LocationOn } from "@mui/icons-material";
+import { LocationOn, Verified } from "@mui/icons-material";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -12,11 +12,13 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
+const PRIMARY = "#17cf54";
+
 const createGreenMarker = () =>
   L.divIcon({
     className: "custom-green-marker",
     html: `<div style="
-      background-color: #17cf54;
+      background-color: ${PRIMARY};
       color: white;
       width: 36px;
       height: 36px;
@@ -48,26 +50,26 @@ const MapBounds = ({ bounds }) => {
   return null;
 };
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-};
-
-const TrainingEventsMap = ({ events = [] }) => {
-  const markers = events
-    .filter((e) => e.latitude != null && e.longitude != null)
-    .map((e) => {
-      const lat = parseFloat(e.latitude);
-      const lng = parseFloat(e.longitude);
+const FarmersMap = ({ farmers = [] }) => {
+  const markers = farmers
+    .filter((f) => {
+      const p = f.profile;
+      return p && p.latitude != null && p.longitude != null;
+    })
+    .map((f) => {
+      const p = f.profile;
+      const lat = parseFloat(p.latitude);
+      const lng = parseFloat(p.longitude);
       if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
+      const locationParts = [p.region, p.country].filter(Boolean);
       return {
-        id: e.id,
-        title: e.title,
-        location: e.location,
-        description: e.description,
-        type: e.type,
-        date: e.date,
+        id: f.id,
+        fullName: f.fullName,
+        farmOrBusinessName: p.farmOrBusinessName,
+        location: locationParts.length ? locationParts.join(", ") : (p.country || p.region || "—"),
+        produces: Array.isArray(p.produces) ? p.produces : [],
+        availability: p.availability,
+        isVerified: f.isVerified === true || f.is_verified === true,
         position: [lat, lng],
       };
     })
@@ -99,7 +101,9 @@ const TrainingEventsMap = ({ events = [] }) => {
             fontFamily: '"Calibri Light", Calibri, sans-serif',
           }}
         >
-          <Typography sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>No event locations with coordinates to show on the map.</Typography>
+          <Typography sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
+            No farmer locations with coordinates to show on the map.
+          </Typography>
         </Box>
       ) : (
         <MapContainer
@@ -117,24 +121,23 @@ const TrainingEventsMap = ({ events = [] }) => {
               <Popup>
                 <Box sx={{ minWidth: "200px", maxWidth: "320px", fontFamily: '"Calibri Light", Calibri, sans-serif', color: "#000000" }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1 }}>
-                    <LocationOn sx={{ fontSize: 16, color: "#17cf54" }} />
+                    <LocationOn sx={{ fontSize: 16, color: PRIMARY }} />
                     <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', textTransform: "uppercase", fontSize: "0.75rem" }}>
                       {marker.location}
                     </Typography>
                   </Box>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "1rem" }}>
-                    {marker.title}
+                    {marker.farmOrBusinessName || marker.fullName}
                   </Typography>
-                  {marker.type && (
-                    <Typography variant="caption" sx={{ display: "block", mb: 0.5, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
-                      {marker.type}
-                      {marker.date ? ` · ${formatDate(marker.date)}` : ""}
-                    </Typography>
+                  {marker.isVerified && (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                      <Verified sx={{ fontSize: 14, color: PRIMARY }} />
+                      <Typography variant="caption" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>MK Verified</Typography>
+                    </Box>
                   )}
-                  {marker.description && (
+                  {marker.produces.length > 0 && (
                     <Typography variant="body2" sx={{ color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', fontSize: "0.875rem", lineHeight: 1.5 }}>
-                      {marker.description.slice(0, 120)}
-                      {marker.description.length > 120 ? "…" : ""}
+                      Produces: {marker.produces.slice(0, 5).join(", ")}{marker.produces.length > 5 ? "…" : ""}
                     </Typography>
                   )}
                 </Box>
@@ -148,4 +151,4 @@ const TrainingEventsMap = ({ events = [] }) => {
   );
 };
 
-export default TrainingEventsMap;
+export default FarmersMap;

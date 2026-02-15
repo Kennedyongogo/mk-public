@@ -472,7 +472,7 @@ export default function ServiceDetail() {
                 component="li"
                 sx={{
                   mb: 0.5,
-                  color: "#666666",
+                  color: "#000000",
                   lineHeight: 1.8,
                   fontSize: { xs: "1.05rem", md: "1.1rem" },
                   fontWeight: 500,
@@ -536,13 +536,13 @@ export default function ServiceDetail() {
             variant="body1"
             sx={{
               mb: 1.5,
-              color: "#4c664c",
-              lineHeight: 1.8,
-              fontSize: { xs: "1.05rem", md: "1.1rem" },
-              fontWeight: 500,
-            }}
-          >
-            {line}
+color: "#000000",
+                  lineHeight: 1.8,
+                  fontSize: { xs: "1.05rem", md: "1.1rem" },
+                  fontWeight: 500,
+                }}
+              >
+                {line}
           </Typography>
         );
       }
@@ -576,7 +576,7 @@ export default function ServiceDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Box sx={{ position: "relative", zIndex: 1 }}>
@@ -596,7 +596,7 @@ export default function ServiceDetail() {
           bgcolor: "rgba(255, 255, 255, 0.5)",
           background:
             "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 255, 245, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)",
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Container maxWidth="md" sx={{ py: 8 }}>
@@ -651,7 +651,7 @@ export default function ServiceDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
       <Container
@@ -753,7 +753,7 @@ export default function ServiceDetail() {
                     sx={{
                       display: { xs: "none", sm: "flex" },
                       alignItems: "center",
-                      color: "#4c664c",
+                      color: "#000000",
                       fontWeight: 600,
                       mr: 1,
                     }}
@@ -817,10 +817,10 @@ export default function ServiceDetail() {
                   mb: 4,
                   "& p": {
                     mb: 2,
-                    color: "#4c664c",
+                    color: "#000000",
                     lineHeight: 1.8,
                     fontSize: { xs: "1.05rem", md: "1.1rem" },
-                    fontWeight: 500,
+                    fontWeight: 700,
                   },
                   "& h2": {
                     mt: 4,
@@ -835,8 +835,9 @@ export default function ServiceDetail() {
                   },
                   "& li": {
                     mb: 1,
-                    color: "#4c664c",
+                    color: "#000000",
                     lineHeight: 1.8,
+                    fontWeight: 700,
                   },
                   "& strong": {
                     fontWeight: 700,
@@ -845,7 +846,7 @@ export default function ServiceDetail() {
                 }}
               >
                 {service?.content ? formatMarkdown(service.content) : (
-                  <Typography variant="body1" sx={{ color: "#4c664c", fontStyle: "italic" }}>
+                  <Typography variant="body1" sx={{ color: "#000000", fontWeight: 700, fontStyle: "italic" }}>
                     Loading content...
                   </Typography>
                 )}
@@ -936,7 +937,8 @@ export default function ServiceDetail() {
                             variant="body2"
                             sx={{
                               mb: 2,
-                              color: "#4c664c",
+                              color: "#000000",
+                              fontWeight: 700,
                               lineHeight: 1.6,
                             }}
                           >
@@ -1197,7 +1199,7 @@ export default function ServiceDetail() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",

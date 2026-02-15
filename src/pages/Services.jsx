@@ -340,7 +340,7 @@ export default function Services() {
         px: 0,
         bgcolor: "#f6f8f6",
         minHeight: "100vh",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
       }}
     >
       {/* Hero Section – background cycles through service images with smooth fade */}
@@ -469,11 +469,11 @@ export default function Services() {
             </Box>
           ) : servicesError ? (
             <Box sx={{ textAlign: "center", py: 6, px: 2 }}>
-              <Typography sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: "1.125rem" }}>{servicesError}</Typography>
+              <Typography sx={{ color: "#000000", fontSize: "1.125rem" }}>{servicesError}</Typography>
             </Box>
           ) : services.length === 0 ? (
             <Box sx={{ textAlign: "center", py: 6, px: 2 }}>
-              <Typography sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: "1.125rem" }}>No services at the moment.</Typography>
+              <Typography sx={{ color: "#000000", fontSize: "1.125rem" }}>No services at the moment.</Typography>
             </Box>
           ) : (
             <Box
@@ -567,11 +567,12 @@ export default function Services() {
                     </Typography>
                     <Typography
                       sx={{
-                        color: "rgba(0, 0, 0, 0.6)",
+                        color: "#000000",
                         fontSize: "1.125rem",
                         lineHeight: 1.5,
                         mb: 1.5,
                         flex: 1,
+                        fontWeight: 700,
                       }}
                     >
                       {service.shortDescription || service.description || ""}
@@ -653,7 +654,7 @@ export default function Services() {
               <Typography
                 sx={{
                   fontSize: { xs: "1.125rem", md: "1.2rem" },
-                  color: "rgba(0, 0, 0, 0.7)",
+                  color: "#000000",
                   maxWidth: "800px",
                   mx: "auto",
                   mb: 4,
@@ -956,7 +957,7 @@ export default function Services() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",
@@ -1247,7 +1248,7 @@ export default function Services() {
               mr: 2,
               px: 3,
               py: 1,
-              color: "#666",
+              color: "#000000",
               textTransform: "none",
               fontWeight: 600,
               outline: "none",

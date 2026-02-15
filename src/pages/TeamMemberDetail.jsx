@@ -149,11 +149,32 @@ export default function TeamMemberDetail() {
       try {
         setLoading(true);
         setError(null);
-        
-        // Check if it's a sample profile ID (1-8)
-        const sampleId = parseInt(id);
+
+        // Always try the API first
+        const res = await fetch(`/api/admin-users/public/${id}`);
+        const data = await res.json();
+        if (res.ok && data.success && data.data) {
+          const m = data.data;
+          setMember({
+            id: m.id,
+            name: m.full_name,
+            full_name: m.full_name,
+            position: m.position || m.role || "Team Member",
+            description: m.description,
+            image: buildImageUrl(m.profile_image),
+            facebook_link: m.facebook_link,
+            whatsapp_link: m.whatsapp_link,
+            twitter_link: m.twitter_link,
+            google_link: m.google_link,
+          });
+          setLoading(false);
+          return;
+        }
+
+        // Fallback to sample profiles only when API fails and id is 1-8
+        const sampleId = parseInt(id, 10);
         if (sampleId >= 1 && sampleId <= 8) {
-          const sampleMember = sampleProfiles.find(p => p.id === sampleId);
+          const sampleMember = sampleProfiles.find((p) => p.id === sampleId);
           if (sampleMember) {
             setMember({
               ...sampleMember,
@@ -167,26 +188,24 @@ export default function TeamMemberDetail() {
           }
         }
 
-        // Try to fetch from API
-        const res = await fetch(`/api/admin-users/public/${id}`);
-        const data = await res.json();
-        if (!res.ok || !data.success || !data.data) {
-          throw new Error(data.message || "Team member not found");
-        }
-        const m = data.data;
-        setMember({
-          id: m.id,
-          name: m.full_name,
-          full_name: m.full_name,
-          position: m.position || m.role || "Team Member",
-          description: m.description,
-          image: buildImageUrl(m.profile_image),
-          facebook_link: m.facebook_link,
-          whatsapp_link: m.whatsapp_link,
-          twitter_link: m.twitter_link,
-          google_link: m.google_link,
-        });
+        setError(data?.message || "Team member not found");
       } catch (err) {
+        // On network error, fall back to sample if id is 1-8
+        const sampleId = parseInt(id, 10);
+        if (sampleId >= 1 && sampleId <= 8) {
+          const sampleMember = sampleProfiles.find((p) => p.id === sampleId);
+          if (sampleMember) {
+            setMember({
+              ...sampleMember,
+              facebook_link: null,
+              whatsapp_link: null,
+              twitter_link: null,
+              google_link: null,
+            });
+            setLoading(false);
+            return;
+          }
+        }
         setError(err.message || "Failed to load team member");
       } finally {
         setLoading(false);
@@ -233,7 +252,7 @@ export default function TeamMemberDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Box sx={{ position: "relative", zIndex: 1 }}>
@@ -267,7 +286,7 @@ export default function TeamMemberDetail() {
               "radial-gradient(circle at 20% 80%, rgba(19, 236, 19, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(13, 27, 13, 0.05) 0%, transparent 50%)",
             zIndex: 0,
           },
-          fontFamily: '"Open Sans", sans-serif',
+          fontFamily: '"Calibri Light", Calibri, sans-serif',
         }}
       >
         <Container
@@ -315,7 +334,7 @@ export default function TeamMemberDetail() {
         position: "relative",
         overflow: "hidden",
         minHeight: "auto",
-        fontFamily: '"Open Sans", sans-serif',
+        fontFamily: '"Calibri Light", Calibri, sans-serif',
         "&::before": {
           content: '""',
           position: "absolute",
@@ -483,7 +502,7 @@ export default function TeamMemberDetail() {
                       variant="body1"
                       sx={{
                         lineHeight: 1.8,
-                        color: "#4c664c",
+                        color: "#000000",
                         fontSize: { xs: "0.9rem", sm: "1rem", md: "1.05rem" },
                         textAlign: "left",
                       }}

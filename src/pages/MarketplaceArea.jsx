@@ -9,6 +9,7 @@ const sectionTitles = {
   "training-opportunities": "Training & Opportunities",
   profile: "My Profile",
   "my-listings": "My Listings",
+  listings: "All Listings",
   "add-listing": "Add Listing",
   messages: "Messages",
   settings: "Account Settings",
