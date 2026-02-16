@@ -34,7 +34,7 @@ const cards = [
     description:
       "Trade high-quality produce with verified buyers and sellers across the region. Transparent pricing and secure logistics.",
     buttonLabel: "Explore Marketplace",
-    path: "/marketplace/listings",
+    path: "/marketplace/dashboard",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDi3mp6C62zZEzuTNrfLBBdAbqnZjaE62F8NDyst3xVlcYNUarLZqRfdKbvqGmxcBH9Lp7wvrnleqDK6Y42toR5Jk1QJEMenYMkof_5X2F8YFD7C3HI8_MTcYu002klTmxphUCfAS3tBGIrTwqby3rAbTDqiUima5xCIEnymt-yql-DNYOEzkMjU2Qe01vFaisZ455oqlBClk19_CisCcK2XcLKtnNdbXlR1uG_kDLb-sQdbJ1OWeSYsev9ayMCsV0pZcycGd5AYTSr",
   },
@@ -87,15 +87,24 @@ const cards = [
 const quickActions = [
   { label: "My Listings", icon: <ListAlt />, path: "/marketplace/my-listings" },
   { label: "All Listings", icon: <ViewList />, path: "/marketplace/listings" },
-  { label: "Add New Listing", icon: <AddCircle />, path: "/marketplace/add-listing" },
-  { label: "View Profile", icon: <AccountCircle />, path: "/marketplace/profile" },
+  {
+    label: "Add New Listing",
+    icon: <AddCircle />,
+    path: "/marketplace/add-listing",
+  },
+  {
+    label: "View Profile",
+    icon: <AccountCircle />,
+    path: "/marketplace/profile",
+  },
 ];
 
 export default function MarketplaceDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const goToProfile = () => navigate("/marketplace/profile", { state: { from: location.pathname } });
+  const goToProfile = () =>
+    navigate("/marketplace/profile", { state: { from: location.pathname } });
 
   return (
     <Box
@@ -146,7 +155,8 @@ export default function MarketplaceDashboard() {
                 whiteSpace: { xs: "normal", md: "nowrap" },
               }}
             >
-              Empowering Farmers, Transforming Agribusiness. Professional digital marketplace for agriculture professionals.
+              Empowering Farmers, Transforming Agribusiness. Professional
+              digital marketplace for agriculture professionals.
             </Typography>
           </Box>
         </Box>
@@ -181,8 +191,22 @@ export default function MarketplaceDashboard() {
                     backgroundPosition: "center",
                   }}
                 />
-                <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    p: 2.5,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.5,
+                      mb: 1.5,
+                    }}
+                  >
                     {item.icon}
                     <Typography variant="h6" fontWeight={700}>
                       {item.title}
@@ -250,7 +274,11 @@ export default function MarketplaceDashboard() {
               <Box
                 key={action.path}
                 component="button"
-                onClick={() => action.path === "/marketplace/profile" ? goToProfile() : navigate(action.path)}
+                onClick={() =>
+                  action.path === "/marketplace/profile"
+                    ? goToProfile()
+                    : navigate(action.path)
+                }
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -269,7 +297,10 @@ export default function MarketplaceDashboard() {
                   "&:hover": {
                     bgcolor: "action.hover",
                     color: "#000",
-                    "& > div:first-of-type": { bgcolor: PRIMARY, color: "#fff" },
+                    "& > div:first-of-type": {
+                      bgcolor: PRIMARY,
+                      color: "#fff",
+                    },
                   },
                   "&:focus": { outline: "none" },
                 }}

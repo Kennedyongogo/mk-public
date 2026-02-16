@@ -287,7 +287,15 @@ export default function TrainingOpportunities() {
               component="button"
               variant="body2"
               onClick={() => navigate("/marketplace/training-opportunities/trainings")}
-              sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+              sx={{
+                color: PRIMARY,
+                fontWeight: 600,
+                fontSize: "0.875rem",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+                "&:focus": { outline: "none", boxShadow: "none" },
+                "&:focus-visible": { outline: "none", boxShadow: "none" },
+              }}
             >
               View all
             </Link>
@@ -424,7 +432,15 @@ export default function TrainingOpportunities() {
               component="button"
               variant="body2"
               onClick={() => navigate("/marketplace/training-opportunities/grants")}
-              sx={{ color: PRIMARY, fontWeight: 600, fontSize: "0.875rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+              sx={{
+                color: PRIMARY,
+                fontWeight: 600,
+                fontSize: "0.875rem",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+                "&:focus": { outline: "none", boxShadow: "none" },
+                "&:focus-visible": { outline: "none", boxShadow: "none" },
+              }}
             >
               View all
             </Link>
