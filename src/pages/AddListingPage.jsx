@@ -358,13 +358,29 @@ export default function AddListingPage() {
                   <Typography variant="caption" color="text.secondary">Selected: {imageFile.name}</Typography>
                   <Button type="button" size="small" onClick={() => { setImageFile(null); setRemoveImage(false); }} sx={{ ml: 1 }}>Clear</Button>
                   {imagePreviewUrl && (
-                    <Box sx={{ mt: 1 }}>
+                    <Box
+                      sx={{
+                        mt: 1,
+                        p: 2,
+                        backgroundColor: "#f8f9fa",
+                        borderRadius: 2,
+                        border: "1px solid #e0e0e0",
+                        position: "relative",
+                        maxWidth: 400,
+                      }}
+                    >
                       <Typography variant="caption" display="block" color="text.secondary" sx={{ mb: 0.5 }}>Preview</Typography>
                       <Box
                         component="img"
                         src={imagePreviewUrl}
                         alt="Listing preview"
-                        sx={{ maxWidth: "100%", maxHeight: 200, borderRadius: 1, border: "1px solid #ddd", display: "block" }}
+                        sx={{
+                          width: "100%",
+                          height: 200,
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          display: "block",
+                        }}
                       />
                     </Box>
                   )}

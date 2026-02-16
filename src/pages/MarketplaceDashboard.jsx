@@ -34,7 +34,7 @@ const cards = [
     description:
       "Trade high-quality produce with verified buyers and sellers across the region. Transparent pricing and secure logistics.",
     buttonLabel: "Explore Marketplace",
-    path: "/marketplace/dashboard",
+    path: "/marketplace/listings",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDi3mp6C62zZEzuTNrfLBBdAbqnZjaE62F8NDyst3xVlcYNUarLZqRfdKbvqGmxcBH9Lp7wvrnleqDK6Y42toR5Jk1QJEMenYMkof_5X2F8YFD7C3HI8_MTcYu002klTmxphUCfAS3tBGIrTwqby3rAbTDqiUima5xCIEnymt-yql-DNYOEzkMjU2Qe01vFaisZ455oqlBClk19_CisCcK2XcLKtnNdbXlR1uG_kDLb-sQdbJ1OWeSYsev9ayMCsV0pZcycGd5AYTSr",
   },
@@ -103,11 +103,15 @@ export default function MarketplaceDashboard() {
         minHeight: "100vh",
         bgcolor: BG_LIGHT,
         color: "#0e1b12",
-        pt: 1.5,
+        pt: 5,
         pb: 0,
+        px: 1,
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
       }}
     >
-      <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, sm: 3, lg: 3 } }}>
+      <Box sx={{ width: "100%" }}>
         {/* Hero */}
         <Box
           sx={{

@@ -31,8 +31,11 @@ export default function MarketplaceArea() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        px: 2,
+        px: { xs: 2, md: 4 },
         py: 4,
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
       }}
     >
       <Typography variant="h4" fontWeight={700} color="text.primary" gutterBottom>

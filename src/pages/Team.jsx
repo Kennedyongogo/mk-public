@@ -136,25 +136,30 @@ export default function Team() {
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: "rgba(255, 255, 255, 0.5)",
+        bgcolor: "#f6f8f6",
         display: "flex",
         flexDirection: "column",
-        py: { xs: 0.75, md: 0.75 },
+        pt: { xs: 1, md: 2 },
+        pb: 1,
         fontFamily: '"Calibri Light", Calibri, sans-serif',
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
       }}
     >
       <Card
         sx={{
-          mx: { xs: 0.75, md: 0.75 },
-          mt: { xs: 0.5, md: 0.5 },
-          mb: { xs: 0.5, md: 0.5 },
-          borderRadius: 3,
-          border: "1px solid #cfe7cf",
-          backgroundColor: "#f6f8f6",
+          mt: 0.3,
+          mx: 0.3,
+          mb: 0.15,
+          borderRadius: { xs: 3, md: 4 },
+          border: "1px solid rgba(15, 189, 15, 0.1)",
+          background: "#FFFFFF",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
+          width: "100%",
         }}
       >
         {/* Hero Section: Who We Are */}
@@ -164,33 +169,35 @@ export default function Team() {
           pb: { xs: 2.5, md: 5 },
         }}
       >
-        <Container maxWidth="lg" disableGutters sx={{ pl: { xs: 1, md: 0.2 }, pr: { xs: 1, md: 2 } }}>
+        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 4 } }}>
           <Box
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
-              gap: 4,
-              alignItems: "center",
+              gap: { xs: 4, md: 0 },
+              alignItems: { xs: "center", md: "stretch" },
             }}
           >
-            {/* Left: Image Card */}
+            {/* Left: Image - full width half */}
             <Box
               sx={{
                 width: { xs: "100%", md: "50%" },
-                flexShrink: 0,
+                flex: { xs: "0 0 auto", md: "0 0 50%" },
+                minWidth: 0,
                 display: { xs: "flex", md: "block" },
                 justifyContent: { xs: "center", md: "flex-start" },
               }}
             >
               <Card
                 sx={{
-                  width: { xs: "calc(100% - 1rem)", md: "100%" },
+                  width: "100%",
                   maxWidth: { xs: "400px", md: "none" },
-                  aspectRatio: { xs: "4/3", md: "1/1" },
-                  borderRadius: 3,
+                  aspectRatio: { xs: "4/3", md: "auto" },
+                  height: { xs: "auto", md: "100%" },
+                  minHeight: { xs: "300px", md: "400px" },
+                  borderRadius: { xs: 3, md: "12px 0 0 12px" },
                   overflow: "hidden",
                   boxShadow: 6,
-                  minHeight: { xs: "300px", md: "400px" },
                   mx: { xs: "0.5rem", md: 0 },
                 }}
               >
@@ -207,14 +214,19 @@ export default function Team() {
                 />
               </Card>
             </Box>
-            {/* Right: Typography Content */}
+            {/* Right: Words - full width half */}
             <Box
               sx={{
                 width: { xs: "100%", md: "50%" },
-                flexShrink: 0,
+                flex: { xs: "0 0 auto", md: "0 0 50%" },
+                minWidth: 0,
+                px: { xs: 0, md: 3 },
+                py: { xs: 0, md: 3 },
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3, width: "100%" }}>
                 <Box
                   sx={{
                     bgcolor: "rgba(17, 212, 17, 0.1)",
@@ -335,7 +347,7 @@ export default function Team() {
 
       {/* Two Cards Section */}
       <Box sx={{ bgcolor: "white", pt: 2, pb: 4 }}>
-        <Container maxWidth="xl" disableGutters sx={{ px: { xs: 0, sm: 0, md: 0 } }}>
+        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 4 } }}>
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
               variant="h2"
@@ -534,8 +546,8 @@ export default function Team() {
       </Box>
 
       {/* Core Values Grid */}
-      <Box sx={{ pt: 2, pb: 5, px: 0, bgcolor: "#f6f8f6" }}>
-        <Container maxWidth="xl" disableGutters sx={{ px: { xs: 0, sm: 0, md: 0 } }}>
+      <Box sx={{ pt: 2, pb: 5, bgcolor: "#f6f8f6" }}>
+        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 4 } }}>
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography
               variant="h2"
@@ -658,7 +670,7 @@ export default function Team() {
 
       {/* Our Team Section */}
       <Box sx={{ pt: 2, pb: 10, bgcolor: "white" }}>
-        <Container maxWidth="lg" disableGutters sx={{ pl: { xs: 1, md: 0.2 }, pr: { xs: 1, md: 2 } }}>
+        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 4 } }}>
           <Box
             sx={{
               display: "flex",
@@ -844,8 +856,8 @@ export default function Team() {
       </Box>
 
       {/* Call to Action */}
-      <Box sx={{ pt: 0, pb: 2, px: 2 }}>
-        <Container maxWidth="lg">
+      <Box sx={{ pt: 0, pb: 2 }}>
+        <Container maxWidth={false} sx={{ px: { xs: 2, md: 4 } }}>
           <Paper
             sx={{
               bgcolor: "#11d411",
