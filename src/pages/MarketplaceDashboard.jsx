@@ -87,15 +87,24 @@ const cards = [
 const quickActions = [
   { label: "My Listings", icon: <ListAlt />, path: "/marketplace/my-listings" },
   { label: "All Listings", icon: <ViewList />, path: "/marketplace/listings" },
-  { label: "Add New Listing", icon: <AddCircle />, path: "/marketplace/add-listing" },
-  { label: "View Profile", icon: <AccountCircle />, path: "/marketplace/profile" },
+  {
+    label: "Add New Listing",
+    icon: <AddCircle />,
+    path: "/marketplace/add-listing",
+  },
+  {
+    label: "View Profile",
+    icon: <AccountCircle />,
+    path: "/marketplace/profile",
+  },
 ];
 
 export default function MarketplaceDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const goToProfile = () => navigate("/marketplace/profile", { state: { from: location.pathname } });
+  const goToProfile = () =>
+    navigate("/marketplace/profile", { state: { from: location.pathname } });
 
   return (
     <Box
@@ -103,11 +112,15 @@ export default function MarketplaceDashboard() {
         minHeight: "100vh",
         bgcolor: BG_LIGHT,
         color: "#0e1b12",
-        pt: 1.5,
+        pt: 5,
         pb: 0,
+        px: 1,
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
       }}
     >
-      <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, sm: 3, lg: 3 } }}>
+      <Box sx={{ width: "100%" }}>
         {/* Hero */}
         <Box
           sx={{
@@ -142,7 +155,8 @@ export default function MarketplaceDashboard() {
                 whiteSpace: { xs: "normal", md: "nowrap" },
               }}
             >
-              Empowering Farmers, Transforming Agribusiness. Professional digital marketplace for agriculture professionals.
+              Empowering Farmers, Transforming Agribusiness. Professional
+              digital marketplace for agriculture professionals.
             </Typography>
           </Box>
         </Box>
@@ -177,8 +191,22 @@ export default function MarketplaceDashboard() {
                     backgroundPosition: "center",
                   }}
                 />
-                <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column", p: 2.5 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    p: 2.5,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.5,
+                      mb: 1.5,
+                    }}
+                  >
                     {item.icon}
                     <Typography variant="h6" fontWeight={700}>
                       {item.title}
@@ -246,7 +274,11 @@ export default function MarketplaceDashboard() {
               <Box
                 key={action.path}
                 component="button"
-                onClick={() => action.path === "/marketplace/profile" ? goToProfile() : navigate(action.path)}
+                onClick={() =>
+                  action.path === "/marketplace/profile"
+                    ? goToProfile()
+                    : navigate(action.path)
+                }
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -265,7 +297,10 @@ export default function MarketplaceDashboard() {
                   "&:hover": {
                     bgcolor: "action.hover",
                     color: "#000",
-                    "& > div:first-of-type": { bgcolor: PRIMARY, color: "#fff" },
+                    "& > div:first-of-type": {
+                      bgcolor: PRIMARY,
+                      color: "#fff",
+                    },
                   },
                   "&:focus": { outline: "none" },
                 }}

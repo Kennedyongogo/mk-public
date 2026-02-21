@@ -56,7 +56,7 @@ export default function ViewAllGrants() {
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 2, px: 1 }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+      <Box sx={{ width: "100%" }}>
         <Box
           sx={{
             display: "flex",
