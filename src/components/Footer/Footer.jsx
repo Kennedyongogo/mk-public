@@ -10,31 +10,7 @@ import {
   Fade,
   Slide,
 } from "@mui/material";
-import {
-  Facebook,
-  Instagram,
-  LinkedIn,
-  LocationOn,
-  Email,
-  Phone,
-} from "@mui/icons-material";
-
-// Custom X icon for Twitter/X rebrand
-const XIcon = ({ sx, ...props }) => (
-  <Box
-    component="svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    sx={{
-      width: 24,
-      height: 24,
-      ...sx,
-    }}
-    {...props}
-  >
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </Box>
-);
+import { Facebook, LinkedIn } from "@mui/icons-material";
 
 // Custom TikTok icon
 const TikTokIcon = ({ sx, ...props }) => (
@@ -53,38 +29,30 @@ const TikTokIcon = ({ sx, ...props }) => (
   </Box>
 );
 
-// Custom YouTube icon
-const YouTubeIcon = ({ sx, ...props }) => (
-  <Box
-    component="svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    sx={{
-      width: 24,
-      height: 24,
-      ...sx,
-    }}
-    {...props}
-  >
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-  </Box>
-);
-
 export default function Footer() {
-  const handleSocialClick = (label) => {
-    if (label === "Facebook") {
-      window.open("https://www.facebook.com/akirasafaris/", "_blank", "noopener,noreferrer");
-    } else if (label === "Twitter") {
-      window.open("https://x.com/AkiraSafaris", "_blank", "noopener,noreferrer");
-    } else if (label === "Instagram") {
-      window.open("https://www.instagram.com/akirasafaris/?hl=en", "_blank", "noopener,noreferrer");
-    } else if (label === "LinkedIn") {
-      window.open("https://www.linkedin.com/in/david-odongo-78876637/", "_blank", "noopener,noreferrer");
-    } else if (label === "TikTok") {
-      window.open("https://www.tiktok.com/tag/akirasafari", "_blank", "noopener,noreferrer");
-    } else if (label === "YouTube") {
-      window.open("https://www.youtube.com/channel/UCV_RwQsbXHwO3gzYQKsXw7Q", "_blank", "noopener,noreferrer");
-    }
+  const socialLinks = [
+    {
+      icon: <Facebook />,
+      color: "#1877f2",
+      label: "Facebook",
+      url: "https://www.facebook.com/share/1C6X1m6eMT/?mibextid=wwXIfr",
+    },
+    {
+      icon: <LinkedIn />,
+      color: "#0077b5",
+      label: "LinkedIn",
+      url: "https://www.linkedin.com/company/mk-agribusiness-consultants/",
+    },
+    {
+      icon: <TikTokIcon />,
+      color: "#000000",
+      label: "TikTok",
+      url: "https://www.tiktok.com/@mk.agribusiness.c?_r=1&_t=ZS-946wdLts9rt",
+    },
+  ];
+
+  const handleSocialClick = (url) => {
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -292,42 +260,11 @@ export default function Footer() {
                           Follow Us
                         </Typography>
                         <Box sx={{ display: "flex", gap: { xs: 0.5, sm: 1 } }}>
-                          {[
-                            {
-                              icon: <Facebook />,
-                              color: "#1877f2",
-                              label: "Facebook",
-                            },
-                            {
-                              icon: <XIcon />,
-                              color: "#000000",
-                              label: "Twitter",
-                            },
-                            {
-                              icon: <Instagram />,
-                              color: "#e4405f",
-                              label: "Instagram",
-                            },
-                            {
-                              icon: <LinkedIn />,
-                              color: "#0077b5",
-                              label: "LinkedIn",
-                            },
-                            {
-                              icon: <TikTokIcon />,
-                              color: "#000000",
-                              label: "TikTok",
-                            },
-                            {
-                              icon: <YouTubeIcon />,
-                              color: "#FF0000",
-                              label: "YouTube",
-                            },
-                          ].map((social, index) => (
+                          {socialLinks.map((social, index) => (
                             <IconButton
                               key={index}
                               aria-label={social.label}
-                              onClick={() => handleSocialClick(social.label)}
+                              onClick={() => handleSocialClick(social.url)}
                               sx={{
                                 color: "rgba(255, 255, 255, 0.8)",
                                 background: "rgba(19, 236, 19, 0.05)",
@@ -387,42 +324,11 @@ export default function Footer() {
                         Follow Us
                       </Typography>
                       <Box sx={{ display: "flex", gap: 1 }}>
-                        {[
-                          {
-                            icon: <Facebook />,
-                            color: "#1877f2",
-                            label: "Facebook",
-                          },
-                          {
-                            icon: <XIcon />,
-                            color: "#000000",
-                            label: "Twitter",
-                          },
-                          {
-                            icon: <Instagram />,
-                            color: "#e4405f",
-                            label: "Instagram",
-                          },
-                          {
-                            icon: <LinkedIn />,
-                            color: "#0077b5",
-                            label: "LinkedIn",
-                          },
-                          {
-                            icon: <TikTokIcon />,
-                            color: "#000000",
-                            label: "TikTok",
-                          },
-                          {
-                            icon: <YouTubeIcon />,
-                            color: "#FF0000",
-                            label: "YouTube",
-                          },
-                        ].map((social, index) => (
+                        {socialLinks.map((social, index) => (
                           <IconButton
                             key={index}
                             aria-label={social.label}
-                            onClick={() => handleSocialClick(social.label)}
+                            onClick={() => handleSocialClick(social.url)}
                             sx={{
                               color: "rgba(255, 255, 255, 0.8)",
                               background: "rgba(19, 236, 19, 0.05)",
