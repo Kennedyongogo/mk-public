@@ -65,12 +65,6 @@ export default function PublicHeader() {
         color: "#4caf50", // Secondary Green
       },
       {
-        label: "Our Services",
-        icon: <Work />,
-        route: "/services",
-        color: "#0fbd0f", // Primary Green
-      },
-      {
         label: "Projects",
         icon: <Assignment />,
         route: "/projects",

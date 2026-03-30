@@ -67,6 +67,8 @@ export default function TrainingOpportunities() {
     const isFunding = filterActive === "funding";
     const isTraining = filterActive === "training";
     const isWorkshop = filterActive === "workshop";
+    const isFieldDay = filterActive === "field-day";
+    const isSeminar = filterActive === "seminar";
 
     if (isAll) {
       Promise.all([
@@ -91,8 +93,14 @@ export default function TrainingOpportunities() {
         })
         .catch((err) => { if (!cancelled) setError(err.message || "Failed to load content"); })
         .finally(() => { if (!cancelled) setLoading(false); });
-    } else if (isTraining || isWorkshop) {
-      const type = isTraining ? "Training" : "Workshop";
+    } else if (isTraining || isWorkshop || isFieldDay || isSeminar) {
+      const type = isTraining
+        ? "Training"
+        : isWorkshop
+          ? "Workshop"
+          : isFieldDay
+            ? "Field day"
+            : "Seminar";
       fetch(`${base}/api/training-events/public?type=${encodeURIComponent(type)}&limit=3`)
         .then((r) => r.json())
         .then((trainRes) => {
@@ -146,31 +154,66 @@ export default function TrainingOpportunities() {
     <Box sx={{ minHeight: "100vh", bgcolor: BG_LIGHT, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif', py: 5, px: 1 }}>
       <Box sx={{ width: "100%" }}>
         {/* Header */}
-        <Box component="header" sx={{ mb: 5 }}>
-          <Typography
-            variant="h3"
+        <Box
+          component="header"
+          sx={{
+            mb: 5,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Box>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 900,
+                lineHeight: 1.2,
+                letterSpacing: "-0.033em",
+                color: "#000000",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
+                fontSize: { xs: "2rem", md: "2.75rem" },
+              }}
+            >
+              Trainings, Workshops & Events
+            </Typography>
+            <Typography
+              sx={{
+                color: "#000000",
+                fontFamily: '"Calibri Light", Calibri, sans-serif',
+                fontSize: "1.125rem",
+                mt: 1.5,
+                maxWidth: 672,
+              }}
+            >
+              Discover upcoming trainings, workshops, field days, and seminars—plus funding opportunities to grow your agribusiness.
+            </Typography>
+          </Box>
+
+          {/* Map view (same placement style as Job Opportunities) */}
+          <Button
+            variant="outlined"
+            startIcon={<LocationOn sx={{ color: "grey.400" }} />}
+            onClick={() => navigate("/marketplace/training-opportunities/map")}
             sx={{
-              fontWeight: 900,
-              lineHeight: 1.2,
-              letterSpacing: "-0.033em",
+              borderRadius: "9999px",
+              borderColor: "divider",
               color: "#000000",
               fontFamily: '"Calibri Light", Calibri, sans-serif',
-              fontSize: { xs: "2rem", md: "2.75rem" },
+              textTransform: "none",
+              fontWeight: 600,
+              px: 2.5,
+              py: 1.25,
+              "&:hover": { borderColor: PRIMARY, bgcolor: "rgba(23, 207, 84, 0.08)" },
+              "&:focus": { outline: "none" },
+              "&:focus-visible": { outline: "none" },
+              whiteSpace: "nowrap",
             }}
           >
-            Training, Events & Opportunities
-          </Typography>
-          <Typography
-            sx={{
-              color: "#000000",
-              fontFamily: '"Calibri Light", Calibri, sans-serif',
-              fontSize: "1.125rem",
-              mt: 1.5,
-              maxWidth: 672,
-            }}
-          >
-            Stay informed about workshops, field days, funding, and agribusiness jobs to grow your agricultural enterprise.
-          </Typography>
+            Map view
+          </Button>
         </Box>
 
         {/* Search & Filters */}
@@ -211,9 +254,11 @@ export default function TrainingOpportunities() {
               Filter by:
             </Typography>
             {[
-              { key: "all", label: "All Categories" },
+              { key: "all", label: "All Events" },
               { key: "training", label: "Training" },
               { key: "workshop", label: "Workshop" },
+              { key: "field-day", label: "Field day" },
+              { key: "seminar", label: "Seminar" },
               { key: "funding", label: "Funding" },
             ].map(({ key, label }) => (
               <Button
@@ -242,32 +287,15 @@ export default function TrainingOpportunities() {
                 {label}
               </Button>
             ))}
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<LocationOn sx={{ color: "grey.400" }} />}
-              onClick={() => navigate("/marketplace/training-opportunities/map")}
-              sx={{
-                borderRadius: "9999px",
-                borderColor: "divider",
-                color: "#000000",
-                fontFamily: '"Calibri Light", Calibri, sans-serif',
-                textTransform: "none",
-                fontWeight: 500,
-                px: 2.5,
-                py: 1.25,
-                "&:hover": { borderColor: PRIMARY },
-                "&:focus": { outline: "none" },
-                "&:focus-visible": { outline: "none" },
-              }}
-            >
-              View in map
-            </Button>
           </Box>
         </Box>
 
-        {/* Upcoming Workshops & Training – shown for All, Training, Workshop */}
-        {(filterActive === "all" || filterActive === "training" || filterActive === "workshop") && (
+        {/* Upcoming events – shown for All + event types */}
+        {(filterActive === "all" ||
+          filterActive === "training" ||
+          filterActive === "workshop" ||
+          filterActive === "field-day" ||
+          filterActive === "seminar") && (
         <Box component="section" sx={{ mb: 6 }}>
           <Box
             sx={{
@@ -281,7 +309,15 @@ export default function TrainingOpportunities() {
             }}
           >
             <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: "-0.01em", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
-              {filterActive === "training" ? "Training" : filterActive === "workshop" ? "Workshops" : "Upcoming Workshops & Training"}
+              {filterActive === "training"
+                ? "Trainings"
+                : filterActive === "workshop"
+                  ? "Workshops"
+                  : filterActive === "field-day"
+                    ? "Field days"
+                    : filterActive === "seminar"
+                      ? "Seminars"
+                      : "Upcoming Events"}
             </Typography>
             <Link
               component="button"
@@ -308,7 +344,19 @@ export default function TrainingOpportunities() {
             <Typography sx={{ py: 3, color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>{error}</Typography>
           ) : filteredTrainings.length === 0 ? (
             <Typography sx={{ py: 4, textAlign: "center", color: "#000000", fontFamily: '"Calibri Light", Calibri, sans-serif' }}>
-              {searchLower ? "No matching training or workshop events." : `No ${filterActive === "training" ? "training" : filterActive === "workshop" ? "workshop" : "training or workshop"} events at the moment.`}
+              {searchLower
+                ? "No matching events."
+                : `No ${
+                    filterActive === "training"
+                      ? "training"
+                      : filterActive === "workshop"
+                        ? "workshop"
+                        : filterActive === "field-day"
+                          ? "field day"
+                          : filterActive === "seminar"
+                            ? "seminar"
+                            : "event"
+                  } listings at the moment.`}
             </Typography>
           ) : (
           <Grid container spacing={3}>

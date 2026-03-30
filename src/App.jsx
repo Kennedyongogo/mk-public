@@ -37,6 +37,8 @@ const InputsFeeds = lazy(() => import("./pages/InputsFeeds"));
 const VeterinaryServices = lazy(() => import("./pages/VeterinaryServices.jsx"));
 const TrainingOpportunities = lazy(() => import("./pages/TrainingOpportunities"));
 const TrainingOpportunitiesMapPage = lazy(() => import("./pages/TrainingOpportunitiesMapPage"));
+const JobOpportunities = lazy(() => import("./pages/JobOpportunities"));
+const JobOpportunitiesMapPage = lazy(() => import("./pages/JobOpportunitiesMapPage"));
 const ViewAllTrainings = lazy(() => import("./pages/ViewAllTrainings"));
 const ViewAllGrants = lazy(() => import("./pages/ViewAllGrants"));
 const RegisterEventPage = lazy(() => import("./pages/RegisterEventPage"));
@@ -376,6 +378,28 @@ function AppLayout() {
                 <MarketplaceGate>
                   <>
                     <TrainingOpportunities />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/job-opportunities"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <JobOpportunities />
+                    <Footer />
+                  </>
+                </MarketplaceGate>
+              }
+            />
+            <Route
+              path="/marketplace/job-opportunities/map"
+              element={
+                <MarketplaceGate>
+                  <>
+                    <JobOpportunitiesMapPage />
                     <Footer />
                   </>
                 </MarketplaceGate>

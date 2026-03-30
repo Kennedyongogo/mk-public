@@ -83,6 +83,31 @@ export async function postConsultation(body) {
 }
 
 /**
+ * Submit a service request from a service card (public).
+ * @param {{ serviceId: string, fullName: string, email: string, phone: string, message?: string }} body
+ * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}
+ */
+export async function postServiceRequest(body) {
+  const base = getBaseUrl();
+  const res = await fetch(`${base}/api/service-request`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.message || "Failed to submit service request");
+    err.response = res;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/**
  * Subscribe to newsletter (public).
  * @param {{ email: string, source?: string }} body
  * @returns {Promise<{ success: boolean, message?: string, data?: { id: string } }>}

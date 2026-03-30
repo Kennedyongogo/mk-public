@@ -9,8 +9,16 @@ import {
   Fade,
   Grid,
   CircularProgress,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import { Build } from "@mui/icons-material";
+import Swal from "sweetalert2";
+import { postServiceRequest } from "../../api";
 
 const buildImageUrl = (path) => {
   if (!path) return null;
@@ -30,13 +38,24 @@ export default function KeyServicesSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [requestDialogOpen, setRequestDialogOpen] = useState(false);
+  const [requestService, setRequestService] = useState(null);
+  const [requestSubmitting, setRequestSubmitting] = useState(false);
+  const [requestForm, setRequestForm] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/services/public/key")
+    // Show all published services (no "key/featured" filtering)
+    fetch("/api/services/public")
       .then((res) => res.json())
       .then((data) => {
         if (cancelled) return;
@@ -61,6 +80,65 @@ export default function KeyServicesSection() {
   const imageFor = (service) => {
     const url = buildImageUrl(service.image);
     return url || PLACEHOLDER_IMAGE;
+  };
+
+  const openRequestDialog = (service) => {
+    setRequestService(service);
+    setRequestForm({
+      fullName: "",
+      email: "",
+      phone: "",
+      message: service?.title ? `I'm requesting the service: ${service.title}.` : "",
+    });
+    setRequestDialogOpen(true);
+  };
+
+  const closeRequestDialog = () => {
+    setRequestDialogOpen(false);
+    setRequestService(null);
+  };
+
+  const submitServiceRequest = async () => {
+    if (!requestService) return;
+
+    if (!requestForm.fullName || !requestForm.email || !requestForm.phone) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill in your full name, email, and phone number.",
+        confirmButtonColor: "#13ec13",
+      });
+      return;
+    }
+
+    setRequestSubmitting(true);
+    try {
+      await postServiceRequest({
+        serviceId: requestService.id,
+        fullName: requestForm.fullName,
+        email: requestForm.email,
+        phone: requestForm.phone,
+        message: requestForm.message || null,
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Request Sent!",
+        text: "Thank you for your request. We'll contact you soon.",
+        confirmButtonColor: "#13ec13",
+      });
+
+      closeRequestDialog();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Request Failed",
+        text: err?.message || "Please try again later.",
+        confirmButtonColor: "#13ec13",
+      });
+    } finally {
+      setRequestSubmitting(false);
+    }
   };
 
   return (
@@ -191,12 +269,13 @@ export default function KeyServicesSection() {
               spacing={{ xs: 0.8, sm: 0.8, md: 0.8 }}
               justifyContent="center"
             >
-              {services.slice(0, 6).map((service, index) => (
+              {services.map((service, index) => (
                 <Grid
                   size={{
                     xs: 12,
                     sm: 6,
                     md: 4,
+                    lg: 4,
                   }}
                   key={service.id}
                 >
@@ -282,6 +361,40 @@ export default function KeyServicesSection() {
                         >
                           {service.shortDescription || service.description || ""}
                         </Typography>
+
+                        <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-start" }}>
+                          <Button
+                            disableElevation
+                            disableRipple
+                            onClick={(e) => {
+                              // Prevent triggering the card's onClick navigation.
+                              e.stopPropagation();
+                              openRequestDialog(service);
+                            }}
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#13ec13",
+                              color: "#0d1b0d",
+                              fontWeight: 800,
+                              borderRadius: 2,
+                              textTransform: "none",
+                              px: 2.25,
+                              "&:focus": {
+                                outline: "none",
+                                boxShadow: "none",
+                              },
+                              "&:focus-visible": {
+                                outline: "none",
+                                boxShadow: "none",
+                              },
+                              "&:hover": {
+                                backgroundColor: "#11d411",
+                              },
+                            }}
+                          >
+                            Request Service
+                          </Button>
+                        </Box>
                       </CardContent>
                     </Card>
                   </Fade>
@@ -291,11 +404,95 @@ export default function KeyServicesSection() {
           )}
           {!loading && !error && services.length === 0 && (
             <Box sx={{ textAlign: "center", py: 4 }}>
-              <Typography sx={{ color: "#000000" }}>No key services at the moment.</Typography>
+              <Typography sx={{ color: "#000000" }}>No services at the moment.</Typography>
             </Box>
           )}
         </Container>
       </Card>
+
+      <Dialog
+        open={requestDialogOpen}
+        onClose={closeRequestDialog}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            border: "1px solid rgba(19, 236, 19, 0.15)",
+            backgroundColor: "#f6f8f6",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 900, color: "#0d1b0d", pb: 0 }}>
+          Request Service
+        </DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
+          <Typography sx={{ color: "#000000", mb: 2 }}>
+            Service: <b>{requestService?.title || "—"}</b>
+          </Typography>
+
+          <TextField
+            fullWidth
+            label="Full Name"
+            required
+            value={requestForm.fullName}
+            onChange={(e) => setRequestForm((p) => ({ ...p, fullName: e.target.value }))}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Email"
+            required
+            type="email"
+            value={requestForm.email}
+            onChange={(e) => setRequestForm((p) => ({ ...p, email: e.target.value }))}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Phone"
+            required
+            type="tel"
+            value={requestForm.phone}
+            onChange={(e) => setRequestForm((p) => ({ ...p, phone: e.target.value }))}
+            sx={{ mb: 1 }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={closeRequestDialog}
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 800,
+              backgroundColor: "transparent",
+              color: "#0d1b0d",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.04)" },
+              "&:focus": { outline: "none", boxShadow: "none" },
+              "&:focus-visible": { outline: "none", boxShadow: "none" },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={submitServiceRequest}
+            variant="contained"
+            disabled={requestSubmitting}
+            sx={{
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 900,
+              backgroundColor: "#13ec13",
+              color: "#0d1b0d",
+              "&:hover": { backgroundColor: "#11d411" },
+              "&:focus": { outline: "none", boxShadow: "none" },
+              "&:focus-visible": { outline: "none", boxShadow: "none" },
+            }}
+          >
+            {requestSubmitting ? <CircularProgress size={20} sx={{ color: "#0d1b0d" }} /> : "Submit"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

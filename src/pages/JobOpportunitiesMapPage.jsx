@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import TrainingEventsMap from "../components/TrainingEventsMap/TrainingEventsMap";
+import JobOpportunitiesMap from "../components/JobOpportunitiesMap/JobOpportunitiesMap";
 
 const PRIMARY = "#17cf54";
 const BG_LIGHT = "#f6f8f6";
@@ -12,20 +12,20 @@ const getBaseUrl = () => {
   return env ? String(env).replace(/\/$/, "") : "";
 };
 
-export default function TrainingOpportunitiesMapPage() {
+export default function JobOpportunitiesMapPage() {
   const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const base = getBaseUrl();
-    fetch(`${base}/api/training-events/public`)
+    fetch(`${base}/api/job-opportunities/public`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.success && Array.isArray(data.data)) setEvents(data.data);
-        else setEvents([]);
+        if (data.success && Array.isArray(data.data)) setItems(data.data);
+        else setItems([]);
       })
-      .catch(() => setEvents([]))
+      .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -44,26 +44,19 @@ export default function TrainingOpportunitiesMapPage() {
           }}
         >
           <IconButton
-            onClick={() => navigate("/marketplace/training-opportunities")}
+            onClick={() => navigate("/marketplace/job-opportunities")}
             sx={{
               color: "text.primary",
               "&:hover": { bgcolor: "action.hover" },
               "&:focus": { outline: "none" },
               "&:focus-visible": { outline: "none" },
             }}
-            aria-label="Back to Training & Opportunities"
+            aria-label="Back to Job Opportunities"
           >
             <ArrowBack />
           </IconButton>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: "-0.01em",
-              color: "text.primary",
-            }}
-          >
-            Event locations
+          <Typography variant="h5" sx={{ fontWeight: 700, letterSpacing: "-0.01em", color: "text.primary" }}>
+            Opportunity locations
           </Typography>
         </Box>
 
@@ -73,10 +66,11 @@ export default function TrainingOpportunitiesMapPage() {
           </Box>
         ) : (
           <Box sx={{ width: "100%" }}>
-            <TrainingEventsMap events={events} />
+            <JobOpportunitiesMap opportunities={items} />
           </Box>
         )}
       </Box>
     </Box>
   );
 }
+

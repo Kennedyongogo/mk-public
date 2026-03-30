@@ -19,6 +19,7 @@ import {
   Inventory2,
   Pets,
   School,
+  Work,
   Person,
   List as ListIcon,
   AddCircleOutline,
@@ -37,7 +38,8 @@ const mainNavItems = [
   { label: "Farmers Hub", path: "/marketplace/farmers-hub", icon: <Grass /> },
   { label: "Inputs & Feeds", path: "/marketplace/inputs-feeds", icon: <Inventory2 /> },
   { label: "Veterinary Services", path: "/marketplace/veterinary-services", icon: <Pets /> },
-  { label: "Training & Opportunities", path: "/marketplace/training-opportunities", icon: <School /> },
+  { label: "Training & Events", path: "/marketplace/training-opportunities", icon: <School /> },
+  { label: "Job Opportunities", path: "/marketplace/job-opportunities", icon: <Work /> },
 ];
 
 const ROLES_THAT_CAN_LIST = ["farmer", "input_supplier", "veterinarian", "consultant"];

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   Box,
@@ -28,16 +28,29 @@ const MotionBox = motion(Box);
 
 export default function BookConsultation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const prefill = location.state || {};
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
-    consultationType: "",
+    consultationType: prefill.consultationType || "",
     preferredDate: "",
     preferredTime: "",
-    message: "",
+    message: prefill.message || "",
   });
+
+  useEffect(() => {
+    // If user navigated here from a specific service card, prefill form fields.
+    if (!prefill) return;
+    setFormData((prev) => ({
+      ...prev,
+      consultationType: prefill.consultationType || prev.consultationType,
+      message: prefill.message || prev.message,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -237,8 +250,7 @@ export default function BookConsultation() {
                     display: "flex",
                     flexDirection: "column",
                     gap: 3,
-                    maxWidth: "800px",
-                    mx: "auto",
+                    width: "100%",
                   }}
                 >
                   {/* Full Name */}
@@ -357,7 +369,8 @@ export default function BookConsultation() {
 
                   {/* Preferred Date and Time - calendar pickers */}
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
+                    {/* Stack so each picker spans full width on every screen size */}
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                       <DatePicker
                         label="Preferred Date"
                         value={formData.preferredDate ? dayjs(formData.preferredDate) : null}
